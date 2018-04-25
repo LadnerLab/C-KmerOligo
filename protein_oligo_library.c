@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include "protein_oligo_library.h"
 
-char* read_fasta_lists( char* file_to_read )
+Sequence* read_fasta_lists( char* file_to_read )
 {
     FILE* data_file;
+    int num_records;
 
     data_file = fopen( file_to_read, "r" );
 
@@ -14,14 +15,14 @@ char* read_fasta_lists( char* file_to_read )
             exit( EXIT_FAILURE );
         }
 
-
-    int num_records = count_seqs_in_file( data_file );
+    num_records = count_seqs_in_file( data_file );
+    Sequence seqs_from_file[ num_records ];
 
     char names[ num_records ];
     char sequences[ num_records ];
 
     fclose( data_file );
-    return file_to_read;
+    return NULL;
 }
 
 
@@ -39,11 +40,11 @@ int count_seqs_in_file( FILE* data_file )
     int counter = 0;
     char line[ 256 ];
 
-    if( !open_file )
+    if( !data_file )
         {
             return -1; 
         }
-    while( fscanf( open_file, "%s", line ) == 1 )
+    while( fscanf( data_file, "%s", line ) == 1 )
         {
             if( *( line ) == '>' )
                 {
