@@ -8,16 +8,7 @@
 int main( void )
 {
 
-    int num_seqs = count_seqs_in_file( "test.fasta" );
-
-    if( num_seqs == -1 )
-        {
-            printf( "Data file not found: %s.\n", DATA_FILE );
-
-            return EXIT_FAILURE;
-        }
-
-    printf( "%d\n", num_seqs );
+    Sequence* sequences = read_fasta_lists( DATA_FILE );
 
     return EXIT_SUCCESS;
 }
