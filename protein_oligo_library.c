@@ -11,6 +11,7 @@ Sequence* read_fasta_lists( char* file_to_read )
     int num_records;
 
     char* str_buffer = malloc( LINE_SIZE * sizeof( char ) );
+
     int current_char;
     int capacity = LINE_SIZE;
     int num_chars = 0;
@@ -31,9 +32,22 @@ Sequence* read_fasta_lists( char* file_to_read )
     current_char = fgetc( data_file );
     while( current_char != EOF )
         {
-            printf( "%c\n", current_char ); 
+            if( num_chars >= capacity - 1 )
+                {
+                    capacity += LINE_SIZE;
+                    str_buffer = realloc( str_buffer, capacity );
+                }
+
             current_char = getc( data_file );
+
+            *( str_buffer + num_chars ) = current_char;
+
+            num_chars++;
         }
+
+    str_buffer[ num_chars ] = '\0';
+
+    printf( "%s\n", str_buffer );
 
     fclose( data_file );
     return NULL;
