@@ -45,10 +45,9 @@ Sequence* read_fasta_lists( char* file_to_read )
             num_chars++;
         }
 
-    str_buffer[ num_chars ] = '\0';
+    str_buffer[ --num_chars ] = '\0';
 
-    printf( "%s\n", str_buffer );
-
+    free( str_buffer );
     fclose( data_file );
     return NULL;
 }
