@@ -62,6 +62,11 @@ void ds_add( DynamicString* input, char string[] )
     input->size = new_size;
 }
 
+void ds_clear( DynamicString* input )
+{
+    free( input->data );
+}
+
 
 
 
