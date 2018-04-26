@@ -6,16 +6,12 @@
 
 #define LINE_SIZE 256
 
-Sequence *[] read_fasta_lists( char* file_to_read )
+Sequence *read_fasta_lists( char* file_to_read )
 {
     FILE* data_file;
     int num_records;
+    DynamicString* current_line;
 
-    char* str_buffer = malloc( LINE_SIZE * sizeof( char ) );
-
-    int current_char;
-    int capacity = LINE_SIZE;
-    int num_chars = 0;
 
 
     data_file = fopen( file_to_read, "r" );
@@ -27,30 +23,19 @@ Sequence *[] read_fasta_lists( char* file_to_read )
         }
 
     num_records = count_seqs_in_file( data_file );
+    Sequence* seqs_from_file = (Sequence*) malloc( sizeof( Sequence ) );
 
-    Sequence seqs_from_file[ num_records ];
-
-    current_char = fgetc( data_file );
-    while( current_char != EOF )
+    for( int index = 0; index < num_records; index++ )
         {
-            if( num_chars >= capacity - 1 )
-                {
-                    capacity += LINE_SIZE;
-                    str_buffer = realloc( str_buffer, capacity );
-                }
-
-            current_char = fgetc( data_file );
-
-            *( str_buffer + num_chars ) = current_char;
-
-            num_chars++;
+            current_line = get_a_line( data_file );
         }
 
-    str_buffer[ --num_chars ] = '\0';
 
-    free( str_buffer );
+    ds_clear( current_line );
+    free( current_line );
     fclose( data_file );
-    return NULL;
+
+    return seqs_from_file;
 }
 
 
