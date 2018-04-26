@@ -6,7 +6,7 @@
 
 #define LINE_SIZE 256
 
-Sequence* read_fasta_lists( char* file_to_read )
+Sequence *[] read_fasta_lists( char* file_to_read )
 {
     FILE* data_file;
     int num_records;

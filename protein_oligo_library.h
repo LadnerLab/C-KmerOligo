@@ -4,7 +4,7 @@
 typedef struct Sequence
 {
     char* name;
-    char* sequence;
+    DynamicString* sequence;
 } Sequence;
 
 /**
@@ -13,7 +13,7 @@ typedef struct Sequence
  * @return array of pointers to sequences containing sequence data
  *         found in file
  **/
-Sequence* read_fasta_lists( char* file_to_read );
+Sequence *[] read_fasta_lists( char* file_to_read );
 
 /**
  * Counts the amount of fastas in a fasta file provided
