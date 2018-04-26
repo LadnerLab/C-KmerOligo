@@ -13,6 +13,6 @@ int string_length( char* input );
 
 void check_for_resize( DynamicString* input, char string_to_add[] );
 
-void ds_init( DynamicString* input, char input_str[] );
+void ds_init( DynamicString* input );
 
 #endif

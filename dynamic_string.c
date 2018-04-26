@@ -34,18 +34,11 @@ int string_length( char* input )
     return length;
 }
 
-void ds_init( DynamicString* input, char string[] )
+void ds_init( DynamicString* input )
 {
-    int length = string_length( string );
-
     input->capacity = DEFAULT_LENGTH;
     input->data = (char*) malloc( sizeof( char ) * DEFAULT_LENGTH );
-
-    if( length >= DEFAULT_LENGTH )
-        {
-            input->data = (char *) realloc( input->data, length * 2 );
-        }
-    input->size = length;
+    input->size = 0;
 }
 
 
