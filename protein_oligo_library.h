@@ -13,7 +13,7 @@ typedef struct Sequence
  * @return array of pointers to sequences containing sequence data
  *         found in file
  **/
-Sequence *[] read_fasta_lists( char* file_to_read );
+void read_sequence( FILE* file_to_read, Sequence* in_sequence );
 
 /**
  * Counts the amount of fastas in a fasta file provided
@@ -30,6 +30,6 @@ int count_seqs_in_file( FILE* data_file );
  * @param stream open file pointer to read from
  * @returns DynamicString representation of the line
  **/
-DynamicString* get_a_line( FILE* stream );
+int get_a_line( FILE* stream, DynamicString* to_read );
 
 #endif
