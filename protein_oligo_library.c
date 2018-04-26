@@ -54,15 +54,6 @@ Sequence* read_fasta_lists( char* file_to_read )
 }
 
 
-
-/**
- * Counts the amount of fastas in a fasta file provided
- * 
- * Note: Resets file pointer
- * @param file_to_read fasta file to be opened and read
- * @returns int number of sequences in file, or -1 if
- *          file could not be opened
-**/
 int count_seqs_in_file( FILE* data_file )
 {
 
@@ -84,9 +75,8 @@ int count_seqs_in_file( FILE* data_file )
     return counter;
 }
 
-DynamicString* get_a_line( FILE* stream, int size )
+DynamicString* get_a_line( FILE* stream )
 {
-    int current_pos = 0;
     char current_char[ 1 ] ;
     DynamicString* return_str = (DynamicString*) malloc( sizeof( DynamicString ) );
 
@@ -96,12 +86,9 @@ DynamicString* get_a_line( FILE* stream, int size )
         {
 
             current_char[ 0 ] = fgetc( stream );
-
             ds_add( return_str, current_char );
-            current_pos++;
 
-        } while( *current_char != '\n' && *current_char != EOF
-                 && current_pos < size );
-    /* ds_init(  */
+        } while( *current_char != '\n' && *current_char != EOF );
+
     return return_str;
 }
