@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include "protein_oligo_library.h"
+#include "dynamic_string.h"
 
 #define LINE_SIZE 256
 
@@ -83,10 +84,13 @@ int count_seqs_in_file( FILE* data_file )
     return counter;
 }
 
-char* get_a_line( FILE* stream, int size )
+DynamicString* get_a_line( FILE* stream, int size )
 {
     int current_pos;
     char line_str[ size ];
+    char current_char;
+    DynamicString* return_str;
+
 
     do
         {
@@ -96,5 +100,7 @@ char* get_a_line( FILE* stream, int size )
             current_pos++;
 
         } while( current_char != '\n' && current_char != EOF
-                 && current_pos < size )
+                 && current_pos < size );
+    /* ds_init(  */
+    return return_str;
 }
