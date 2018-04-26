@@ -10,15 +10,16 @@
  * 
  * @param input DynamicString input to be tested 
  **/
-void check_for_resize( DynamicString* input )
+void check_for_resize( DynamicString* input, char string_to_add[] )
 {
-    int new_size;
+    int new_capacity;
+    int add_length = string_length( string_to_add );
 
-    if( string_length( input->data ) > input->size + 10 )
+    if( input->capacity + 10 < input->size + add_length )
         {
-            new_size = input->size * 2;
-            input->data = realloc( input->data, new_size );
-            input->size = new_size;
+            new_capacity = input->capacity * 2;
+            input->data = (char *) realloc( input->data, new_capacity );
+            input->capacity = new_capacity;
         }
 }
 
@@ -37,14 +38,34 @@ void ds_init( DynamicString* input, char string[] )
 {
     int length = string_length( string );
 
-    input->data = malloc( sizeof( char ) * DEFAULT_LENGTH );
+    input->capacity = DEFAULT_LENGTH;
+    input->data = (char*) malloc( sizeof( char ) * DEFAULT_LENGTH );
 
     if( length >= DEFAULT_LENGTH )
         {
-            input->data = realloc( input->data, length * 2 );
+            input->data = (char *) realloc( input->data, length * 2 );
         }
     input->size = length;
 }
+
+
+void ds_add( DynamicString* input, char string[] )
+{
+    int size = input->size;
+    int input_length = string_length( string );
+    int new_size = input->size + input_length;
+
+    int index = 0;
+
+    check_for_resize( input, string );
+
+    for( index = 0; index < input_length; index++ )
+        {
+            *( input->data + size + input_length ) = string[ input_length ];
+        }
+    *( input->data + new_size ) = '\0';
+}
+
 
 
 
