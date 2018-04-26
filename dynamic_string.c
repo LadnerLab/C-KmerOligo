@@ -22,7 +22,7 @@ void check_for_resize( DynamicString* input )
         }
 }
 
-int string_length( char[] input )
+int string_length( char* input )
 {
     int length = 0;
 
@@ -37,11 +37,13 @@ void ds_init( DynamicString* input, char string[] )
 {
     int length = string_length( string );
 
+    input->data = malloc( sizeof( char ) * DEFAULT_LENGTH );
+
     if( length >= DEFAULT_LENGTH )
         {
-
+            input->data = realloc( input->data, length * 2 );
         }
-    input->data = string;
+    input->size = length;
 }
 
 
