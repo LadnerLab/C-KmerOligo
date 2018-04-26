@@ -86,19 +86,16 @@ int count_seqs_in_file( FILE* data_file )
 
 DynamicString* get_a_line( FILE* stream, int size )
 {
-    int current_pos;
-    char line_str;
-    char *current_char;
+    int current_pos = 0;
+    char current_char[ 1 ] ;
     DynamicString* return_str = (DynamicString*) malloc( sizeof( DynamicString ) );
 
     ds_init( return_str );
 
-
     do
         {
 
-            line_str = fgetc( stream );
-            current_char = &line_str;
+            current_char[ 0 ] = fgetc( stream );
 
             ds_add( return_str, current_char );
             current_pos++;
