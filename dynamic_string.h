@@ -15,4 +15,6 @@ void check_for_resize( DynamicString* input, char string_to_add[] );
 
 void ds_init( DynamicString* input );
 
+void ds_add( DynamicString* input, char string[] );
+
 #endif
