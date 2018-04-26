@@ -6,36 +6,36 @@
 
 #define LINE_SIZE 256
 
-Sequence *read_fasta_lists( char* file_to_read )
+void read_sequence( FILE* file_to_read, Sequence* in_sequence )
 {
-    FILE* data_file;
-    int num_records;
-    DynamicString* current_line;
+    int has_line;
+    int index = 0;
 
+    DynamicString* line = (DynamicString*) malloc( sizeof( DynamicString ) );
+    DynamicString* sequence;
 
-
-    data_file = fopen( file_to_read, "r" );
-
-    if( !data_file )
+    has_line = get_a_line( file_to_read, line );
+    while( has_line )
         {
-            printf( "File not found: %s.", file_to_read );
-            exit( EXIT_FAILURE );
+            if( line->data[ 0 ] == '>' )
+                {
+                    sequence = (DynamicString*) malloc( sizeof( DynamicString ) );
+
+                    in_sequence[ index ].name = line->data;
+                    ds_init( sequence );
+                    in_sequence[ index ].sequence = sequence; 
+                    index++;
+                }
+            else
+                {
+                    ds_add( sequence, line->data );
+                }
+            ds_clear( line );
+            has_line = get_a_line( file_to_read, line );
         }
 
-    num_records = count_seqs_in_file( data_file );
-    Sequence* seqs_from_file = (Sequence*) malloc( sizeof( Sequence ) );
-
-    for( int index = 0; index < num_records; index++ )
-        {
-            current_line = get_a_line( data_file );
-        }
-
-
-    ds_clear( current_line );
-    free( current_line );
-    fclose( data_file );
-
-    return seqs_from_file;
+    ds_clear( line );
+    free( line );
 }
 
 
@@ -43,37 +43,40 @@ int count_seqs_in_file( FILE* data_file )
 {
 
     int counter = 0;
-    char line[ 256 ];
+    char current_char = 0;
 
     if( !data_file )
         {
             return -1; 
         }
-    while( fscanf( data_file, "%s", line ) == 1 )
+    while( current_char != EOF )
         {
-            if( *( line ) == '>' )
+            if( current_char == '>' )
                 {
                     counter++;
                 }
+            current_char = fgetc( data_file );
         }
     fseek( data_file, 0, SEEK_SET );
     return counter;
 }
 
-DynamicString* get_a_line( FILE* stream )
+int get_a_line( FILE* stream, DynamicString* to_read )
 {
     char current_char[ 1 ] ;
-    DynamicString* return_str = (DynamicString*) malloc( sizeof( DynamicString ) );
 
-    ds_init( return_str );
+    ds_init( to_read );
 
     do
         {
 
             current_char[ 0 ] = fgetc( stream );
-            ds_add( return_str, current_char );
+            if( *current_char != '\n' )
+                {
+                    ds_add( to_read, current_char );
+                }
 
         } while( *current_char != '\n' && *current_char != EOF );
 
-    return return_str;
+    return !( *current_char == EOF );
 }
