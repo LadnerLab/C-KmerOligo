@@ -89,7 +89,9 @@ DynamicString* get_a_line( FILE* stream, int size )
     int current_pos;
     char line_str[ size ];
     char current_char;
-    DynamicString* return_str;
+    DynamicString* return_str = (DynamicString*) malloc( sizeof( DynamicString ) );
+
+    ds_init( return_str );
 
 
     do
