@@ -54,9 +54,12 @@ void ds_add( DynamicString* input, char string[] )
 
     for( index = 0; index < input_length; index++ )
         {
-            *( input->data + size + input_length ) = string[ input_length ];
+            *( input->data + size + index ) = string[ index ];
         }
+
     *( input->data + new_size ) = '\0';
+
+    input->size = new_size;
 }
 
 
