@@ -38,7 +38,7 @@ Sequence* read_fasta_lists( char* file_to_read )
                     str_buffer = realloc( str_buffer, capacity );
                 }
 
-            current_char = getc( data_file );
+            current_char = fgetc( data_file );
 
             *( str_buffer + num_chars ) = current_char;
 
@@ -81,4 +81,20 @@ int count_seqs_in_file( FILE* data_file )
         }
     fseek( data_file, 0, SEEK_SET );
     return counter;
+}
+
+char* get_a_line( FILE* stream, int size )
+{
+    int current_pos;
+    char line_str[ size ];
+
+    do
+        {
+
+            current_char = fgetc( stream );
+            line_str[ current_pos ] = current_char;
+            current_pos++;
+
+        } while( current_char != '\n' && current_char != EOF
+                 && current_pos < size )
 }
