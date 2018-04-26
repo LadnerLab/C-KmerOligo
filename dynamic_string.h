@@ -17,4 +17,6 @@ void ds_init( DynamicString* input );
 
 void ds_add( DynamicString* input, char string[] );
 
+void ds_clear( DynamicString* input );
+
 #endif
