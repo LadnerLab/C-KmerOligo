@@ -32,4 +32,11 @@ int count_seqs_in_file( FILE* data_file );
  **/
 int get_a_line( FILE* stream, DynamicString* to_read );
 
+/**
+ * Counts the number of specified character in a string
+ * @param string_in pointer to first character of a string
+ * @param to_find character to count in the string
+ * @return integer number of to_find character found in string
+ **/
+int count_char_in_string( char* string_in, char to_find );
 #endif

@@ -79,3 +79,21 @@ int get_a_line( FILE* stream, DynamicString* to_read )
 
     return !( *current_char == EOF );
 }
+
+
+int count_char_in_string( char* string_in, char to_find )
+{
+    int count = 0;
+    int index = 0;
+
+    while( *(string_in + index ) )
+        {
+            if( *( string_in + index ) == to_find )
+                {
+                    count++;
+                }
+            index++;
+        }
+
+    return count;
+}
