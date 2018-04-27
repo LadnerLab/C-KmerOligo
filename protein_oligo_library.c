@@ -111,3 +111,9 @@ int char_in_string( char* string_in, char to_find )
         }
     return false;
 }
+
+float percent_char_in_string( char* string_in, char test_char )
+{
+    return ( (float) count_char_in_string( string_in, test_char ) /
+             string_length( string_in ) ) * 100 ;
+}

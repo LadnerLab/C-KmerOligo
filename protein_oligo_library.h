@@ -49,4 +49,12 @@ int count_char_in_string( char* string_in, char to_find );
  **/
 int char_in_string( char* string_in, char to_find );
 
+/**
+ * Calculates the percentage of specified charater makes up string
+ * @param string_in string to be tested
+ * @param test_char character to test for in string
+ * @return floating point percentage of character in string
+ **/
+float percent_char_in_string( char* string_in, char test_char );
+
 #endif
