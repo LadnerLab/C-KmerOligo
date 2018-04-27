@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include "protein_oligo_library.h"
 #include "dynamic_string.h"
