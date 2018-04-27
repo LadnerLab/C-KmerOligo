@@ -9,6 +9,7 @@ int main( int argc, char* argv[] )
 {
 
     FILE* data_file = fopen( "test.fasta", "r" );
+    int index;
 
     if( !data_file )
         {
@@ -18,13 +19,16 @@ int main( int argc, char* argv[] )
         }
 
     int num_seqs = count_seqs_in_file( data_file );
-    printf( "%d\n", num_seqs );
     Sequence sequences[ num_seqs ];
 
     read_sequence( data_file, sequences );
 
-    printf( "%s\n", sequences[ 0 ].sequence->data );
-    printf( "%s\n", sequences[ 1 ].sequence->data );
 
+    for( index = 0; index < num_seqs; index++ )
+        {
+            ds_clear( sequences[ index ].sequence );
+        }
     return EXIT_SUCCESS;
 }
+
+
