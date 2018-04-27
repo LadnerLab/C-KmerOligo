@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include "protein_oligo_library.h"
@@ -12,17 +11,17 @@ void read_sequence( FILE* file_to_read, Sequence* in_sequence )
     int index = 0;
 
     DynamicString* line = (DynamicString*) malloc( sizeof( DynamicString ) );
-    DynamicString* sequence;
+    DynamicString* sequence = malloc( sizeof( DynamicString ) );
 
     has_line = get_a_line( file_to_read, line );
     while( has_line )
         {
             if( line->data[ 0 ] == '>' )
                 {
-                    sequence = (DynamicString*) malloc( sizeof( DynamicString ) );
+                    sequence = malloc( sizeof( DynamicString ) );
+                    ds_init( sequence );
 
                     in_sequence[ index ].name = line->data;
-                    ds_init( sequence );
                     in_sequence[ index ].sequence = sequence; 
                     index++;
                 }
@@ -30,12 +29,11 @@ void read_sequence( FILE* file_to_read, Sequence* in_sequence )
                 {
                     ds_add( sequence, line->data );
                 }
-            ds_clear( line );
+            ds_init( line );
             has_line = get_a_line( file_to_read, line );
         }
 
     ds_clear( line );
-    free( line );
 }
 
 
