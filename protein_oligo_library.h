@@ -39,4 +39,14 @@ int get_a_line( FILE* stream, DynamicString* to_read );
  * @return integer number of to_find character found in string
  **/
 int count_char_in_string( char* string_in, char to_find );
+
+
+/**
+ * Tests for character in a string
+ * @param string_in pointer to first character in a string
+ * @param to_find character value to test for
+ * @returns boolean result of test
+ **/
+int char_in_string( char* string_in, char to_find );
+
 #endif

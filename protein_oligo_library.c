@@ -97,3 +97,17 @@ int count_char_in_string( char* string_in, char to_find )
 
     return count;
 }
+
+int char_in_string( char* string_in, char to_find )
+{
+    int index = 0;
+    while( *( string_in + index ) )
+        {
+            if ( *(string_in + index ) == to_find )
+                {
+                    return true;
+                }
+            index++;
+        }
+    return false;
+}
