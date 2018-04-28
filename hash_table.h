@@ -38,4 +38,12 @@ void ht_clear( HashTable* table );
  **/
 int generate_hash( HT_Entry* input );
 
+/**
+ * Adds an entry to the hashtable
+ * Note: Uses quadratic probing to resolve collisions
+ * @param table pointer to HashTable to add data to
+ * @param to_add pointer to HT_entry to add to table
+ **/
+void add_item( HashTable* table, HT_Entry* to_add )
+
 #endif

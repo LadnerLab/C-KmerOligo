@@ -26,3 +26,18 @@ int generate_hash( HT_Entry* input )
         }
     return total;
 }
+
+void add_item( HashTable* table, HT_Entry* to_add )
+{
+    int item_index = generate_hash( to_add ) % table->capacity;
+
+    if( table->table_data[ index ] == NULL )
+        {
+            table->table_data[ index ] = to_add;
+        }
+    else
+        {
+
+        }
+          
+}
