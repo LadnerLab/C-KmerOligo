@@ -22,5 +22,11 @@ typedef struct HT_Entry
  **/
 void ht_init( HashTable* table, int size );
 
+/**
+ * Clears a HashTable struct. Frees the memory
+ * allocated for each HT_entry
+ * @param table HashTable object to free
+ **/
+void ht_clear( HashTable* table );
 
 #endif
