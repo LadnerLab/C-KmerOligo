@@ -1,6 +1,16 @@
 #include <stdlib.h>
 #include "hash_table.h"
 
+int int_to_pow( int base, int exponent )
+{
+    if( exponent == 0 )
+        {
+            return 1;
+        }
+    return base * int_to_pow( base, exponent - 1 );
+}
+
+
 void ht_init( HashTable* table, int size )
 {
     table->table_data = malloc( sizeof( HT_Entry ) * size ); 
