@@ -8,6 +8,9 @@ protein_oligo_library.o: protein_oligo_library.c protein_oligo_library.h
 
 dynamic_string.o: dynamic_string.c dynamic_string.h
 
+ht_main: ht_main.o hash_table.o
+ht_main.o: ht_main.c hash_table.h
+hash_table.o: hash_table.c hash_table.h
 
 
 .PHONY: debug clean
