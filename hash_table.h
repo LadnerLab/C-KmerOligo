@@ -42,6 +42,7 @@ int generate_hash( HT_Entry* input );
  * @param table pointer to HashTable to add data to
  * @param to_add string value to add as key to hash_table
  * @param add_val value to be added as value of the key
+ * @returns integer value representing success of addition to table
  **/
-void ht_add( HashTable* table, char* to_add, int add_val );
+int ht_add( HashTable* table, char* to_add, int add_val );
 #endif

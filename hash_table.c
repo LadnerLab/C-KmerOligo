@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "hash_table.h"
 #define HASH_NUMBER 2069
+#define ADDITIONAL_SPACE 25;
 
 int int_to_pow( int base, int exponent )
 {
@@ -16,7 +17,7 @@ void ht_init( HashTable* table, int size )
 {
     int index;
 
-    table->table_data = malloc( sizeof( HT_Entry* ) * size ); 
+    table->table_data = malloc( sizeof( HT_Entry* ) * ( size + ADDITIONAL_SPACE ) ); 
     table->capacity = size;
 
     for( index = 0; index < size; index++ )
@@ -52,7 +53,7 @@ int generate_hash( HT_Entry* input )
     return total;
 }
 
-void ht_add( HashTable* table, char* to_add, int add_val )
+int ht_add( HashTable* table, char* to_add, int add_val )
 {
     int item_index;
     int index;
@@ -68,6 +69,7 @@ void ht_add( HashTable* table, char* to_add, int add_val )
     if( table->table_data[ item_index ] == NULL )
         {
             table->table_data[ item_index ] = new_entry;
+            return 1;
         }
     else
         {
@@ -84,6 +86,9 @@ void ht_add( HashTable* table, char* to_add, int add_val )
             while( table->table_data[ quadratic_offset ] != NULL );
 
             table->table_data[ quadratic_offset ] = new_entry;
+
+            return 1;
         }
-          
+
+    return 0;
 }
