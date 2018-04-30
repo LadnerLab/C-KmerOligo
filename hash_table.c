@@ -5,6 +5,7 @@
 #define HASH_NUMBER 2069
 #define ADDITIONAL_SPACE 25
 
+// local method for calculating exponents
 int int_to_pow( int base, int exponent )
 {
     if( exponent == 0 )
@@ -120,16 +121,15 @@ int find_item_index( HashTable* table, char* in_key )
 }
 
 
-int ht_find( HashTable* table, char* in_key )
+int *ht_find( HashTable* table, char* in_key )
 {
     int index = find_item_index( table, in_key );
-    int return_val = ITEM_NOT_FOUND;
 
     if( index != ITEM_NOT_FOUND )
         {
-            return_val = table->table_data[ index ]->value;
+            return &table->table_data[ index]->value;
         }
-    return return_val;
+    return NULL;
 }
 
 int ht_delete( HashTable* table, char* in_key )
@@ -146,3 +146,5 @@ int ht_delete( HashTable* table, char* in_key )
 
     return 0;
 }
+
+

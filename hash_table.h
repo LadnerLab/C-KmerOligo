@@ -65,10 +65,10 @@ int find_item_index( HashTable* table, char* in_key );
  * Note: Uses find_item_index
  * @param table pointer to HashTable to search
  * @param in_key String key value to use to search
- * @returns integer value found by in_key, or ITEM_NOT_FOUND
- *          if item was not found within the hash table
+ * @returns pointeger to the integer found with the key in_key
+ *          or NULL if the value was not found
  **/
-int ht_find( HashTable* table, char* in_key );
+int *ht_find( HashTable* table, char* in_key );
 
 
 /**
