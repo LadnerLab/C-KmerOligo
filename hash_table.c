@@ -1,7 +1,10 @@
 #include <stdlib.h>
+#include <string.h>
 #include "hash_table.h"
+
 #define HASH_NUMBER 2069
 #define ADDITIONAL_SPACE 25
+#define ITEM_NOT_FOUND -1
 
 int int_to_pow( int base, int exponent )
 {
@@ -47,7 +50,7 @@ int generate_hash( char* key )
     int total = 0;
     while( key[ index ] )
         {
-            total += ( input->key[ index ] * index + 1 ) % HASH_NUMBER;
+            total += ( key[ index ] * index + 1 ) % HASH_NUMBER;
             index++;
         }
     return total;
@@ -64,7 +67,7 @@ int ht_add( HashTable* table, char* to_add, int add_val )
     new_entry->key = to_add;
     new_entry->value = add_val;
 
-    item_index = generate_hash( new_entry ) % table->capacity;
+    item_index = generate_hash( new_entry->key ) % table->capacity;
 
     if( table->table_data[ item_index ] == NULL )
         {
@@ -94,3 +97,22 @@ int ht_add( HashTable* table, char* to_add, int add_val )
 }
 
 
+int find_item_index( HashTable* table, char* in_key )
+{
+    int search_index = generate_hash( in_key ) % table->capacity;
+    int quadratic_offset = 1;
+
+    while( quadratic_offset < table->capacity )
+        {
+            if( strcmp( table->table_data[ search_index ]->key, in_key ) == 0 )
+                {
+                    return search_index;
+                }
+
+            search_index += int_to_pow( quadratic_offset, 2 );
+            search_index %= table->capacity;
+            quadratic_offset++;
+        }
+
+    return ITEM_NOT_FOUND;
+}

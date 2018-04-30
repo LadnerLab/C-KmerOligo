@@ -1,6 +1,8 @@
 #ifndef HASHTTABLE_HH_INCLUDED
 #define HASHTTABLE_HH_INCLUDED
 
+#define ITEM_NOT_FOUND -1
+
 typedef struct HT_Entry
 {
     char* key;
@@ -45,4 +47,17 @@ int generate_hash( char* key );
  * @returns integer value representing success of addition to table
  **/
 int ht_add( HashTable* table, char* to_add, int add_val );
+
+
+/**
+ * Finds the index of an item in the hash table
+ * Note: Uses quadratic probing to resolve collisions
+ * @param table pointer to HashTable whose capacity is used to 
+ *        calculate initial index
+ * @param in_key string key value to be searched for in the table
+ * @returns integer index of the item, or ITEM_NOT_FOUND if the item
+ *          is not in the table
+ **/
+int find_item_index( HashTable* table, char* in_key );
 #endif
+
