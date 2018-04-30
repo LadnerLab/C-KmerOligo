@@ -50,6 +50,7 @@ int generate_hash( char* key )
     int total = 0;
     while( key[ index ] )
         {
+            total = total << 8;
             total += ( key[ index ] * index + 1 ) % HASH_NUMBER;
             index++;
         }
