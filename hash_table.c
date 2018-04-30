@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "hash_table.h"
+#define HASH_NUMBER 2069
 
 int int_to_pow( int base, int exponent )
 {
@@ -31,7 +32,7 @@ int generate_hash( HT_Entry* input )
     int total = 0;
     while( input->key[ index ] )
         {
-            total += input->key[ index ] << 3;
+            total += ( input->key[ index ] * index + 1 ) % HASH_NUMBER;
             index++;
         }
     return total;
@@ -41,13 +42,9 @@ void add_item( HashTable* table, HT_Entry* to_add )
 {
     int item_index = generate_hash( to_add ) % table->capacity;
 
-    if( table->table_data[ index ] == NULL )
+    if( table->table_data[ item_index ] == NULL )
         {
-            table->table_data[ index ] = to_add;
-        }
-    else
-        {
-
+            table->table_data[ item_index ] = to_add;
         }
           
 }
