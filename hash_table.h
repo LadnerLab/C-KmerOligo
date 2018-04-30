@@ -31,8 +31,6 @@ void ht_clear( HashTable* table );
 
 /**
  * Generates the hash for use by the table.
- * Note: adds the characters in string key up and then bitshifts 
- * to determine hash value
  * @param input pointer to HT_Entry object with key to hash
  * @return integer value representing hash of object
  **/
@@ -44,6 +42,6 @@ int generate_hash( HT_Entry* input );
  * @param table pointer to HashTable to add data to
  * @param to_add pointer to HT_entry to add to table
  **/
-void add_item( HashTable* table, HT_Entry* to_add )
+void add_item( HashTable* table, HT_Entry* to_add );
 
 #endif
