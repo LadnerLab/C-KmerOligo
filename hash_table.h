@@ -67,6 +67,18 @@ int find_item_index( HashTable* table, char* in_key );
  * @param in_key String key value to use to search
  * @returns integer value found by in_key, or ITEM_NOT_FOUND
  *          if item was not found within the hash table
+ **/
 int ht_find( HashTable* table, char* in_key );
+
+
+/**
+ * Removes and frees data found in a hash table
+ * Note: Uses find_item_index
+ * @param table pointer to HashTable to delete from
+ * @param in_key String key value to search
+ * @returns integer true if item was successfully found and deleted
+ *          integer false otherwise
+ **/
+int ht_delete( HashTable* table, char* in_key );
 #endif
 

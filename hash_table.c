@@ -128,3 +128,18 @@ int ht_find( HashTable* table, char* in_key )
         }
     return return_val;
 }
+
+int ht_delete( HashTable* table, char* in_key )
+{
+    int item_index = find_item_index( table, in_key );
+
+    if( item_index != ITEM_NOT_FOUND )
+        {
+            free( table->table_data[ item_index ] );
+            table->table_data[ item_index ] = NULL;
+
+            return 1;
+        }
+
+    return 0;
+}
