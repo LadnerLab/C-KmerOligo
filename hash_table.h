@@ -59,5 +59,14 @@ int ht_add( HashTable* table, char* to_add, int add_val );
  *          is not in the table
  **/
 int find_item_index( HashTable* table, char* in_key );
+
+/**
+ * Finds an item within a hash table using provided key.
+ * Note: Uses find_item_index
+ * @param table pointer to HashTable to search
+ * @param in_key String key value to use to search
+ * @returns integer value found by in_key, or ITEM_NOT_FOUND
+ *          if item was not found within the hash table
+int ht_find( HashTable* table, char* in_key );
 #endif
 

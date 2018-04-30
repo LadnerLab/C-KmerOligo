@@ -4,7 +4,6 @@
 
 #define HASH_NUMBER 2069
 #define ADDITIONAL_SPACE 25
-#define ITEM_NOT_FOUND -1
 
 int int_to_pow( int base, int exponent )
 {
@@ -115,4 +114,17 @@ int find_item_index( HashTable* table, char* in_key )
         }
 
     return ITEM_NOT_FOUND;
+}
+
+
+int ht_find( HashTable* table, char* in_key )
+{
+    int index = find_item_index( table, in_key );
+    int return_val = ITEM_NOT_FOUND;
+
+    if( index != ITEM_NOT_FOUND )
+        {
+            return_val = table->table_data[ index ]->value;
+        }
+    return return_val;
 }
