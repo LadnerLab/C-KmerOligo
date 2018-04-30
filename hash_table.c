@@ -14,13 +14,21 @@ int int_to_pow( int base, int exponent )
 
 void ht_init( HashTable* table, int size )
 {
-    table->table_data = malloc( sizeof( HT_Entry ) * size ); 
+    int index;
+
+    table->table_data = malloc( sizeof( HT_Entry* ) * size ); 
     table->capacity = size;
+
+    for( index = 0; index < size; index++ )
+        {
+            table->table_data[ index ] = NULL;
+        }
+
 }
 
 void ht_clear( HashTable* table )
 {
-    free( table->table_data->value );
+    free( table->table_data );
     free( table );
     table = NULL;
 }
@@ -38,13 +46,19 @@ int generate_hash( HT_Entry* input )
     return total;
 }
 
-void add_item( HashTable* table, HT_Entry* to_add )
+void ht_add( HashTable* table, char* to_add, int add_val )
 {
-    int item_index = generate_hash( to_add ) % table->capacity;
+    int item_index;
+    HT_Entry *new_entry = malloc( sizeof( HT_Entry ) );
+
+    new_entry->key = to_add;
+    new_entry->value = add_val;
+
+    item_index = generate_hash( new_entry ) % table->capacity;
 
     if( table->table_data[ item_index ] == NULL )
         {
-            table->table_data[ item_index ] = to_add;
+            table->table_data[ item_index ] = new_entry;
         }
           
 }

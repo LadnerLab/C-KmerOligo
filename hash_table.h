@@ -4,12 +4,12 @@
 typedef struct HT_Entry
 {
     char* key;
-    void* value;
+    int value;
 } HT_Entry;
 
 typedef struct HashTable
 {
-    HT_Entry* table_data; 
+    HT_Entry** table_data; 
     int capacity;
 } HashTable;
 
@@ -40,8 +40,8 @@ int generate_hash( HT_Entry* input );
  * Adds an entry to the hashtable
  * Note: Uses quadratic probing to resolve collisions
  * @param table pointer to HashTable to add data to
- * @param to_add pointer to HT_entry to add to table
+ * @param to_add string value to add as key to hash_table
+ * @param add_val value to be added as value of the key
  **/
-void add_item( HashTable* table, HT_Entry* to_add );
-
+void ht_add( HashTable* table, char* to_add, int add_val );
 #endif
