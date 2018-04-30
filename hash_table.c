@@ -28,6 +28,12 @@ void ht_init( HashTable* table, int size )
 
 void ht_clear( HashTable* table )
 {
+    int index;
+    for( index = 0; index < table->capacity; index++ )
+        {
+            free( table->table_data[ index ] );
+        }
+
     free( table->table_data );
     free( table );
     table = NULL;
