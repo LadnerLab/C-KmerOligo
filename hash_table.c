@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include "hash_table.h"
 #define HASH_NUMBER 2069
-#define ADDITIONAL_SPACE 25;
+#define ADDITIONAL_SPACE 25
 
 int int_to_pow( int base, int exponent )
 {
@@ -41,11 +41,11 @@ void ht_clear( HashTable* table )
 }
 
 
-int generate_hash( HT_Entry* input )
+int generate_hash( char* key )
 {
     int index = 0;
     int total = 0;
-    while( input->key[ index ] )
+    while( key[ index ] )
         {
             total += ( input->key[ index ] * index + 1 ) % HASH_NUMBER;
             index++;
@@ -92,3 +92,5 @@ int ht_add( HashTable* table, char* to_add, int add_val )
 
     return 0;
 }
+
+

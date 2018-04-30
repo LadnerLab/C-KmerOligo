@@ -31,10 +31,10 @@ void ht_clear( HashTable* table );
 
 /**
  * Generates the hash for use by the table.
- * @param input pointer to HT_Entry object with key to hash
+ * @param input string to calculate hash for 
  * @return integer value representing hash of object
  **/
-int generate_hash( HT_Entry* input );
+int generate_hash( char* key );
 
 /**
  * Adds an entry to the hashtable
