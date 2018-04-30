@@ -101,16 +101,19 @@ int find_item_index( HashTable* table, char* in_key )
     int search_index = generate_hash( in_key ) % table->capacity;
     int quadratic_offset = 1;
 
-    while( quadratic_offset < table->capacity )
+    if( table->table_data[ search_index ] != NULL )
         {
-            if( strcmp( table->table_data[ search_index ]->key, in_key ) == 0 )
+            while( quadratic_offset < table->capacity )
                 {
-                    return search_index;
-                }
+                    if( strcmp( table->table_data[ search_index ]->key, in_key ) == 0 )
+                        {
+                            return search_index;
+                        }
 
-            search_index += int_to_pow( quadratic_offset, 2 );
-            search_index %= table->capacity;
-            quadratic_offset++;
+                    search_index += int_to_pow( quadratic_offset, 2 );
+                    search_index %= table->capacity;
+                    quadratic_offset++;
+                }
         }
 
     return ITEM_NOT_FOUND;
