@@ -55,6 +55,9 @@ int generate_hash( HT_Entry* input )
 void ht_add( HashTable* table, char* to_add, int add_val )
 {
     int item_index;
+    int index;
+    int quadratic_offset;
+
     HT_Entry *new_entry = malloc( sizeof( HT_Entry ) );
 
     new_entry->key = to_add;
@@ -65,6 +68,22 @@ void ht_add( HashTable* table, char* to_add, int add_val )
     if( table->table_data[ item_index ] == NULL )
         {
             table->table_data[ item_index ] = new_entry;
+        }
+    else
+        {
+            quadratic_offset = 0;
+            index = 1;
+
+            do
+                {
+                    quadratic_offset += int_to_pow( index, 2 );
+                    quadratic_offset %= table->capacity;
+
+                    index++;
+                }
+            while( table->table_data[ quadratic_offset ] != NULL );
+
+            table->table_data[ quadratic_offset ] = new_entry;
         }
           
 }
