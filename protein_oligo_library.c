@@ -6,7 +6,7 @@
 
 #define LINE_SIZE 256
 
-void read_sequence( FILE* file_to_read, Sequence* in_sequence )
+void read_sequence( FILE* file_to_read, Sequence** in_sequence )
 {
     int has_line;
     int index = 0;
@@ -14,16 +14,19 @@ void read_sequence( FILE* file_to_read, Sequence* in_sequence )
     DynamicString* line = (DynamicString*) malloc( sizeof( DynamicString ) );
     DynamicString* sequence = malloc( sizeof( DynamicString ) );
 
+
     has_line = get_a_line( file_to_read, line );
     while( has_line )
         {
+            *( in_sequence + index ) = malloc( sizeof( Sequence ) );
+
             if( line->data[ 0 ] == '>' )
                 {
                     sequence = malloc( sizeof( DynamicString ) );
                     ds_init( sequence );
 
-                    in_sequence[ index ].name = line->data;
-                    in_sequence[ index ].sequence = sequence; 
+                    in_sequence[ index ]->name = line->data;
+                    in_sequence[ index ]->sequence = sequence; 
                     index++;
                 }
             else
@@ -35,6 +38,30 @@ void read_sequence( FILE* file_to_read, Sequence* in_sequence )
         }
 
     ds_clear( line );
+}
+
+void write_fastas( Sequence* in_seqs, int num_seqs, char* output )
+{
+    FILE* out_file = fopen( output, "w" );
+    int index;
+
+    if( !out_file )
+        {
+            printf( "Unable to open file %s for output. Exiting..." , output );
+            exit( EXIT_FAILURE );
+        }
+
+    for( index = 0; index < num_seqs; index++ )
+        {
+            fwrite( ">", 1, sizeof( char ), out_file );
+            fwrite( in_seqs[ index ].name, 1,
+                    sizeof( in_seqs[ index ].name ), out_file );
+
+            fwrite( in_seqs[ index ].sequence->data, 1,
+                    sizeof( in_seqs[ index ].sequence->data ), out_file );
+        }
+
+    fclose( out_file );
 }
 
 
