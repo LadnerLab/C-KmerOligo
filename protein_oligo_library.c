@@ -1,7 +1,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "protein_oligo_library.h"
+#include "hash_table.h"
 #include "dynamic_string.h"
 
 #define LINE_SIZE 256

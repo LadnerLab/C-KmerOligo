@@ -4,6 +4,7 @@
 #include <getopt.h>
 
 #include "protein_oligo_library.h"
+#include "hash_table.h"
 
 // program defaults
 #define DEFAULT_XMER_SIZE 100
