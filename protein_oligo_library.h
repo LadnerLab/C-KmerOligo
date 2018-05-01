@@ -58,5 +58,12 @@ int char_in_string( char* string_in, char to_find );
  **/
 float percent_char_in_string( char* string_in, char test_char );
 
+/**
+ * Writes fastas to an output file, from an array of Sequences.
+ * @param in_seqs array of pointers to sequences to write
+ * @param num_seqs the number of sequences to write to the file
+ * @param output string filename to write to
+ **/
 void write_fastas( Sequence** in_seqs, int num_seqs, char* output );
+
 #endif
