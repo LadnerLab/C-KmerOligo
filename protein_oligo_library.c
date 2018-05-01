@@ -178,3 +178,16 @@ int is_valid_sequence( char* sequence, int min_length, float percent_valid )
         }
    return 0;
 }
+
+
+void subset_lists( Sequence** in_seqs, int num_seqs, window_size, step_size )
+{
+    int index;
+    Sequence* subset_seq;
+
+    for( index = 0; index < num_seqs, index++ )
+        {
+            Sequence* current_seq = in_seqs[ index ];
+
+        }
+}
