@@ -164,13 +164,15 @@ void remove_char_from_string( char* test_string, char to_remove )
 
 int is_valid_sequence( char* sequence, int min_length, float percent_valid )
 {
-    if( !char_in_string( sequence, 'X' )
+    if( !char_in_string( sequence, 'X' ) )
         {
             if( !min_length )
                 {
-                    return percent_char_in_string( sequence, DASH_CHAR ) < ( 100 - percent_valid );
+                    return percent_char_in_string( sequence, DASH_CHAR )
+                           < ( 100 - percent_valid );
                 }
-            return count_char_in_string( sequence, DASH_CHAR ) <= strlen( sequence ) - min_length;
+            return count_char_in_string( sequence, DASH_CHAR )
+                   <= string_length( sequence ) - min_length;
         }
-        return 0;
+   return 0;
 }
