@@ -66,7 +66,7 @@ int main( int argc, char* argv[] )
 
     if( !data_file )
         {
-            printf( "File not found.\n" );
+            printf( "Fasta query file either not found or not provided, exiting.\n" );
 
             return EXIT_FAILURE;
         }
@@ -81,6 +81,7 @@ int main( int argc, char* argv[] )
         {
             ds_clear( sequences[ index ]->sequence );
         }
+    free( sequences );
     return EXIT_SUCCESS;
 }
 
