@@ -5,6 +5,7 @@
 #include "dynamic_string.h"
 
 #define LINE_SIZE 256
+#define DASH_CHAR '-'
 
 void read_sequence( FILE* file_to_read, Sequence** in_sequence )
 {
@@ -159,4 +160,17 @@ void remove_char_from_string( char* test_string, char to_remove )
 
         }
     *( test_string + valid_index ) = '\0';
+}
+
+int is_valid_sequence( char* sequence, int min_length, float percent_valid )
+{
+    if( !char_in_string( sequence, 'X' )
+        {
+            if( !min_length )
+                {
+                    return percent_char_in_string( sequence, DASH_CHAR ) < ( 100 - percent_valid );
+                }
+            return count_char_in_string( sequence, DASH_CHAR ) <= strlen( sequence ) - min_length;
+        }
+        return 0;
 }

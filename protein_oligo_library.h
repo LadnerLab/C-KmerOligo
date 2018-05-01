@@ -73,6 +73,16 @@ void write_fastas( Sequence** in_seqs, int num_seqs, char* output );
  * @param test_string String from which to remove the character
  * @param to_remove character to remove from string 
  **/
-
 void remove_char_from_string( char* test_string, char to_remove );
+
+/**
+ * Determines whether a given sequence is or is not valid
+ * @param sequence String sequence to be tested
+ * @param minimum length of non dash characters needed to be present
+          in order for the string to count
+ * @param percent_valid Percentage of characters needed to be non-dash in order
+          for the string to count
+**/
+int is_valid_sequence( char* sequence, int min_length, float percent_valid );
+
 #endif
