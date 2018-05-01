@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "protein_oligo_library.h"
@@ -40,9 +41,9 @@ void read_sequence( FILE* file_to_read, Sequence** in_sequence )
     ds_clear( line );
 }
 
-void write_fastas( Sequence* in_seqs, int num_seqs, char* output )
+void write_fastas( Sequence** in_seqs, int num_seqs, char* output )
 {
-    FILE* out_file = fopen( output, "w" );
+    FILE* out_file = fopen( output, "w+" );
     int index;
 
     if( !out_file )
@@ -53,12 +54,9 @@ void write_fastas( Sequence* in_seqs, int num_seqs, char* output )
 
     for( index = 0; index < num_seqs; index++ )
         {
-            fwrite( ">", 1, sizeof( char ), out_file );
-            fwrite( in_seqs[ index ].name, 1,
-                    sizeof( in_seqs[ index ].name ), out_file );
+            fprintf( out_file, ">%s\n", in_seqs[ index ]->name );
 
-            fwrite( in_seqs[ index ].sequence->data, 1,
-                    sizeof( in_seqs[ index ].sequence->data ), out_file );
+            fprintf( out_file, "%s\n", in_seqs[ index ]->sequence->data );
         }
 
     fclose( out_file );

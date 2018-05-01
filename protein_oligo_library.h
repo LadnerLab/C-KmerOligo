@@ -1,6 +1,7 @@
 #ifndef PROTEIN_OLIGO_H_INCLUDED
 #define PROTEIN_OLIGO_H_INCLUDED
 #include "dynamic_string.h"
+
 typedef struct Sequence
 {
     char* name;
@@ -13,7 +14,7 @@ typedef struct Sequence
  * @return array of pointers to sequences containing sequence data
  *         found in file
  **/
-void read_sequence( FILE* file_to_read, Sequence* in_sequence );
+void read_sequence( FILE* file_to_read, Sequence** in_sequence );
 
 /**
  * Counts the amount of fastas in a fasta file provided
@@ -57,4 +58,5 @@ int char_in_string( char* string_in, char to_find );
  **/
 float percent_char_in_string( char* string_in, char test_char );
 
+void write_fastas( Sequence** in_seqs, int num_seqs, char* output );
 #endif
