@@ -66,4 +66,13 @@ float percent_char_in_string( char* string_in, char test_char );
  **/
 void write_fastas( Sequence** in_seqs, int num_seqs, char* output );
 
+/**
+ * Removes a character from a string in place
+ * Note: String passed into function must be declared as a character array,
+ * not a character pointer.
+ * @param test_string String from which to remove the character
+ * @param to_remove character to remove from string 
+ **/
+
+void remove_char_from_string( char* test_string, char to_remove );
 #endif

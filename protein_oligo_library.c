@@ -1,5 +1,4 @@
 #include <stdbool.h>
-#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "protein_oligo_library.h"
@@ -14,7 +13,6 @@ void read_sequence( FILE* file_to_read, Sequence** in_sequence )
 
     DynamicString* line = (DynamicString*) malloc( sizeof( DynamicString ) );
     DynamicString* sequence = malloc( sizeof( DynamicString ) );
-
 
     has_line = get_a_line( file_to_read, line );
     while( has_line )
@@ -95,7 +93,7 @@ int get_a_line( FILE* stream, DynamicString* to_read )
         {
 
             current_char[ 0 ] = fgetc( stream );
-            if( *current_char != '\n' )
+            if( *current_char != '\n' ) 
                 {
                     ds_add( to_read, current_char );
                 }
@@ -141,4 +139,24 @@ float percent_char_in_string( char* string_in, char test_char )
 {
     return ( (float) count_char_in_string( string_in, test_char ) /
              string_length( string_in ) ) * 100 ;
+}
+
+void remove_char_from_string( char* test_string, char to_remove )
+{
+    int index;
+    int valid_index = 0;
+
+    for( index = 0; test_string[ index ]; index++ )
+        {
+            if( test_string[ index ] == to_remove )
+                {
+                    continue;
+                }
+
+            test_string[ valid_index ] = test_string[ index ];
+
+            valid_index++;
+
+        }
+    *( test_string + valid_index ) = '\0';
 }
