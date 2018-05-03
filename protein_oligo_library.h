@@ -84,5 +84,13 @@ void remove_char_from_string( char* test_string, char to_remove );
           for the string to count
 **/
 int is_valid_sequence( char* sequence, int min_length, float percent_valid );
+/**
+ * Creates subset lists from a sequence
+ * @param in_seq pointer to input sequence to create a subset of 
+ * @param window_size integer number of characters to capture with each iteration
+ * @param step_size integer number of characters to move over after each iteration
+ * @returns pointer to array of strings, the subset of the list 
+ **/ 
+char** subset_lists( Sequence* in_seq, int window_size, int step_size );
 
 #endif
