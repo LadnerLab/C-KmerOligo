@@ -182,10 +182,7 @@ int is_valid_sequence( char* sequence, int min_length, float percent_valid )
 
 int calc_num_subseqs( int length, int window_size, int step_size )
 {
-    int leftover = length - window_size;
-
-    /* return leftover + ( ( leftover - 1 ) / step_size ); */
-    return leftover + 1;
+    return length - window_size + 1;
 }
 
 char** subset_lists( Sequence* in_seq, int window_size, int step_size )
