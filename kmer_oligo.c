@@ -38,19 +38,19 @@ int main( int argc, char* argv[] )
             switch( option )
                 {
                 case 'x':
-                    xmer_window_size = *optarg - '0';
+                    xmer_window_size = atoi( optarg ); 
                     break;
                 case 'y':
-                    ymer_window_size = *optarg - '0';
+                    ymer_window_size = atoi( optarg );
                     break;
                 case 'l':
-                    min_length = *optarg - '0';
+                    min_length = atoi( optarg );
                     break;
                 case 'r':
-                    redundancy = *optarg - '0';
+                    redundancy = atoi( optarg );
                     break;
                 case 'i':
-                    iterations = *optarg - '0';
+                    iterations = atoi( optarg );
                     break;
                 case 'q':
                     query = optarg;
@@ -76,6 +76,8 @@ int main( int argc, char* argv[] )
 
     read_sequence( data_file, sequences );
 
+
+    subset_lists( sequences[ 0 ], xmer_window_size, 1 );
 
     for( index = 0; index < num_seqs; index++ )
         {
