@@ -80,7 +80,7 @@ int count_seqs_in_file( FILE* data_file )
                 {
                     counter++;
                 }
-            current_char = (char) fgetc( data_file );
+            current_char =  fgetc( data_file );
         }
     fseek( data_file, 0, SEEK_SET );
     return counter;
@@ -92,7 +92,7 @@ int get_a_line( FILE* stream, DynamicString* to_read )
 
     ds_init( to_read );
 
-        while( *current_char != '\n' && *current_char != EOF )
+    while( *current_char != '\n' && (int) *current_char != EOF )
         {
             current_char[ 0 ] = (char) fgetc( stream );
             if( *current_char != '\n' ) 
@@ -201,8 +201,8 @@ char** subset_lists( Sequence* in_seq, int window_size, int step_size )
         {
             for( inner_index = 0; inner_index < window_size; inner_index++ )
                 {
-                    subset_seq[ outer_index ][ inner_index ] = '\0';
-                    subset_seq[ outer_index ][ inner_index ] = in_seq->sequence->data[ ( outer_index * step_size ) + inner_index ];
+                    subset_seq[ outer_index ][ inner_index ] =
+                           in_seq->sequence->data[ ( outer_index * step_size ) + inner_index ];
                 }
         }
 
