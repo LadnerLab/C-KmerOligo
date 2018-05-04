@@ -57,7 +57,7 @@ int generate_hash( char* key )
     return total;
 }
 
-int ht_add( HashTable* table, char* to_add, int add_val )
+int ht_add( HashTable* table, char* to_add, void* add_val )
 {
     int item_index;
     int index;
@@ -77,11 +77,13 @@ int ht_add( HashTable* table, char* to_add, int add_val )
         }
     else
         {
-            quadratic_offset = 0;
+            quadratic_offset = item_index;
             index = 1;
 
             do
                 {
+                    quadratic_offset = item_index;
+
                     quadratic_offset += int_to_pow( index, 2 );
                     quadratic_offset %= table->capacity;
 
