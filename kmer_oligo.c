@@ -32,6 +32,13 @@ int main( int argc, char* argv[] )
 
     int option;
 
+    // program variables
+    FILE* data_file;
+    Sequence **seqs_from_file;
+    int index;
+    int num_seqs;
+    char** xmer_table;
+
     // parse options given from command lines
     while( ( option = getopt( argc, argv, "x:y:l:r:i:q:o:" ) ) != -1 )
         {
@@ -61,9 +68,7 @@ int main( int argc, char* argv[] )
                 }
         }
 
-    FILE* data_file = fopen( query, "r" );
-    int index;
-
+    data_file = fopen( query, "r" );
     if( !data_file )
         {
             printf( "Fasta query file either not found or not provided, exiting.\n" );
@@ -71,19 +76,22 @@ int main( int argc, char* argv[] )
             return EXIT_FAILURE;
         }
 
-    int num_seqs = count_seqs_in_file( data_file );
-    Sequence **sequences = malloc( sizeof( Sequence * ) * num_seqs );
+    num_seqs = count_seqs_in_file( data_file );
+    seqs_from_file = malloc( sizeof( Sequence * ) * num_seqs );
 
-    read_sequence( data_file, sequences );
+    read_sequences( data_file, seqs_from_file );
 
 
-    subset_lists( sequences[ 0 ], xmer_window_size, 1 );
+    char** subset = subset_lists( seqs_from_file[ 0 ], xmer_window_size, 1 );
+
+
+
 
     for( index = 0; index < num_seqs; index++ )
         {
-            ds_clear( sequences[ index ]->sequence );
+            ds_clear( seqs_from_file[ index ]->sequence );
         }
-    free( sequences );
+    free( seqs_from_file );
     return EXIT_SUCCESS;
 }
 
