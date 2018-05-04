@@ -37,7 +37,7 @@ int main( int argc, char* argv[] )
     Sequence **seqs_from_file;
     int index;
     int num_seqs;
-    char** xmer_table;
+    HashTable* xmer_table;
 
     // parse options given from command lines
     while( ( option = getopt( argc, argv, "x:y:l:r:i:q:o:" ) ) != -1 )
@@ -84,14 +84,31 @@ int main( int argc, char* argv[] )
 
     char** subset = subset_lists( seqs_from_file[ 0 ], xmer_window_size, 1 );
 
+    xmer_table = malloc( sizeof( HashTable ) );
+    int inner_index = 0;
+    ht_init( xmer_table, 20000 );
+    for( index = 0; index < num_seqs; index++ )
+        {
+            subset = subset_lists( seqs_from_file[ index ], xmer_window_size, 1 );
+            while( subset[ inner_index ] )
+                {
+                    ht_add( xmer_table, subset[ inner_index ], &inner_index );
+                    inner_index++;
+                }
+        }
 
 
 
+
+    // free all of our allocated memory
     for( index = 0; index < num_seqs; index++ )
         {
             ds_clear( seqs_from_file[ index ]->sequence );
         }
+
     free( seqs_from_file );
+    ht_clear( xmer_table );
+    free( xmer_table );
     return EXIT_SUCCESS;
 }
 
