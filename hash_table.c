@@ -36,6 +36,7 @@ void ht_clear( HashTable* table )
     for( index = 0; index < table->capacity; index++ )
         {
             free( table->table_data[ index ] );
+            table->table_data[ index ] = NULL;
         }
 
     free( table->table_data );
@@ -48,9 +49,9 @@ int generate_hash( char* key )
 {
     int index = 0;
     int total = 0;
+
     while( key[ index ] )
         {
-            total = total << 8;
             total += ( key[ index ] * index + 1 ) % HASH_NUMBER;
             index++;
         }
