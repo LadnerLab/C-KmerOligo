@@ -9,7 +9,7 @@
 #define LINE_SIZE 256
 #define DASH_CHAR '-'
 
-void read_sequence( FILE* file_to_read, Sequence** in_sequence )
+void read_sequences( FILE* file_to_read, Sequence** in_sequence )
 {
     int has_line;
     int index = 0;
@@ -206,8 +206,8 @@ char** subset_lists( Sequence* in_seq, int window_size, int step_size )
                 }
         }
 
+    // null terminate our array
     subset_seq[ num_subsets ] = NULL;
-    
     return subset_seq;
     
 }

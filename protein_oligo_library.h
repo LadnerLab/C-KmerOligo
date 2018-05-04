@@ -14,7 +14,7 @@ typedef struct Sequence
  * @return array of pointers to sequences containing sequence data
  *         found in file
  **/
-void read_sequence( FILE* file_to_read, Sequence** in_sequence );
+void read_sequences( FILE* file_to_read, Sequence** in_sequence );
 
 /**
  * Counts the amount of fastas in a fasta file provided
