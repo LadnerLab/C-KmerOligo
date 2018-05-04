@@ -46,7 +46,7 @@ int generate_hash( char* key );
  * @param add_val value to be added as value of the key
  * @returns integer value representing success of addition to table
  **/
-int ht_add( HashTable* table, char* to_add, int add_val );
+int ht_add( HashTable* table, char* to_add, void* add_val );
 
 
 /**
@@ -68,7 +68,7 @@ int find_item_index( HashTable* table, char* in_key );
  * @returns pointeger to the integer found with the key in_key
  *          or NULL if the value was not found
  **/
-int *ht_find( HashTable* table, char* in_key );
+void *ht_find( HashTable* table, char* in_key );
 
 
 /**

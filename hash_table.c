@@ -124,13 +124,13 @@ int find_item_index( HashTable* table, char* in_key )
 }
 
 
-int *ht_find( HashTable* table, char* in_key )
+void *ht_find( HashTable* table, char* in_key )
 {
     int index = find_item_index( table, in_key );
 
     if( index != ITEM_NOT_FOUND )
         {
-            return &table->table_data[ index]->value;
+            return &table->table_data[ index ]->value;
         }
     return NULL;
 }
