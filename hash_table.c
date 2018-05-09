@@ -69,7 +69,7 @@ int ht_add( HashTable* table, char* to_add, void* add_val )
     new_entry->value = add_val;
     new_entry->next = NULL;
 
-    item_index = generate_hash( new_entry->key ) % table->capacity;
+    item_index = generate_hash( to_add ) % table->capacity;
 
     if( table->table_data[ item_index ] == NULL )
         {
