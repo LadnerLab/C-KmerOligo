@@ -74,6 +74,7 @@ int ht_add( HashTable* table, char* to_add, void* add_val )
     if( table->table_data[ item_index ] == NULL )
         {
             table->table_data[ item_index ] = new_entry;
+            table->size++;
             return 1;
         }
     else
