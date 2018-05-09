@@ -22,6 +22,7 @@ void ht_init( HashTable* table, int size )
 
     table->table_data = malloc( sizeof( HT_Entry* ) * ( size + ADDITIONAL_SPACE ) ); 
     table->capacity = size;
+    table->size = 0;
 
     for( index = 0; index < size; index++ )
         {
@@ -94,6 +95,7 @@ int ht_add( HashTable* table, char* to_add, void* add_val )
 
             table->table_data[ quadratic_offset ] = new_entry;
 
+            table->size++;
             return 1;
         }
 
