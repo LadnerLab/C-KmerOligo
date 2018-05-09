@@ -90,11 +90,12 @@ int main( int argc, char* argv[] )
     for( index = 0; index < num_seqs; index++ )
         {
             subset = subset_lists( seqs_from_file[ index ], xmer_window_size, 1 );
-            while( subset[ inner_index ] )
+            while( subset[ inner_index ][ 0 ] )
                 {
                     ht_add( xmer_table, subset[ inner_index ], &inner_index );
                     inner_index++;
                 }
+            inner_index = 0;
         }
 
 

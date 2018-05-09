@@ -13,6 +13,7 @@ typedef struct HashTable
 {
     HT_Entry** table_data; 
     int capacity;
+    int size;
 } HashTable;
 
 
