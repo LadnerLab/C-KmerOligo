@@ -67,7 +67,9 @@ int ht_add( HashTable* table, char* to_add, void* add_val )
 
     new_entry->key = to_add;
     new_entry->value = add_val;
+
     new_entry->next = NULL;
+    new_entry->prev = NULL;
 
     item_index = generate_hash( to_add ) % table->capacity;
 
@@ -91,6 +93,7 @@ int ht_add( HashTable* table, char* to_add, void* add_val )
                     current_node = current_node->next;
                 }
             current_node->next = new_entry;
+            new_entry->prev = current_node;
 
             table->size++;
             return 1;
@@ -137,12 +140,22 @@ void *ht_find( HashTable* table, char* in_key )
 int ht_delete( HashTable* table, char* in_key )
 {
     int item_index = find_item_index( table, in_key );
+    HT_Entry *found_node;
 
     if( item_index != ITEM_NOT_FOUND )
         {
-            free( table->table_data[ item_index ] );
-            table->table_data[ item_index ] = NULL;
+            found_node = table->table_data[ item_index ];
 
+            if( found_node->prev != NULL )
+                {
+                    found_node->prev->next = found_node->next;
+                }
+            else
+                {
+                    table->table_data[ item_index ] = NULL;
+                }
+
+            free( found_node );
             return 1;
         }
 
