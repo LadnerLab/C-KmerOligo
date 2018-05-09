@@ -54,14 +54,13 @@ int ht_add( HashTable* table, char* to_add, void* add_val );
 
 /**
  * Finds the index of an item in the hash table
- * Note: Uses quadratic probing to resolve collisions
+ * Note: Uses linked list to resolve collisions
  * @param table pointer to HashTable whose capacity is used to 
  *        calculate initial index
  * @param in_key string key value to be searched for in the table
- * @returns integer index of the item, or ITEM_NOT_FOUND if the item
- *          is not in the table
+ * @returns pointer to HT_Entry found in list, or NULL if item was not found
  **/
-int find_item_index( HashTable* table, char* in_key );
+HT_Entry* find_item( HashTable* table, char* in_key );
 
 /**
  * Finds an item within a hash table using provided key.
@@ -76,7 +75,7 @@ void *ht_find( HashTable* table, char* in_key );
 
 /**
  * Removes and frees data found in a hash table
- * Note: Uses find_item_index
+ * Note: Uses find_item
  * @param table pointer to HashTable to delete from
  * @param in_key String key value to search
  * @returns integer true if item was successfully found and deleted
