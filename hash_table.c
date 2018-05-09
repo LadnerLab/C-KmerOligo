@@ -77,29 +77,26 @@ int ht_add( HashTable* table, char* to_add, void* add_val )
         {
             table->table_data[ item_index ] = new_entry;
             table->size++;
-            return 1;
         }
     else
         {
             current_node = table->table_data[ item_index ];
             while( current_node->next != NULL )
                 {
-                    // we don't want to add duplicates
-                    if( strcmp( current_node->key, to_add ) == 0 )
-                        {
-                            return 0;
-                        }
-
                     current_node = current_node->next;
+                }
+            // we don't want to add duplicates
+            if( strcmp( current_node->key, to_add ) == 0 )
+                {
+                    return 0;
                 }
             current_node->next = new_entry;
             new_entry->prev = current_node;
 
             table->size++;
-            return 1;
         }
 
-    return 0;
+    return 1;
 }
 
 
@@ -112,7 +109,7 @@ HT_Entry* find_item( HashTable* table, char* in_key )
     if( table->table_data[ search_index ] != NULL )
         {
             current_node = table->table_data[ search_index ];
-            while( strcmp( table->table_data[ search_index ]->key, in_key ) != 0 ) 
+            while( strcmp( current_node->key, in_key ) != 0 ) 
                 {
                     if( current_node->next == NULL )
                         {
@@ -141,6 +138,7 @@ void *ht_find( HashTable* table, char* in_key )
 int ht_delete( HashTable* table, char* in_key )
 {
     HT_Entry *found_node = find_item( table, in_key );
+    int found_index = generate_hash( in_key ) % table->capacity;
 
     if( found_node != NULL )
         {
@@ -152,6 +150,11 @@ int ht_delete( HashTable* table, char* in_key )
                 {
                     *found_node = *found_node->next;
                 }
+            else
+                {
+                    table->table_data[ found_index ] = found_node->next;
+                }
+
 
             free( found_node );
             return 1;
