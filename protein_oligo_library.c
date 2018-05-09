@@ -3,10 +3,10 @@
 #include <stdlib.h>
 
 #include "protein_oligo_library.h"
-#include "hash_table.h"
 #include "dynamic_string.h"
 
 #define LINE_SIZE 256
+#define HT_SURPLUS 1024
 #define DASH_CHAR '-'
 
 void read_sequences( FILE* file_to_read, Sequence** in_sequence )
@@ -183,31 +183,34 @@ int calc_num_subseqs( int length, int window_size )
     return length - window_size + 1;
 }
 
-char** subset_lists( Sequence* in_seq, int window_size, int step_size )
+HashTable* subset_lists( Sequence* in_seq, int window_size, int step_size )
 {
     int outer_index;
     int inner_index;
 
     int num_subsets = calc_num_subseqs( in_seq->sequence->size, window_size );
 
-    char** subset_seq = malloc( sizeof( char* ) * num_subsets + 1 );
-    
-    for( outer_index = 0; outer_index < num_subsets + 1 ; outer_index++ )
-        {
-            subset_seq[ outer_index ] =  malloc( window_size * sizeof( char ) );
-        }
+    HashTable *xmers_seq = malloc( sizeof( HashTable ) );
+    ht_init( xmers_seq, HT_SURPLUS );
 
+    char current_xmer[ window_size ];
+    subset_data_t* current_xmer_data = malloc( sizeof( subset_data_t ) );
+
+    current_xmer_data->start = 0;
+    current_xmer_data->end = 0;
+    
     for( outer_index = 0; outer_index < num_subsets; outer_index++ )
         {
+            current_xmer_data->start = ( outer_index * step_size );
             for( inner_index = 0; inner_index < window_size; inner_index++ )
                 {
-                    subset_seq[ outer_index ][ inner_index ] =
-                           in_seq->sequence->data[ ( outer_index * step_size ) + inner_index ];
+                    current_xmer[ inner_index ] = in_seq->sequence->data[ ( outer_index * step_size ) + inner_index ];
                 }
+            current_xmer_data->end = ( outer_index * step_size ) + window_size;
+
+            ht_add( xmers_seq, current_xmer, current_xmer_data );
         }
 
-    // null terminate our array
-    subset_seq[ outer_index ][ 0 ] = '\0';
-    return subset_seq;
+    return xmers_seq;
     
 }

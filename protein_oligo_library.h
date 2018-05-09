@@ -1,6 +1,7 @@
 #ifndef PROTEIN_OLIGO_H_INCLUDED
 #define PROTEIN_OLIGO_H_INCLUDED
 #include "dynamic_string.h"
+#include "hash_table.h"
 
 typedef struct Sequence
 {
@@ -12,7 +13,7 @@ typedef struct subset_data_t
 {
     unsigned int start;
     unsigned int end;
-} subset_t;
+} subset_data_t;
 
 /**
  * Reads all of the fastas in given file
@@ -91,12 +92,13 @@ void remove_char_from_string( char* test_string, char to_remove );
 **/
 int is_valid_sequence( char* sequence, int min_length, float percent_valid );
 /**
- * Creates subset lists from a sequence
+ * Creates a hashtable of all the window_size-mers from a sequence
  * @param in_seq pointer to input sequence to create a subset of 
  * @param window_size integer number of characters to capture with each iteration
  * @param step_size integer number of characters to move over after each iteration
- * @returns pointer to array of strings, the subset of the list 
+ * @returns pointer to hash table containing all of the subsets of the sequence, 
+ *          as key, and subset_data_t as key containing start/end
  **/ 
-char** subset_lists( Sequence* in_seq, int window_size, int step_size );
+HashTable* subset_lists( Sequence* in_seq, int window_size, int step_size );
 
 #endif
