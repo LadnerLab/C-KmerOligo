@@ -88,7 +88,8 @@ int main( int argc, char* argv[] )
 
     for( index = 0; index < num_seqs; index++ )
         {
-            subset = subset_lists( seqs_from_file[ index ], ymer_window_size, 1 );
+            ymer_table = subset_lists( seqs_from_file[ index ], ymer_window_size, 1 );
+            return EXIT_FAILURE;
 
             int inner_index = 0;
             for( index = 0; index < num_seqs; index++ )
