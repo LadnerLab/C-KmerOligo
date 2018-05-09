@@ -8,6 +8,12 @@ typedef struct Sequence
     DynamicString* sequence;
 } Sequence;
 
+typedef struct subset_data_t
+{
+    unsigned int start;
+    unsigned int end;
+} subset_t;
+
 /**
  * Reads all of the fastas in given file
  * @param file_to_read string name of file to read
