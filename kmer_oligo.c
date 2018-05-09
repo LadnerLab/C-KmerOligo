@@ -37,7 +37,7 @@ int main( int argc, char* argv[] )
     Sequence **seqs_from_file;
     int index;
     int num_seqs;
-    HashTable* xmer_table;
+    HashTable* ymer_table;
     char** subset;
 
     // parse options given from command lines
@@ -83,28 +83,29 @@ int main( int argc, char* argv[] )
     read_sequences( data_file, seqs_from_file );
 
 
-    xmer_table = malloc( sizeof( HashTable ) );
-    ht_init( xmer_table, 20000 );
-    for( index = 0; index < num_seqs; index++ )
-        {
-    subset = subset_lists( seqs_from_file[ index ], ymer_window_size, 1 );
+    ymer_table = malloc( sizeof( HashTable ) );
+    ht_init( ymer_table, 10000 );
 
-    int inner_index = 0;
     for( index = 0; index < num_seqs; index++ )
         {
-            subset = subset_lists( seqs_from_file[ index ], xmer_window_size, 1 );
-            while( subset[ inner_index ][ 0 ] )
+            subset = subset_lists( seqs_from_file[ index ], ymer_window_size, 1 );
+
+            int inner_index = 0;
+            for( index = 0; index < num_seqs; index++ )
                 {
-                    if( is_valid_sequence( subset[ inner_index ], min_length, percent_valid ) )
+                    subset = subset_lists( seqs_from_file[ index ], ymer_window_size, 1 );
+                    while( subset[ inner_index ][ 0 ] )
                         {
-                            ht_add( xmer_table, subset[ inner_index ], &inner_index );
+                            if( is_valid_sequence( subset[ inner_index ], min_length, percent_valid ) )
+                                {
+                                    ht_add( ymer_table, subset[ inner_index ], &inner_index );
+                                }
+                            inner_index++;
                         }
-                    inner_index++;
+                    inner_index = 0;
                 }
-            inner_index = 0;
         }
-    }
-    printf( "%d\n", xmer_table->size );
+    printf( "%d\n", ymer_table->size );
 
 
     // free all of our allocated memory
@@ -114,7 +115,7 @@ int main( int argc, char* argv[] )
         }
 
     free( seqs_from_file );
-    ht_clear( xmer_table );
+    ht_clear( ymer_table );
     return EXIT_SUCCESS;
 }
 
