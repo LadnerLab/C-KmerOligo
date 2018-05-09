@@ -178,7 +178,7 @@ int is_valid_sequence( char* sequence, int min_length, float percent_valid )
 }
 
 
-int calc_num_subseqs( int length, int window_size, int step_size )
+int calc_num_subseqs( int length, int window_size )
 {
     return length - window_size + 1;
 }
@@ -188,7 +188,7 @@ char** subset_lists( Sequence* in_seq, int window_size, int step_size )
     int outer_index;
     int inner_index;
 
-    int num_subsets = calc_num_subseqs( in_seq->sequence->size, window_size, step_size );
+    int num_subsets = calc_num_subseqs( in_seq->sequence->size, window_size );
 
     char** subset_seq = malloc( sizeof( char* ) * num_subsets + 1 );
     
