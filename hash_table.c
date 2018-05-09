@@ -48,12 +48,11 @@ void ht_clear( HashTable* table )
 
 int generate_hash( char* key )
 {
-    int index = 0;
-    int total = 0;
-
-    while( key[ index ] )
+    unsigned int index = 0;
+    int total;
+    while( *( key + index ) )
         {
-            total += ( key[ index ] * index + 1 ) % HASH_NUMBER;
+            total += (int) key[ index ] << ( index + 1 );
             index++;
         }
     return total;
@@ -62,13 +61,13 @@ int generate_hash( char* key )
 int ht_add( HashTable* table, char* to_add, void* add_val )
 {
     int item_index;
-    int index;
-    int quadratic_offset;
 
     HT_Entry *new_entry = malloc( sizeof( HT_Entry ) );
+    HT_Entry *current_node;
 
     new_entry->key = to_add;
     new_entry->value = add_val;
+    new_entry->next = NULL;
 
     item_index = generate_hash( new_entry->key ) % table->capacity;
 
@@ -79,21 +78,18 @@ int ht_add( HashTable* table, char* to_add, void* add_val )
         }
     else
         {
-            quadratic_offset = item_index;
-            index = 1;
-
-            do
+            current_node = table->table_data[ item_index ];
+            while( current_node->next != NULL )
                 {
-                    quadratic_offset = item_index;
+                    // we don't want to add duplicates
+                    if( strcmp( current_node->key, to_add ) == 0 )
+                        {
+                            return 0;
+                        }
 
-                    quadratic_offset += int_to_pow( index, 2 );
-                    quadratic_offset %= table->capacity;
-
-                    index++;
+                    current_node = current_node->next;
                 }
-            while( table->table_data[ quadratic_offset ] != NULL );
-
-            table->table_data[ quadratic_offset ] = new_entry;
+            current_node->next = new_entry;
 
             table->size++;
             return 1;
@@ -106,20 +102,19 @@ int ht_add( HashTable* table, char* to_add, void* add_val )
 int find_item_index( HashTable* table, char* in_key )
 {
     int search_index = generate_hash( in_key ) % table->capacity;
-    int quadratic_offset = 1;
+
+    HT_Entry* current_node;
 
     if( table->table_data[ search_index ] != NULL )
         {
-            while( quadratic_offset < table->capacity )
+            current_node = table->table_data[ search_index ];
+            while( strcmp( table->table_data[ search_index ]->key, in_key ) != 0 ) 
                 {
-                    if( strcmp( table->table_data[ search_index ]->key, in_key ) == 0 )
+                    if( current_node->next == NULL )
                         {
-                            return search_index;
+                            return ITEM_NOT_FOUND;
                         }
-
-                    search_index += int_to_pow( quadratic_offset, 2 );
-                    search_index %= table->capacity;
-                    quadratic_offset++;
+                    current_node = current_node->next;
                 }
         }
 

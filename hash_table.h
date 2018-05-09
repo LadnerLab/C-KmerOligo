@@ -7,6 +7,7 @@ typedef struct HT_Entry
 {
     char* key;
     void* value;
+    struct HT_Entry* next;
 } HT_Entry;
 
 typedef struct HashTable
