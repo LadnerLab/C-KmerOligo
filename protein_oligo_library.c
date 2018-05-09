@@ -197,21 +197,26 @@ HashTable* subset_lists( Sequence* in_seq, int window_size, int step_size )
 
     char current_xmer[ window_size ];
 
-    current_xmer_data = malloc( sizeof( subset_data_t ) );
-
-    current_xmer_data->start = 0;
-    current_xmer_data->end = 0;
-    
     for( outer_index = 0; outer_index < num_subsets; outer_index++ )
         {
+            current_xmer_data = malloc( sizeof( subset_data_t ) );
             current_xmer_data->start = ( outer_index * step_size );
+
             for( inner_index = 0; inner_index < window_size; inner_index++ )
                 {
                     current_xmer[ inner_index ] = in_seq->sequence->data[ ( outer_index * step_size ) + inner_index ];
                 }
+
             current_xmer_data->end = ( outer_index * step_size ) + window_size;
 
-            ht_add( xmers_seq, current_xmer, current_xmer_data );
+            if( ht_find( xmers_seq, current_xmer ) != NULL )
+                {
+                    // do stuff
+                }
+            else
+                {
+                    ht_add( xmers_seq, current_xmer, current_xmer_data );
+                }
         }
 
     return xmers_seq;
