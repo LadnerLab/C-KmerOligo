@@ -48,8 +48,8 @@ void ht_clear( HashTable* table )
 
 int generate_hash( char* key )
 {
-    unsigned int index = 0;
-    int total;
+    int index = 0;
+    int total = 0;
     while( *( key + index ) )
         {
             total += (int) key[ index ] << ( index + 1 );
@@ -103,7 +103,7 @@ int ht_add( HashTable* table, char* to_add, void* add_val )
 }
 
 
-int find_item_index( HashTable* table, char* in_key )
+HT_Entry* find_item( HashTable* table, char* in_key )
 {
     int search_index = generate_hash( in_key ) % table->capacity;
 
@@ -116,49 +116,46 @@ int find_item_index( HashTable* table, char* in_key )
                 {
                     if( current_node->next == NULL )
                         {
-                            return ITEM_NOT_FOUND;
+                            return NULL;
                         }
                     current_node = current_node->next;
                 }
+            return current_node;
         }
 
-    return ITEM_NOT_FOUND;
+    return NULL;
 }
 
 
 void *ht_find( HashTable* table, char* in_key )
 {
-    int index = find_item_index( table, in_key );
+    HT_Entry* found_item = find_item( table, in_key );
 
-    if( index != ITEM_NOT_FOUND )
+    if( found_item != NULL )
         {
-            return &table->table_data[ index ]->value;
+            return found_item->value;
         }
     return NULL;
 }
 
 int ht_delete( HashTable* table, char* in_key )
 {
-    int item_index = find_item_index( table, in_key );
-    HT_Entry *found_node;
+    HT_Entry *found_node = find_item( table, in_key );
 
-    if( item_index != ITEM_NOT_FOUND )
+    if( found_node != NULL )
         {
-            found_node = table->table_data[ item_index ];
-
             if( found_node->prev != NULL )
                 {
                     found_node->prev->next = found_node->next;
                 }
-            else
+            else if( found_node->next == NULL )
                 {
-                    table->table_data[ item_index ] = NULL;
+                    *found_node = *found_node->next;
                 }
 
             free( found_node );
             return 1;
         }
-
     return 0;
 }
 
