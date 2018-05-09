@@ -187,14 +187,17 @@ HashTable* subset_lists( Sequence* in_seq, int window_size, int step_size )
 {
     int outer_index;
     int inner_index;
+    HashTable *xmers_seq;
+    subset_data_t* current_xmer_data;
 
     int num_subsets = calc_num_subseqs( in_seq->sequence->size, window_size );
 
-    HashTable *xmers_seq = malloc( sizeof( HashTable ) );
-    ht_init( xmers_seq, HT_SURPLUS );
+    xmers_seq = malloc( sizeof( HashTable ) );
+    ht_init( xmers_seq, num_subsets + HT_SURPLUS );
 
     char current_xmer[ window_size ];
-    subset_data_t* current_xmer_data = malloc( sizeof( subset_data_t ) );
+
+    current_xmer_data = malloc( sizeof( subset_data_t ) );
 
     current_xmer_data->start = 0;
     current_xmer_data->end = 0;
