@@ -42,7 +42,7 @@ int generate_hash( char* key );
 
 /**
  * Adds an entry to the hashtable
- * Note: Uses quadratic probing to resolve collisions
+ * Note: Uses linked list to resolve collisions
  * @param table pointer to HashTable to add data to
  * @param to_add string value to add as key to hash_table
  * @param add_val value to be added as value of the key
