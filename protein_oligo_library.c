@@ -192,7 +192,7 @@ char** subset_lists( Sequence* in_seq, int window_size, int step_size )
 
     char** subset_seq = malloc( sizeof( char* ) * num_subsets + 1 );
     
-    for( outer_index = 0; outer_index < num_subsets; outer_index++ )
+    for( outer_index = 0; outer_index < num_subsets + 1 ; outer_index++ )
         {
             subset_seq[ outer_index ] =  malloc( window_size * sizeof( char ) );
         }
@@ -207,7 +207,7 @@ char** subset_lists( Sequence* in_seq, int window_size, int step_size )
         }
 
     // null terminate our array
-    subset_seq[ num_subsets ] = NULL;
+    subset_seq[ outer_index ][ 0 ] = '\0';
     return subset_seq;
     
 }
