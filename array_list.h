@@ -5,7 +5,7 @@ typedef struct array_list_t
     unsigned int size;
     unsigned int capacity;
 
-    void **array_data;
+    void *array_data;
 }
 
 /**
@@ -21,5 +21,13 @@ void ar_init( array_list_t* to_init );
  * @param to_clear pointer to array_list_t object to clear
  **/
 void ar_clear( array_list_t* to_clear );
+
+/**
+ * Retrieves item from arraylist at index
+ * @param to_get pointer to array_list_t to retrieve item from
+ * @param index unsigned integer index at which to retrieve
+ * @returns void pointer to object found at index, or null otherwise
+ **/
+void *ar_get( array_list_t* to_get, unsigned int index );
 
 #endif

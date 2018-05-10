@@ -20,3 +20,13 @@ void ar_clear( array_list_t* to_clear )
         }
     free( to_clear );
 }
+
+
+void *ar_get( array_list_t* to_get, unsigned int index )
+{
+    if( index < to_get->size )
+        {
+            return to_get->array_data[ index ];
+        }
+    return NULL;
+}
