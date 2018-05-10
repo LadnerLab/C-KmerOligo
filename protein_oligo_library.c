@@ -184,7 +184,7 @@ int calc_num_subseqs( int length, int window_size )
     return length - window_size + 1;
 }
 
-hash_table_t* subset_lists( sequence_t* in_seq, int window_size, int step_size )
+hash_table_t* create_xmers_with_locs( sequence_t* in_seq, int window_size, int step_size )
 {
     int outer_index;
     int inner_index;
