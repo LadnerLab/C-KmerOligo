@@ -4,7 +4,7 @@
 #define DEFAULT_CAPACITY 256
 
 
-int check_for_resize( array_list_t* array_check )
+int ar_check_for_resize( array_list_t* array_check )
 {
     void* new_data = NULL;
     unsigned int new_capacity;
@@ -67,7 +67,7 @@ void *ar_get( array_list_t* to_get, unsigned int index )
 
 void ar_add( array_list_t *to_add, void* new_data )
 {
-    check_for_resize( to_add );
+    ar_check_for_resize( to_add );
 
     to_add->array_data[ to_add->size ] = new_data;
     to_add->size++;

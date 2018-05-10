@@ -10,7 +10,7 @@
  * 
  * @param input dynamic_string_t input to be tested 
  **/
-void check_for_resize( dynamic_string_t* input, char string_to_add[] )
+void ds_check_for_resize( dynamic_string_t* input, char string_to_add[] )
 {
     int new_capacity;
     int add_length = string_length( string_to_add );
@@ -62,7 +62,7 @@ void ds_add( dynamic_string_t* input, char string[] )
 
     int index = 0;
 
-    check_for_resize( input, string );
+    ds_check_for_resize( input, string );
 
     for( index = 0; index < input_length; index++ )
         {

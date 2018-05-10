@@ -24,7 +24,7 @@ int string_length( char* input );
  * 
  * @param input dynamic_string_t input to be tested 
  **/
-void check_for_resize( dynamic_string_t* input, char string_to_add[] );
+void ds_check_for_resize( dynamic_string_t* input, char string_to_add[] );
 
 
 /**
