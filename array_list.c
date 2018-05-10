@@ -13,11 +13,11 @@ int ar_check_for_resize( array_list_t* array_check )
         {
 
             new_capacity = array_check->capacity * 2;
-            new_data = realloc( array_check->array_data, new_capacity );
+            new_data = realloc( array_check->array_data, new_capacity * sizeof( void* ) );
 
             if( new_data )
                 {
-                    array_check->array_data = new_data;
+                    array_check->array_data = (void **) new_data;
                     array_check->capacity = new_capacity;
                 }
             else
@@ -31,7 +31,7 @@ void ar_init( array_list_t* to_init )
 {
     void* ptr = NULL;
     int index;
-    to_init->array_data = malloc( sizeof( void* ) * DEFAULT_CAPACITY ); 
+    to_init->array_data = calloc( DEFAULT_CAPACITY, sizeof( void* ) ); 
 
     for( index = 0; index < DEFAULT_CAPACITY; index++ )
         {
