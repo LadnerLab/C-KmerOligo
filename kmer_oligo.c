@@ -5,6 +5,7 @@
 
 #include "protein_oligo_library.h"
 #include "hash_table.h"
+#include "array_list.h"
 
 // program defaults
 #define DEFAULT_XMER_SIZE 100
@@ -86,27 +87,28 @@ int main( int argc, char* argv[] )
     ymer_table = malloc( sizeof( hash_table_t ) );
     ht_init( ymer_table, 10000 );
 
+    hash_table_t* ymer_tableau = malloc( sizeof( hash_table_t ) );
+    ht_init( ymer_tableau, 100000 );
+
+    int inner_index = 0;
     for( index = 0; index < num_seqs; index++ )
         {
-            ymer_table = subset_lists( seqs_from_file[ index ], ymer_window_size, 1 );
-            return EXIT_FAILURE;
+            ymer_table = create_xmers_with_locs( seqs_from_file[ index ], ymer_window_size, 1 );
 
-            int inner_index = 0;
-            for( index = 0; index < num_seqs; index++ )
+
+    for( inner_index = 0; index < ymer_table->capacity; index++ )
+        {
+            if( ymer_table->table_data[ index ] )
                 {
-                    subset = subset_lists( seqs_from_file[ index ], ymer_window_size, 1 );
-                    while( subset[ inner_index ][ 0 ] )
-                        {
-                            if( is_valid_sequence( subset[ inner_index ], min_length, percent_valid ) )
-                                {
-                                    ht_add( ymer_table, subset[ inner_index ], &inner_index );
-                                }
-                            inner_index++;
-                        }
-                    inner_index = 0;
+                    printf( "%s\n", ymer_table->table_data[ index ]->key);
+                    ht_add( ymer_tableau, ymer_table->table_data[ index ]->key, ymer_table->table_data[ index ]->value );
                 }
         }
-    printf( "%d\n", ymer_table->size );
+
+    }
+
+    
+    printf( "%d\n", ymer_tableau->size );
 
 
     // free all of our allocated memory
@@ -116,7 +118,7 @@ int main( int argc, char* argv[] )
         }
 
     free( seqs_from_file );
-    ht_clear( ymer_table );
+    /* ht_clear( ymer_table ); */
     return EXIT_SUCCESS;
 }
 
