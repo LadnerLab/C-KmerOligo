@@ -64,10 +64,10 @@ HT_Entry* find_item( hash_table_t* table, char* in_key );
 
 /**
  * Finds an item within a hash table using provided key.
- * Note: Uses find_item_index
+ * Note: Uses find_item
  * @param table pointer to hash_table_t to search
  * @param in_key String key value to use to search
- * @returns pointeger to the integer found with the key in_key
+ * @returns pointer to the integer found with the key in_key
  *          or NULL if the value was not found
  **/
 void *ht_find( hash_table_t* table, char* in_key );
@@ -82,5 +82,6 @@ void *ht_find( hash_table_t* table, char* in_key );
  *          integer false otherwise
  **/
 int ht_delete( hash_table_t* table, char* in_key );
+
 #endif
 
