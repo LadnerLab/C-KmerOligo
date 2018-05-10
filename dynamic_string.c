@@ -1,7 +1,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "dynamic_string.h"
+
 #define DEFAULT_LENGTH 256
+#define SPACE ' '
 
 /**
  * Checks whether or not a dynamic_string_t object needs to be resized
@@ -19,7 +21,7 @@ void ds_check_for_resize( dynamic_string_t* input, char string_to_add[] )
     if( input->capacity <= input->size + add_length + 10 )
         {
             new_capacity = ( input->capacity ) + add_length + DEFAULT_LENGTH;
-            new_data =  realloc( input->data, new_capacity );
+            new_data =  (char*) realloc( input->data, new_capacity );
 
             if( !new_data )
                 {
@@ -66,10 +68,13 @@ void ds_add( dynamic_string_t* input, char string[] )
 
     for( index = 0; index < input_length; index++ )
         {
-            *( input->data + size + index ) = string[ index ];
+            if( string[ index ] >= SPACE )
+                {
+                    *( input->data + size + index ) = string[ index ];
+                }
         }
 
-    *( input->data + new_size ) = '\0';
+    input->data[ new_size - 1] = '\0';
 
     input->size = new_size;
 }
