@@ -191,17 +191,14 @@ hash_table_t* create_xmers_with_locs( sequence_t* in_seq, int window_size, int s
     int num_subsets = calc_num_subseqs( in_seq->sequence->size, window_size );
 
     hash_table_t *xmers_seq;
-    hash_table_t* found_data;
     
     subset_data_t* current_xmer_data;
     array_list_t* xmer_locations;
 
+    char current_xmer[ window_size ];
 
     xmers_seq = malloc( sizeof( hash_table_t ) );
     ht_init( xmers_seq, num_subsets + HT_SURPLUS );
-
-
-    char current_xmer[ window_size ];
 
     for( outer_index = 0; outer_index < num_subsets; outer_index++ )
         {
@@ -214,21 +211,16 @@ hash_table_t* create_xmers_with_locs( sequence_t* in_seq, int window_size, int s
                 }
 
             current_xmer_data->end = ( outer_index * step_size ) + window_size;
-            found_data = ht_find( xmers_seq, current_xmer );
+            xmer_locations = ( array_list_t* ) ht_find( xmers_seq, current_xmer );
 
-            if( found_data != NULL )
+            if( xmer_locations != NULL )
                 {
-                   
                     // update the entry at this location
-                    
-                    xmer_locations = (array_list_t *) found_data;
                     ar_add( xmer_locations, current_xmer_data );
-
                 }
             else
                 {
                     // create the entry at this location
-                    
                     xmer_locations = malloc( sizeof( array_list_t ) );
                     ar_init( xmer_locations );
                     ar_add( xmer_locations, current_xmer_data );
@@ -238,5 +230,4 @@ hash_table_t* create_xmers_with_locs( sequence_t* in_seq, int window_size, int s
         }
 
     return xmers_seq;
-    
 }
