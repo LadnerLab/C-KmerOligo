@@ -67,3 +67,11 @@ void ar_add( array_list_t *to_add, void* new_data )
     to_add->array_data[ to_add->size ] = new_data;
     to_add->size++;
 }
+
+void ar_set( array_list_t *to_set, unsigned int index, void* new_data )
+{
+    if( index < to_set->size )
+        {
+            to_set->array_data[ index ] = new_data;
+        }
+}

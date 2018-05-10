@@ -38,4 +38,13 @@ void *ar_get( array_list_t* to_get, unsigned int index );
  **/
 void ar_add( array_list_t *to_add, void* new_data );
 
+/**
+ * Sets element in to_set at index to new data
+ * Note: Index must be less than the size of the array_list
+ * @param to_set to_set array_list pointer to set data at
+ * @param index index of array_list's data to set 
+ * @param new_data new data to add to array_list
+ **/
+void ar_set( array_list_t *to_set, unsigned int index, void* new_data );
+
 #endif
