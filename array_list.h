@@ -6,7 +6,7 @@ typedef struct array_list_t
     unsigned int capacity;
 
     void *array_data;
-}
+} array_list_t;
 
 /**
  * Initializes an array_list_t object by setting size to zero,
@@ -29,5 +29,13 @@ void ar_clear( array_list_t* to_clear );
  * @returns void pointer to object found at index, or null otherwise
  **/
 void *ar_get( array_list_t* to_get, unsigned int index );
+
+/**
+ * Adds an item to specified array_list
+ * Note: Automatically resizes the array_list if necessary
+ * @param to_add pointer to array_list_t object to add to
+ * @new_data void data to add to array_list
+ **/
+void ar_add( array_list_t *to_add, void* new_data );
 
 #endif
