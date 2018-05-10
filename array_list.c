@@ -45,6 +45,12 @@ void ar_init( array_list_t* to_init )
 
 void ar_clear( array_list_t* to_clear )
 {
+    unsigned int index;
+
+    for( index = 0; index < to_clear->size; index++ )
+        {
+            free( to_clear->array_data[ index ] );
+        }
     free( to_clear->array_data );
     free( to_clear );
 }
@@ -78,7 +84,7 @@ void ar_set( array_list_t *to_set, unsigned int index, void* new_data )
 void *ar_remove( array_list_t *to_remove, unsigned int remove_index )
 {
     void* removed_data = NULL;
-    int index;
+    unsigned int index;
 
     if( remove_index < to_remove->size )
         {
