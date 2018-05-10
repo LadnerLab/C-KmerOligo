@@ -4,6 +4,7 @@
 
 #include "protein_oligo_library.h"
 #include "dynamic_string.h"
+#include "array_list.h"
 
 #define LINE_SIZE 256
 #define HT_SURPLUS 1024
@@ -187,13 +188,18 @@ hash_table_t* subset_lists( sequence_t* in_seq, int window_size, int step_size )
 {
     int outer_index;
     int inner_index;
-    hash_table_t *xmers_seq;
-    subset_data_t* current_xmer_data;
-
     int num_subsets = calc_num_subseqs( in_seq->sequence->size, window_size );
+
+    hash_table_t *xmers_seq;
+    hash_table_t* found_data;
+    
+    subset_data_t* current_xmer_data;
+    array_list_t* xmer_locations;
+
 
     xmers_seq = malloc( sizeof( hash_table_t ) );
     ht_init( xmers_seq, num_subsets + HT_SURPLUS );
+
 
     char current_xmer[ window_size ];
 
@@ -208,14 +214,26 @@ hash_table_t* subset_lists( sequence_t* in_seq, int window_size, int step_size )
                 }
 
             current_xmer_data->end = ( outer_index * step_size ) + window_size;
+            found_data = ht_find( xmers_seq, current_xmer );
 
-            if( ht_find( xmers_seq, current_xmer ) != NULL )
+            if( found_data != NULL )
                 {
-                    // do stuff
+                   
+                    // update the entry at this location
+                    
+                    xmer_locations = (array_list_t *) found_data;
+                    ar_add( xmer_locations, current_xmer_data );
+
                 }
             else
                 {
-                    ht_add( xmers_seq, current_xmer, current_xmer_data );
+                    // create the entry at this location
+                    
+                    xmer_locations = malloc( sizeof( array_list_t ) );
+                    ar_init( xmer_locations );
+                    ar_add( xmer_locations, current_xmer_data );
+ 
+                    ht_add( xmers_seq, current_xmer, xmer_locations );
                 }
         }
 
