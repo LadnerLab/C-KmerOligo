@@ -1,9 +1,10 @@
 #ifndef ARRAY_LIST_H_INCLUDED
 #define ARRAY_LIST_H_INCLUDED
+#include <stdint.h>
 typedef struct array_list_t
 {
-    unsigned int size;
-    unsigned int capacity;
+    uint64_t size;
+    uint64_t capacity;
 
     void **array_data;
 } array_list_t;
