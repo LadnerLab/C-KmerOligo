@@ -3,7 +3,7 @@
 #include "hash_table.h"
 
 #define HASH_NUMBER 2069
-#define ADDITIONAL_SPACE 25
+#define ADDITIONAL_SPACE 256
 
 // local method for calculating exponents
 int int_to_pow( int base, int exponent )
