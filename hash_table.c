@@ -16,7 +16,7 @@ int int_to_pow( int base, int exponent )
 }
 
 
-void ht_init( HashTable* table, int size )
+void ht_init( hash_table_t* table, int size )
 {
     int index;
 
@@ -31,7 +31,7 @@ void ht_init( HashTable* table, int size )
 
 }
 
-void ht_clear( HashTable* table )
+void ht_clear( hash_table_t* table )
 {
     int index;
     for( index = 0; index < table->capacity; index++ )
@@ -58,7 +58,7 @@ int generate_hash( char* key )
     return total;
 }
 
-int ht_add( HashTable* table, char* to_add, void* add_val )
+int ht_add( hash_table_t* table, char* to_add, void* add_val )
 {
     int item_index;
 
@@ -100,7 +100,7 @@ int ht_add( HashTable* table, char* to_add, void* add_val )
 }
 
 
-HT_Entry* find_item( HashTable* table, char* in_key )
+HT_Entry* find_item( hash_table_t* table, char* in_key )
 {
     int search_index = generate_hash( in_key ) % table->capacity;
 
@@ -124,7 +124,7 @@ HT_Entry* find_item( HashTable* table, char* in_key )
 }
 
 
-void *ht_find( HashTable* table, char* in_key )
+void *ht_find( hash_table_t* table, char* in_key )
 {
     HT_Entry* found_item = find_item( table, in_key );
 
@@ -135,7 +135,7 @@ void *ht_find( HashTable* table, char* in_key )
     return NULL;
 }
 
-int ht_delete( HashTable* table, char* in_key )
+int ht_delete( hash_table_t* table, char* in_key )
 {
     HT_Entry *found_node = find_item( table, in_key );
     int found_index = generate_hash( in_key ) % table->capacity;

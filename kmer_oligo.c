@@ -34,10 +34,10 @@ int main( int argc, char* argv[] )
 
     // program variables
     FILE* data_file;
-    Sequence **seqs_from_file;
+    sequence_t **seqs_from_file;
     int index;
     int num_seqs;
-    HashTable* ymer_table;
+    hash_table_t* ymer_table;
     char** subset;
 
     // parse options given from command lines
@@ -78,12 +78,12 @@ int main( int argc, char* argv[] )
         }
 
     num_seqs = count_seqs_in_file( data_file );
-    seqs_from_file = malloc( sizeof( Sequence * ) * num_seqs );
+    seqs_from_file = malloc( sizeof( sequence_t * ) * num_seqs );
 
     read_sequences( data_file, seqs_from_file );
 
 
-    ymer_table = malloc( sizeof( HashTable ) );
+    ymer_table = malloc( sizeof( hash_table_t ) );
     ht_init( ymer_table, 10000 );
 
     for( index = 0; index < num_seqs; index++ )

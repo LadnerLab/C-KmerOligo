@@ -3,11 +3,11 @@
 #include "dynamic_string.h"
 #include "hash_table.h"
 
-typedef struct Sequence
+typedef struct sequence_t
 {
     char* name;
-    DynamicString* sequence;
-} Sequence;
+    dynamic_string_t* sequence;
+} sequence_t;
 
 typedef struct subset_data_t
 {
@@ -21,7 +21,7 @@ typedef struct subset_data_t
  * @return array of pointers to sequences containing sequence data
  *         found in file
  **/
-void read_sequences( FILE* file_to_read, Sequence** in_sequence );
+void read_sequences( FILE* file_to_read, sequence_t** in_sequence );
 
 /**
  * Counts the amount of fastas in a fasta file provided
@@ -34,11 +34,11 @@ void read_sequences( FILE* file_to_read, Sequence** in_sequence );
 int count_seqs_in_file( FILE* data_file );
 
 /**
- * Reads a line from a file into a new DynamicString object
+ * Reads a line from a file into a new dynamic_string_t object
  * @param stream open file pointer to read from
- * @returns DynamicString representation of the line
+ * @returns dynamic_string_t representation of the line
  **/
-int get_a_line( FILE* stream, DynamicString* to_read );
+int get_a_line( FILE* stream, dynamic_string_t* to_read );
 
 /**
  * Counts the number of specified character in a string
@@ -66,12 +66,12 @@ int char_in_string( char* string_in, char to_find );
 float percent_char_in_string( char* string_in, char test_char );
 
 /**
- * Writes fastas to an output file, from an array of Sequences.
+ * Writes fastas to an output file, from an array of sequence_ts.
  * @param in_seqs array of pointers to sequences to write
  * @param num_seqs the number of sequences to write to the file
  * @param output string filename to write to
  **/
-void write_fastas( Sequence** in_seqs, int num_seqs, char* output );
+void write_fastas( sequence_t** in_seqs, int num_seqs, char* output );
 
 /**
  * Removes a character from a string in place
@@ -99,6 +99,6 @@ int is_valid_sequence( char* sequence, int min_length, float percent_valid );
  * @returns pointer to hash table containing all of the subsets of the sequence, 
  *          as key, and subset_data_t as key containing start/end
  **/ 
-HashTable* subset_lists( Sequence* in_seq, int window_size, int step_size );
+hash_table_t* subset_lists( sequence_t* in_seq, int window_size, int step_size );
 
 #endif

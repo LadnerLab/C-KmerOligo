@@ -4,13 +4,13 @@
 #define DEFAULT_LENGTH 256
 
 /**
- * Checks whether or not a DynamicString object needs to be resized
+ * Checks whether or not a dynamic_string_t object needs to be resized
  * if it does, automatically reallocs the object's string buffer
  * to have DEFAULt_LENGTH more characters
  * 
- * @param input DynamicString input to be tested 
+ * @param input dynamic_string_t input to be tested 
  **/
-void check_for_resize( DynamicString* input, char string_to_add[] )
+void check_for_resize( dynamic_string_t* input, char string_to_add[] )
 {
     int new_capacity;
     int add_length = string_length( string_to_add );
@@ -45,7 +45,7 @@ int string_length( char* input )
     return length;
 }
 
-void ds_init( DynamicString* input )
+void ds_init( dynamic_string_t* input )
 {
     input->capacity = DEFAULT_LENGTH;
     input->data = NULL;
@@ -54,7 +54,7 @@ void ds_init( DynamicString* input )
 }
 
 
-void ds_add( DynamicString* input, char string[] )
+void ds_add( dynamic_string_t* input, char string[] )
 {
     int size = input->size;
     int input_length = string_length( string );
@@ -74,7 +74,7 @@ void ds_add( DynamicString* input, char string[] )
     input->size = new_size;
 }
 
-void ds_clear( DynamicString* input )
+void ds_clear( dynamic_string_t* input )
 {
     free( input->data );
     free( input );

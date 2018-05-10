@@ -2,12 +2,12 @@
 #define DYNAMIC_STRING_H_INCLUDED
 #define DEFAULT_LENGTH 256
 
-typedef struct DynamicString
+typedef struct dynamic_string_t
 {
     int size;
     int capacity;
     char* data; 
-} DynamicString;
+} dynamic_string_t;
 
 /**
  * Calculates the length of a string
@@ -18,38 +18,38 @@ typedef struct DynamicString
 int string_length( char* input );
 
 /**
- * Checks whether or not a DynamicString object needs to be resized
+ * Checks whether or not a dynamic_string_t object needs to be resized
  * if it does, automatically reallocs the object's string buffer
  * to have DEFAULt_LENGTH more characters
  * 
- * @param input DynamicString input to be tested 
+ * @param input dynamic_string_t input to be tested 
  **/
-void check_for_resize( DynamicString* input, char string_to_add[] );
+void check_for_resize( dynamic_string_t* input, char string_to_add[] );
 
 
 /**
- * Initializes input DynamicString struct instance
+ * Initializes input dynamic_string_t struct instance
  * Note: mallocs memory on the heap for object's data
- * @param input pointer to DynamicString instance to be initialized
+ * @param input pointer to dynamic_string_t instance to be initialized
  **/
-void ds_init( DynamicString* input );
+void ds_init( dynamic_string_t* input );
 
 /**
  * Adds new string to a dynamicString object
  * Note: Uses check_for_resize method to see if the object should
  * be given more memory
- * @param input DynamicString object to be added to
+ * @param input dynamic_string_t object to be added to
  * @param string[] string array to append to input
  **/
-void ds_add( DynamicString* input, char string[] );
+void ds_add( dynamic_string_t* input, char string[] );
 
 /**
- * clears a DynamicString struct instance
+ * clears a dynamic_string_t struct instance
  * Note: Frees both the object itself and the data
  * it contains
- * @param input pointer to DynamicString instance to be freed
+ * @param input pointer to dynamic_string_t instance to be freed
  **/
-void ds_clear( DynamicString* input );
+void ds_clear( dynamic_string_t* input );
 
 
 #endif

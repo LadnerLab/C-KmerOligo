@@ -9,22 +9,22 @@
 #define HT_SURPLUS 1024
 #define DASH_CHAR '-'
 
-void read_sequences( FILE* file_to_read, Sequence** in_sequence )
+void read_sequences( FILE* file_to_read, sequence_t** in_sequence )
 {
     int has_line;
     int index = 0;
 
-    DynamicString* line = (DynamicString*) malloc( sizeof( DynamicString ) );
-    DynamicString* sequence = malloc( sizeof( DynamicString ) );
+    dynamic_string_t* line = (dynamic_string_t*) malloc( sizeof( dynamic_string_t ) );
+    dynamic_string_t* sequence = malloc( sizeof( dynamic_string_t ) );
 
     has_line = get_a_line( file_to_read, line );
     while( has_line )
         {
-            *( in_sequence + index ) = malloc( sizeof( Sequence ) );
+            *( in_sequence + index ) = malloc( sizeof( sequence_t ) );
 
             if( line->data[ 0 ] == '>' )
                 {
-                    sequence = malloc( sizeof( DynamicString ) );
+                    sequence = malloc( sizeof( dynamic_string_t ) );
                     ds_init( sequence );
 
                     in_sequence[ index ]->name = line->data;
@@ -42,7 +42,7 @@ void read_sequences( FILE* file_to_read, Sequence** in_sequence )
     ds_clear( line );
 }
 
-void write_fastas( Sequence** in_seqs, int num_seqs, char* output )
+void write_fastas( sequence_t** in_seqs, int num_seqs, char* output )
 {
     FILE* out_file = fopen( output, "w+" );
     int index;
@@ -86,7 +86,7 @@ int count_seqs_in_file( FILE* data_file )
     return counter;
 }
 
-int get_a_line( FILE* stream, DynamicString* to_read )
+int get_a_line( FILE* stream, dynamic_string_t* to_read )
 {
     char current_char[ 1 ] ;
 
@@ -183,16 +183,16 @@ int calc_num_subseqs( int length, int window_size )
     return length - window_size + 1;
 }
 
-HashTable* subset_lists( Sequence* in_seq, int window_size, int step_size )
+hash_table_t* subset_lists( sequence_t* in_seq, int window_size, int step_size )
 {
     int outer_index;
     int inner_index;
-    HashTable *xmers_seq;
+    hash_table_t *xmers_seq;
     subset_data_t* current_xmer_data;
 
     int num_subsets = calc_num_subseqs( in_seq->sequence->size, window_size );
 
-    xmers_seq = malloc( sizeof( HashTable ) );
+    xmers_seq = malloc( sizeof( hash_table_t ) );
     ht_init( xmers_seq, num_subsets + HT_SURPLUS );
 
     char current_xmer[ window_size ];
