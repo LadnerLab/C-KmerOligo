@@ -47,4 +47,14 @@ void ar_add( array_list_t *to_add, void* new_data );
  **/
 void ar_set( array_list_t *to_set, unsigned int index, void* new_data );
 
+/**
+ * Remove an item from array list
+ * Note: Index must be greater than zero and less than the size of
+ *       the array list
+ * @param to_remove pointer to array_list to remove an item from
+ * @param remove_index index of item to remove
+ * @returns pointer to item removed 
+ **/
+void *ar_remove( array_list_t *to_remove, unsigned int remove_index );
+
 #endif

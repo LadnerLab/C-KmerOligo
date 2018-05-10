@@ -1,5 +1,4 @@
 #include <stdlib.h>
-
 #include "array_list.h"
 
 #define DEFAULT_CAPACITY 256
@@ -74,4 +73,24 @@ void ar_set( array_list_t *to_set, unsigned int index, void* new_data )
         {
             to_set->array_data[ index ] = new_data;
         }
+}
+
+void *ar_remove( array_list_t *to_remove, unsigned int remove_index )
+{
+    void* removed_data = NULL;
+    int index;
+
+    if( remove_index < to_remove->size )
+        {
+            removed_data = to_remove->array_data[ remove_index ];
+
+            for( index = remove_index; index < to_remove->size; index++ )
+                {
+                    to_remove->array_data[ index ] = to_remove->array_data[ index + 1 ];
+                }
+            to_remove->size--;
+
+            return removed_data;
+        }
+    return NULL;
 }
