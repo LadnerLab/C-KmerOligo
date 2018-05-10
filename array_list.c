@@ -8,17 +8,18 @@
 int check_for_resize( array_list_t* array_check )
 {
     void* new_data = NULL;
-    size_t new_capacity;
+    unsigned int new_capacity;
 
     if( array_check->size + 1 >= array_check->capacity )
         {
 
-            new_data = realloc( array_check->array_data, new_capacity );
             new_capacity = array_check->capacity * 2;
+            new_data = realloc( array_check->array_data, new_capacity );
 
             if( new_data )
                 {
                     array_check->array_data = new_data;
+                    array_check->capacity = new_capacity;
                 }
             else
                 {
@@ -29,7 +30,15 @@ int check_for_resize( array_list_t* array_check )
 }
 void ar_init( array_list_t* to_init )
 {
-    to_init->data = malloc( sizeof( void* ) * DEFAULT_CAPACITY ); 
+    void* ptr = NULL;
+    int index;
+    to_init->array_data = malloc( sizeof( void* ) * DEFAULT_CAPACITY ); 
+
+    for( index = 0; index < DEFAULT_CAPACITY; index++ )
+        {
+            to_init->array_data[ index ] = ptr;
+        }
+    
     to_init->size = 0;
     to_init->capacity = DEFAULT_CAPACITY;
 }
