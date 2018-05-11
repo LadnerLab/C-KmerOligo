@@ -16,6 +16,8 @@
 #define DEFAULT_ITERATIONS 1
 #define DEFAULT_OUTPUT "output.fasta"
 
+#define YMER_TABLE_SIZE 100000
+
 
 int main( int argc, char* argv[] )
 {
@@ -85,32 +87,16 @@ int main( int argc, char* argv[] )
 
 
     ymer_table = malloc( sizeof( hash_table_t ) );
-    ht_init( ymer_table, 10000 );
-
-    hash_table_t* ymer_tableau = malloc( sizeof( hash_table_t ) );
-    ht_init( ymer_tableau, 100000 );
+    ht_init( ymer_table, YMER_TABLE_SIZE );
 
     int inner_index = 0;
     for( index = 0; index < num_seqs; index++ )
         {
-            ymer_table = create_xmers_with_locs( seqs_from_file[ index ], ymer_window_size, 1 );
-
-
-    for( inner_index = 0; index < ymer_table->capacity; index++ )
-        {
-            if( ymer_table->table_data[ index ] )
-                {
-                    printf( "%s\n", ymer_table->table_data[ index ]->key);
-                    ht_add( ymer_tableau, ymer_table->table_data[ index ]->key, ymer_table->table_data[ index ]->value );
-                }
+            ymer_table = create_xmers_with_locs( ymer_table, seqs_from_file[ index ],
+                                                   ymer_window_size, 1 );
         }
 
-    }
-
-    
-    printf( "%d\n", ymer_tableau->size );
-
-
+    printf( "%d\n", ymer_table->size );
     // free all of our allocated memory
     for( index = 0; index < num_seqs; index++ )
         {
