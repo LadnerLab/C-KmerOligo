@@ -173,7 +173,7 @@ int is_valid_sequence( char* sequence, int min_length, float percent_valid )
                            < ( 100 - percent_valid );
                 }
             return count_char_in_string( sequence, DASH_CHAR )
-                   <= string_length( sequence ) - min_length;
+                <= ( string_length( sequence ) - min_length );
         }
    return 0;
 }
@@ -210,23 +210,20 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, sequence_t* in_seq,
             current_xmer_data->end = ( outer_index * step_size ) + window_size;
             xmer_locations = ( array_list_t* ) ht_find( in_hash, current_xmer );
 
-            if( is_valid_sequence( current_xmer, 17, 90 ) )
+            if( xmer_locations != NULL )
                 {
-                    if( xmer_locations != NULL )
-                        {
-                            // update the entry at this location
-                            ar_add( xmer_locations, current_xmer_data );
-                        }
-                    else
-                        {
-                            // create the entry at this location
-                            xmer_locations = malloc( sizeof( array_list_t ) );
+                    // update the entry at this location
+                    ar_add( xmer_locations, current_xmer_data );
+                }
+            else
+                {
+                    // create the entry at this location
+                    xmer_locations = malloc( sizeof( array_list_t ) );
 
-                            ar_init( xmer_locations );
-                            ar_add( xmer_locations, current_xmer_data );
+                    ar_init( xmer_locations );
+                    ar_add( xmer_locations, current_xmer_data );
  
-                            ht_add( in_hash, current_xmer, xmer_locations );
-                        }
+                    ht_add( in_hash, current_xmer, xmer_locations );
                 }
         }
     free( current_xmer );
