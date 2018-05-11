@@ -66,7 +66,7 @@ int ht_add( hash_table_t* table, char* to_add, void* add_val )
     HT_Entry *current_node;
 
     char* key = malloc( strlen( to_add ) );
-    strcpy( key, to_add );
+    key = memcpy( key, to_add, strlen( to_add ) );
 
     new_entry->key = key;
     new_entry->value = add_val;
@@ -76,6 +76,7 @@ int ht_add( hash_table_t* table, char* to_add, void* add_val )
 
     item_index = generate_hash( to_add ) % table->capacity;
 
+    // item not already in table
     if( table->table_data[ item_index ] == NULL )
         {
             table->table_data[ item_index ] = new_entry;
@@ -83,6 +84,7 @@ int ht_add( hash_table_t* table, char* to_add, void* add_val )
         }
     else
         {
+            // item hash already in table
             current_node = table->table_data[ item_index ];
             while( current_node->next != NULL )
                 {
