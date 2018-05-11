@@ -184,21 +184,17 @@ int calc_num_subseqs( int length, int window_size )
     return length - window_size + 1;
 }
 
-hash_table_t* create_xmers_with_locs( sequence_t* in_seq, int window_size, int step_size )
+hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, sequence_t* in_seq,
+                                      int window_size, int step_size )
 {
     int outer_index;
     int inner_index;
     int num_subsets = calc_num_subseqs( in_seq->sequence->size, window_size );
 
-    hash_table_t *xmers_seq;
-    
     subset_data_t* current_xmer_data;
     array_list_t* xmer_locations;
 
     char *current_xmer = malloc( window_size );
-
-    xmers_seq = malloc( sizeof( hash_table_t ) );
-    ht_init( xmers_seq, num_subsets + HT_SURPLUS );
 
     for( outer_index = 0; outer_index < num_subsets; outer_index++ )
         {
@@ -212,24 +208,27 @@ hash_table_t* create_xmers_with_locs( sequence_t* in_seq, int window_size, int s
                 }
 
             current_xmer_data->end = ( outer_index * step_size ) + window_size;
-            xmer_locations = ( array_list_t* ) ht_find( xmers_seq, current_xmer );
+            xmer_locations = ( array_list_t* ) ht_find( in_hash, current_xmer );
 
-            if( xmer_locations != NULL )
+            if( is_valid_sequence( current_xmer, 17, 90 ) )
                 {
-                    // update the entry at this location
-                    ar_add( xmer_locations, current_xmer_data );
-                }
-            else
-                {
-                    // create the entry at this location
-                    xmer_locations = malloc( sizeof( array_list_t ) );
+                    if( xmer_locations != NULL )
+                        {
+                            // update the entry at this location
+                            ar_add( xmer_locations, current_xmer_data );
+                        }
+                    else
+                        {
+                            // create the entry at this location
+                            xmer_locations = malloc( sizeof( array_list_t ) );
 
-                    ar_init( xmer_locations );
-                    ar_add( xmer_locations, current_xmer_data );
+                            ar_init( xmer_locations );
+                            ar_add( xmer_locations, current_xmer_data );
  
-                    ht_add( xmers_seq, current_xmer, xmer_locations );
+                            ht_add( in_hash, current_xmer, xmer_locations );
+                        }
                 }
         }
     free( current_xmer );
-    return xmers_seq;
+    return in_hash;
 }

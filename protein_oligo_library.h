@@ -92,13 +92,15 @@ void remove_char_from_string( char* test_string, char to_remove );
 **/
 int is_valid_sequence( char* sequence, int min_length, float percent_valid );
 /**
- * Creates a hashtable of all the window_size-mers from a sequence
+ * Appends all valid xmers within a sequence to a hashtable
+ * @param in_hash pointer to hash_table to add the valid xmers to
  * @param in_seq pointer to input sequence to create a subset of 
  * @param window_size integer number of characters to capture with each iteration
  * @param step_size integer number of characters to move over after each iteration
  * @returns pointer to hash table containing all of the subsets of the sequence, 
  *          as key, and an array list of subset_data_t as key containing start/end
  **/ 
-hash_table_t* create_xmers_with_locs( sequence_t* in_seq, int window_size, int step_size );
+hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, sequence_t* in_seq,
+                                      int window_size, int step_size );
 
 #endif
