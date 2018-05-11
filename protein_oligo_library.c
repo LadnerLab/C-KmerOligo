@@ -195,7 +195,7 @@ hash_table_t* create_xmers_with_locs( sequence_t* in_seq, int window_size, int s
     subset_data_t* current_xmer_data;
     array_list_t* xmer_locations;
 
-    char current_xmer[ window_size ];
+    char *current_xmer = malloc( window_size );
 
     xmers_seq = malloc( sizeof( hash_table_t ) );
     ht_init( xmers_seq, num_subsets + HT_SURPLUS );
@@ -204,10 +204,12 @@ hash_table_t* create_xmers_with_locs( sequence_t* in_seq, int window_size, int s
         {
             current_xmer_data = malloc( sizeof( subset_data_t ) );
             current_xmer_data->start = ( outer_index * step_size );
+            current_xmer = malloc( window_size );
 
             for( inner_index = 0; inner_index < window_size; inner_index++ )
                 {
-                    current_xmer[ inner_index ] = in_seq->sequence->data[ ( outer_index * step_size ) + inner_index ];
+                    current_xmer[ inner_index ] =
+                        in_seq->sequence->data[ ( outer_index * step_size ) + inner_index ];
                 }
 
             current_xmer_data->end = ( outer_index * step_size ) + window_size;
@@ -222,12 +224,12 @@ hash_table_t* create_xmers_with_locs( sequence_t* in_seq, int window_size, int s
                 {
                     // create the entry at this location
                     xmer_locations = malloc( sizeof( array_list_t ) );
+
                     ar_init( xmer_locations );
                     ar_add( xmer_locations, current_xmer_data );
  
                     ht_add( xmers_seq, current_xmer, xmer_locations );
                 }
         }
-
     return xmers_seq;
 }
