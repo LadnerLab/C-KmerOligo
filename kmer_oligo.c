@@ -41,7 +41,8 @@ int main( int argc, char* argv[] )
     int index;
     int num_seqs;
     hash_table_t* ymer_table;
-    char** subset;
+    hash_table_t* ymer_valid_table;
+    HT_Entry** total_ymers;
 
     // parse options given from command lines
     while( ( option = getopt( argc, argv, "x:y:l:r:i:q:o:" ) ) != -1 )
@@ -87,24 +88,51 @@ int main( int argc, char* argv[] )
 
 
     ymer_table = malloc( sizeof( hash_table_t ) );
+    ymer_valid_table = malloc( sizeof( hash_table_t ) );
+
     ht_init( ymer_table, YMER_TABLE_SIZE );
 
-    int inner_index = 0;
     for( index = 0; index < num_seqs; index++ )
         {
             ymer_table = create_xmers_with_locs( ymer_table, seqs_from_file[ index ],
                                                    ymer_window_size, 1 );
         }
 
+    ht_init( ymer_valid_table, ymer_table->size );
+
+
+    total_ymers = ht_get_items( ymer_table );
+
+    for( index = 0; index < ymer_table->size; index++ )
+        {
+            if( is_valid_sequence( total_ymers[ index ]->key, min_length, percent_valid ) )
+                {
+                    ht_add( ymer_valid_table, total_ymers[ index ]->key,
+                            total_ymers[ index ]->value );
+                }
+        }
+
     printf( "%d\n", ymer_table->size );
+    printf( "%d\n", ymer_valid_table->size );
     // free all of our allocated memory
     for( index = 0; index < num_seqs; index++ )
         {
             ds_clear( seqs_from_file[ index ]->sequence );
         }
 
+    for( index = 0; index < ymer_table->size; index++ )
+        {
+            free( total_ymers[ index ] );
+        }
+
+
     free( seqs_from_file );
-    /* ht_clear( ymer_table ); */
+
+    free( total_ymers );
+    ht_clear( ymer_table );
+    ht_clear( ymer_valid_table );
+
+
     return EXIT_SUCCESS;
 }
 
