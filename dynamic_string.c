@@ -74,7 +74,7 @@ void ds_add( dynamic_string_t* input, char string[] )
                 }
         }
 
-    input->data[ new_size - 1] = '\0';
+    input->data[ new_size ] = '\0';
 
     input->size = new_size;
 }
