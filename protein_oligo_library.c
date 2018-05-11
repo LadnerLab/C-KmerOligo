@@ -204,7 +204,6 @@ hash_table_t* create_xmers_with_locs( sequence_t* in_seq, int window_size, int s
         {
             current_xmer_data = malloc( sizeof( subset_data_t ) );
             current_xmer_data->start = ( outer_index * step_size );
-            current_xmer = malloc( window_size );
 
             for( inner_index = 0; inner_index < window_size; inner_index++ )
                 {
@@ -231,5 +230,6 @@ hash_table_t* create_xmers_with_locs( sequence_t* in_seq, int window_size, int s
                     ht_add( xmers_seq, current_xmer, xmer_locations );
                 }
         }
+    free( current_xmer );
     return xmers_seq;
 }
