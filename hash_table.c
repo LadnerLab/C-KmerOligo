@@ -65,7 +65,9 @@ int ht_add( hash_table_t* table, char* to_add, void* add_val )
     HT_Entry *new_entry = malloc( sizeof( HT_Entry ) );
     HT_Entry *current_node;
 
-    new_entry->key = to_add;
+    char* key = malloc( strlen( to_add ) );
+
+    new_entry->key = key;
     new_entry->value = add_val;
 
     new_entry->next = NULL;
@@ -156,6 +158,8 @@ int ht_delete( hash_table_t* table, char* in_key )
                 }
 
 
+            free( found_node->key );
+            free( found_node->value );
             free( found_node );
             return 1;
         }
