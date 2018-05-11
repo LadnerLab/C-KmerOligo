@@ -196,8 +196,9 @@ HT_Entry **ht_get_items( hash_table_t* input )
 
                             while( next_node )
                                 {
-                                    next_node = next_node->next;
                                     output[ output_index ] = next_node;
+                                    next_node = next_node->next;
+
                                     output_index++;
                                 }
                         }
