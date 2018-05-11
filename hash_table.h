@@ -2,6 +2,7 @@
 #define HASHTTABLE_HH_INCLUDED
 
 #define ITEM_NOT_FOUND -1
+#include <stdint.h>
 
 typedef struct HT_Entry
 {
@@ -14,8 +15,8 @@ typedef struct HT_Entry
 typedef struct hash_table_t
 {
     HT_Entry** table_data; 
-    int capacity;
-    int size;
+    uint32_t size;
+    uint32_t capacity;
 } hash_table_t;
 
 
@@ -82,6 +83,13 @@ void *ht_find( hash_table_t* table, char* in_key );
  *          integer false otherwise
  **/
 int ht_delete( hash_table_t* table, char* in_key );
+
+/** 
+ * Gets all of the HT_Entry items, stores them in an array
+ * @param input pointer to hash_table_t to get the items of
+ * @returns pointer to array of pointers to HT_Entry items
+ **/ 
+HT_Entry **ht_get_items( hash_table_t* input );
 
 #endif
 

@@ -170,3 +170,38 @@ int ht_delete( hash_table_t* table, char* in_key )
 }
 
 
+HT_Entry **ht_get_items( hash_table_t* input )
+{
+    HT_Entry **output = NULL;
+    HT_Entry* next_node;
+
+    uint32_t input_index;
+    uint32_t output_index;
+
+    uint32_t capacity = input->capacity;
+
+    if( input->size > 0 )
+        {
+            output = malloc( sizeof( HT_Entry* ) * input->size );
+            output_index = 0;
+
+            for( input_index = 0; input_index < capacity; input_index++ )
+                {
+                    if( input->table_data[ input_index ] )
+                        {
+                            output[ output_index ] = input->table_data[ input_index ];
+                            next_node = input->table_data[ input_index ]->next;
+
+                            output_index++;
+
+                            while( next_node )
+                                {
+                                    next_node = next_node->next;
+                                    output[ output_index ] = next_node;
+                                    output_index++;
+                                }
+                        }
+                }
+        }
+    return output;
+}
