@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdio.h>
+
 #include "dynamic_string.h"
 
 #define DEFAULT_LENGTH 256
@@ -25,7 +27,7 @@ void ds_check_for_resize( dynamic_string_t* input, char string_to_add[] )
 
             if( !new_data )
                 {
-                    exit( EXIT_FAILURE );
+                    printf( "Failure to add to dynamic_string\n" );
                 }
             else
                 {
