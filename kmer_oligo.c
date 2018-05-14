@@ -105,19 +105,23 @@ int main( int argc, char* argv[] )
     ht_init( xmer_table, YMER_TABLE_SIZE );
     ht_init( ymer_index_table, YMER_TABLE_SIZE );
 
+    // create a table with xmers and their locations
+    // create a table with ymers and their sequence names
+    // create a table with ymers and their locations
     for( index = 0; index < num_seqs; index++ )
         {
+            sprintf( index_str, "%d", index );
+
             current_seq = seqs_from_file[ index ];
             create_xmers_with_locs( ymer_name_table, current_seq->name,
                                     current_seq->sequence->data,
                                     ymer_window_size, 1 );
 
-            sprintf( index_str, "%d", index );
             create_xmers_with_locs( ymer_index_table, index_str,
                                     current_seq->sequence->data,
                                     ymer_window_size, 1 );
 
-            create_xmers_with_locs( xmer_table, current_seq->name,
+            create_xmers_with_locs( xmer_table, index_str,
                                     current_seq->sequence->data,
                                     xmer_window_size, 1 );
         }
@@ -136,8 +140,6 @@ int main( int argc, char* argv[] )
                 }
         }
 
-    printf( "%d\n", xmer_table->size );
-    printf( "Ymer name size: %d\n", ymer_name_table->size );
     printf( "ymer valid size: %d\n", ymer_valid_table->size );
     // free all of our allocated memory
     for( index = 0; index < num_seqs; index++ )
