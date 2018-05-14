@@ -98,8 +98,9 @@ int main( int argc, char* argv[] )
     for( index = 0; index < num_seqs; index++ )
         {
             current_seq = seqs_from_file[ index ];
-            ymer_table = create_xmers_with_locs( ymer_table, current_seq->sequence->data,
-                                                   ymer_window_size, 1 );
+            create_xmers_with_locs( ymer_table, current_seq->name,
+                                    current_seq->sequence->data,
+                                    ymer_window_size, 1 );
         }
 
     ht_init( ymer_valid_table, ymer_table->size );
