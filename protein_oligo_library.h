@@ -102,7 +102,7 @@ int is_valid_sequence( char* sequence, int min_length, float percent_valid );
  * @returns pointer to hash table containing all of the subsets of the sequence, 
  *          as key, and an array list of subset_data_t as key containing start/end
  **/ 
-hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
+hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* name,
                                       char* in_seq,
                                       int window_size, int step_size );
 #endif
