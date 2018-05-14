@@ -185,6 +185,11 @@ int calc_num_subseqs( int length, int window_size )
     return length - window_size + 1;
 }
 
+void append_suffix( char* result, char* in_name, int start, int end )
+{
+    sprintf( result, "%s_%d_%d", in_name, start, end );
+}
+
 hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_seq,
                                       int window_size, int step_size )
 {
@@ -232,3 +237,25 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_seq,
 }
 
 
+hash_table_t* component_xmer_locs( char* in_ymer, hash_table_t* out_ymer,
+                                   hash_table_t* in_xmer_table,
+                                   int window_size, int step_size
+                                 )
+{
+    int num_ymers = ( window_size - step_size ) + 1;
+    int index;
+    hash_table_t* ymers_with_locations;
+
+    ymers_with_locations = malloc( sizeof( hash_table_t ) );
+    ht_init( ymers_with_locations, num_ymers );
+
+    for( index = 0; index < num_ymers; index++ )
+        {
+            ht_add( out_ymer, 
+        }
+    create_xmers_with_locs( ymers_with_locations, in_ymer, window_size, step_size );
+
+
+    ht_clear( ymers_with_locations );
+
+}
