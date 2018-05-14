@@ -40,8 +40,9 @@ int main( int argc, char* argv[] )
     sequence_t **seqs_from_file;
     int index;
     int num_seqs;
-    hash_table_t* ymer_table;
+    hash_table_t* ymer_name_table;
     hash_table_t* ymer_valid_table;
+    hash_table_t* ymer_index_table;
 
     hash_table_t* xmer_table;
 
@@ -92,17 +93,17 @@ int main( int argc, char* argv[] )
     read_sequences( data_file, seqs_from_file );
 
 
-    ymer_table = malloc( sizeof( hash_table_t ) );
+    ymer_name_table = malloc( sizeof( hash_table_t ) );
     ymer_valid_table = malloc( sizeof( hash_table_t ) );
     xmer_table = malloc( sizeof( hash_table_t ) );
 
-    ht_init( ymer_table, YMER_TABLE_SIZE );
+    ht_init( ymer_name_table, YMER_TABLE_SIZE );
     ht_init( xmer_table, YMER_TABLE_SIZE );
 
     for( index = 0; index < num_seqs; index++ )
         {
             current_seq = seqs_from_file[ index ];
-            create_xmers_with_locs( ymer_table, current_seq->name,
+            create_xmers_with_locs( ymer_name_table, current_seq->name,
                                     current_seq->sequence->data,
                                     ymer_window_size, 1 );
 
@@ -111,12 +112,12 @@ int main( int argc, char* argv[] )
                                     xmer_window_size, 1 );
         }
 
-    ht_init( ymer_valid_table, ymer_table->size );
+    ht_init( ymer_valid_table, ymer_name_table->size );
 
 
-    total_ymers = ht_get_items( ymer_table );
+    total_ymers = ht_get_items( ymer_name_table );
 
-    for( index = 0; index < ymer_table->size; index++ )
+    for( index = 0; index < ymer_name_table->size; index++ )
         {
             if( is_valid_sequence( total_ymers[ index ]->key, min_length, percent_valid ) )
                 {
@@ -124,17 +125,9 @@ int main( int argc, char* argv[] )
                             total_ymers[ index ]->value );
                 }
         }
-    int total = 0;
-    for( index = 0; index < xmer_table->size; index++ )
-        {
-            if( xmer_table->table_data[ index ] && is_valid_sequence( xmer_table->table_data[ index ]->key, min_length, percent_valid ) )
-                {
-                    total++;
-                }
-        }
 
     printf( "%d\n", xmer_table->size );
-    printf( "%d\n", ymer_table->size );
+    printf( "%d\n", ymer_name_table->size );
     printf( "%d\n", ymer_valid_table->size );
     // free all of our allocated memory
     for( index = 0; index < num_seqs; index++ )
@@ -145,7 +138,7 @@ int main( int argc, char* argv[] )
     free( seqs_from_file );
 
     free( total_ymers );
-    ht_clear( ymer_table );
+    ht_clear( ymer_name_table );
     ht_clear( ymer_valid_table );
 
 
