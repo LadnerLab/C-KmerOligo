@@ -43,6 +43,8 @@ int main( int argc, char* argv[] )
     hash_table_t* ymer_table;
     hash_table_t* ymer_valid_table;
 
+    hash_table_t* xmer_table;
+
     HT_Entry** total_ymers;
 
     sequence_t* current_seq;
@@ -92,8 +94,10 @@ int main( int argc, char* argv[] )
 
     ymer_table = malloc( sizeof( hash_table_t ) );
     ymer_valid_table = malloc( sizeof( hash_table_t ) );
+    xmer_table = malloc( sizeof( hash_table_t ) );
 
     ht_init( ymer_table, YMER_TABLE_SIZE );
+    ht_init( xmer_table, YMER_TABLE_SIZE );
 
     for( index = 0; index < num_seqs; index++ )
         {
@@ -101,6 +105,10 @@ int main( int argc, char* argv[] )
             create_xmers_with_locs( ymer_table, current_seq->name,
                                     current_seq->sequence->data,
                                     ymer_window_size, 1 );
+
+            create_xmers_with_locs( xmer_table, current_seq->name,
+                                    current_seq->sequence->data,
+                                    xmer_window_size, 1 );
         }
 
     ht_init( ymer_valid_table, ymer_table->size );
@@ -116,7 +124,16 @@ int main( int argc, char* argv[] )
                             total_ymers[ index ]->value );
                 }
         }
+    int total = 0;
+    for( index = 0; index < xmer_table->size; index++ )
+        {
+            if( xmer_table->table_data[ index ] && is_valid_sequence( xmer_table->table_data[ index ]->key, min_length, percent_valid ) )
+                {
+                    total++;
+                }
+        }
 
+    printf( "%d\n", xmer_table->size );
     printf( "%d\n", ymer_table->size );
     printf( "%d\n", ymer_valid_table->size );
     // free all of our allocated memory
@@ -124,12 +141,6 @@ int main( int argc, char* argv[] )
         {
             ds_clear( seqs_from_file[ index ]->sequence );
         }
-
-    for( index = 0; index < ymer_table->size; index++ )
-        {
-            free( total_ymers[ index ] );
-        }
-
 
     free( seqs_from_file );
 
