@@ -208,6 +208,7 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
     array_list_t* xmer_locations;
 
     char *current_xmer = malloc( window_size );
+    char* name_with_bounds;
 
     for( outer_index = 0; outer_index < num_subsets; outer_index++ )
         {
@@ -223,12 +224,19 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
                 }
 
             current_xmer_data->end = ( outer_index * step_size ) + window_size;
+            name_with_bounds = malloc( strlen( in_name ) + num_digits_in_int( current_xmer_data->start ) +
+                                       num_digits_in_int( current_xmer_data->end ) + 2
+                                       + 1 );
+
+
+            append_suffix( name_with_bounds, in_name, current_xmer_data->start, current_xmer_data->end );
+
             xmer_locations = ( array_list_t* ) ht_find( in_hash, current_xmer );
 
             if( xmer_locations != NULL )
                 {
                     // update the entry at this location
-                    ar_add( xmer_locations, current_xmer_data );
+                    ar_add( xmer_locations, name_with_bounds );
                 }
             else
                 {
@@ -236,7 +244,7 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
                     xmer_locations = malloc( sizeof( array_list_t ) );
 
                     ar_init( xmer_locations );
-                    ar_add( xmer_locations, current_xmer_data );
+                    ar_add( xmer_locations, name_with_bounds );
  
                     ht_add( in_hash, current_xmer, xmer_locations );
                 }
