@@ -16,7 +16,7 @@
 #define DEFAULT_ITERATIONS 1
 #define DEFAULT_OUTPUT "output.fasta"
 
-#define YMER_TABLE_SIZE 100000
+#define YMER_TABLE_SIZE 10000000
 
 
 int main( int argc, char* argv[] )
@@ -42,7 +42,10 @@ int main( int argc, char* argv[] )
     int num_seqs;
     hash_table_t* ymer_table;
     hash_table_t* ymer_valid_table;
+
     HT_Entry** total_ymers;
+
+    sequence_t* current_seq;
 
     // parse options given from command lines
     while( ( option = getopt( argc, argv, "x:y:l:r:i:q:o:" ) ) != -1 )
@@ -94,7 +97,8 @@ int main( int argc, char* argv[] )
 
     for( index = 0; index < num_seqs; index++ )
         {
-            ymer_table = create_xmers_with_locs( ymer_table, seqs_from_file[ index ],
+            current_seq = seqs_from_file[ index ];
+            ymer_table = create_xmers_with_locs( ymer_table, current_seq->sequence->data,
                                                    ymer_window_size, 1 );
         }
 

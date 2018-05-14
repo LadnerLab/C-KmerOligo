@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "protein_oligo_library.h"
 #include "dynamic_string.h"
@@ -184,12 +185,12 @@ int calc_num_subseqs( int length, int window_size )
     return length - window_size + 1;
 }
 
-hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, sequence_t* in_seq,
+hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_seq,
                                       int window_size, int step_size )
 {
     int outer_index;
     int inner_index;
-    int num_subsets = calc_num_subseqs( in_seq->sequence->size, window_size );
+    int num_subsets = calc_num_subseqs( strlen( in_seq ), window_size );
 
     subset_data_t* current_xmer_data;
     array_list_t* xmer_locations;
@@ -204,7 +205,7 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, sequence_t* in_seq,
             for( inner_index = 0; inner_index < window_size; inner_index++ )
                 {
                     current_xmer[ inner_index ] =
-                        in_seq->sequence->data[ ( outer_index * step_size ) + inner_index ];
+                        in_seq[ ( outer_index * step_size ) + inner_index ];
                 }
 
             current_xmer_data->end = ( outer_index * step_size ) + window_size;
@@ -229,3 +230,5 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, sequence_t* in_seq,
     free( current_xmer );
     return in_hash;
 }
+
+

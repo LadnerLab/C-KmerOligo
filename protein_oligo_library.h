@@ -94,13 +94,13 @@ int is_valid_sequence( char* sequence, int min_length, float percent_valid );
 /**
  * Appends all valid xmers within a sequence to a hashtable
  * @param in_hash pointer to hash_table to add the valid xmers to
- * @param in_seq pointer to input sequence to create a subset of 
+ * @param in_seq pointer to string to create a subset of 
  * @param window_size integer number of characters to capture with each iteration
  * @param step_size integer number of characters to move over after each iteration
  * @returns pointer to hash table containing all of the subsets of the sequence, 
  *          as key, and an array list of subset_data_t as key containing start/end
  **/ 
-hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, sequence_t* in_seq,
+hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_seq,
                                       int window_size, int step_size );
 
 #endif
