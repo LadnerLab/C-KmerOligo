@@ -208,13 +208,13 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
     array_list_t* xmer_locations;
 
     char *current_xmer = malloc( window_size );
-    char* current_name;
 
     for( outer_index = 0; outer_index < num_subsets; outer_index++ )
         {
+
             current_xmer_data = malloc( sizeof( subset_data_t ) );
             current_xmer_data->start = ( outer_index * step_size );
-            current_name = malloc( strlen( in_name ) );
+
 
             for( inner_index = 0; inner_index < window_size; inner_index++ )
                 {
@@ -223,7 +223,6 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
                 }
 
             current_xmer_data->end = ( outer_index * step_size ) + window_size;
-            current_xmer_data->name = strcpy( current_name, in_name );
             xmer_locations = ( array_list_t* ) ht_find( in_hash, current_xmer );
 
             if( xmer_locations != NULL )
@@ -242,7 +241,51 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
                     ht_add( in_hash, current_xmer, xmer_locations );
                 }
         }
-    free( current_xmer );
     return in_hash;
 }
 
+
+hash_table_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
+                                   set_t* out_ymer,
+                                   hash_table_t* in_xmer_table,
+                                   int window_size, int step_size
+                                 )
+{
+    int num_xmers = ( window_size - step_size ) + 1;
+    int index;
+    hash_table_t* subset_xmers = NULL;
+    HT_Entry** subset_xmer_items = NULL;
+    set_t* locations = NULL;
+    subset_data_t* xmer_loc_data;
+    char* xmer_loc_data_string;
+    char index_buff[ LINE_SIZE ];
+
+    ht_init( subset_xmers, num_xmers );
+    set_init( locations );
+
+    create_xmers_with_locs( subset_xmers, in_ymer_name, in_ymer,
+                            window_size, step_size );
+
+    subset_xmer_items = ht_get_items( subset_xmers );
+
+    
+
+    for( index = 0; index < num_xmers; index++ )
+        {
+            unsigned int inner_index = 0;
+            sprintf( index_buff, "%d", index );
+            while( ar_get( (array_list_t*) subset_xmer_items[ index ]->value, inner_index ) )
+                {
+                    xmer_loc_data = (subset_data_t*) ar_get( (array_list_t*) subset_xmer_items[ index ]->value, inner_index );
+                    xmer_loc_data_string = malloc( num_digits_in_int( xmer_loc_data->start ) +
+                                                   num_digits_in_int( xmer_loc_data->end ) + 1 );
+
+                    append_suffix( xmer_loc_data_string, index_buff,
+                                   xmer_loc_data->start, xmer_loc_data->end
+                                 );
+                    set_add( locations, xmer_loc_data_string );
+                    inner_index++;
+                }
+        }
+
+}
