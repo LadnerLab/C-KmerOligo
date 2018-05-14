@@ -1,7 +1,9 @@
 #ifndef PROTEIN_OLIGO_H_INCLUDED
 #define PROTEIN_OLIGO_H_INCLUDED
+
 #include "dynamic_string.h"
 #include "hash_table.h"
+#include "set.h"
 
 typedef struct sequence_t
 {
@@ -11,6 +13,7 @@ typedef struct sequence_t
 
 typedef struct subset_data_t
 {
+    char* name;
     unsigned int start;
     unsigned int end;
 } subset_data_t;
@@ -100,7 +103,7 @@ int is_valid_sequence( char* sequence, int min_length, float percent_valid );
  * @returns pointer to hash table containing all of the subsets of the sequence, 
  *          as key, and an array list of subset_data_t as key containing start/end
  **/ 
-hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_seq,
+hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
+                                      char* in_seq,
                                       int window_size, int step_size );
-
 #endif
