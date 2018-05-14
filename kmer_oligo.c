@@ -16,7 +16,7 @@
 #define DEFAULT_ITERATIONS 1
 #define DEFAULT_OUTPUT "output.fasta"
 
-#define YMER_TABLE_SIZE 10000000
+#define YMER_TABLE_SIZE 1000000
 
 
 int main( int argc, char* argv[] )
@@ -49,6 +49,7 @@ int main( int argc, char* argv[] )
     HT_Entry** total_ymers;
 
     sequence_t* current_seq;
+    char index_str[ DEFAULT_YMER_SIZE ];
 
     // parse options given from command lines
     while( ( option = getopt( argc, argv, "x:y:l:r:i:q:o:" ) ) != -1 )
@@ -95,15 +96,24 @@ int main( int argc, char* argv[] )
 
     ymer_name_table = malloc( sizeof( hash_table_t ) );
     ymer_valid_table = malloc( sizeof( hash_table_t ) );
+
+    ymer_index_table = malloc( sizeof( hash_table_t ) );
+
     xmer_table = malloc( sizeof( hash_table_t ) );
 
     ht_init( ymer_name_table, YMER_TABLE_SIZE );
     ht_init( xmer_table, YMER_TABLE_SIZE );
+    ht_init( ymer_index_table, YMER_TABLE_SIZE );
 
     for( index = 0; index < num_seqs; index++ )
         {
             current_seq = seqs_from_file[ index ];
             create_xmers_with_locs( ymer_name_table, current_seq->name,
+                                    current_seq->sequence->data,
+                                    ymer_window_size, 1 );
+
+            sprintf( index_str, "%d", index );
+            create_xmers_with_locs( ymer_index_table, index_str,
                                     current_seq->sequence->data,
                                     ymer_window_size, 1 );
 
@@ -121,14 +131,14 @@ int main( int argc, char* argv[] )
         {
             if( is_valid_sequence( total_ymers[ index ]->key, min_length, percent_valid ) )
                 {
-                    ht_add( ymer_valid_table, total_ymers[ index ]->key,
+                    ht_add( ymer_valid_table, total_ymers[ index ]->key ,
                             total_ymers[ index ]->value );
                 }
         }
 
     printf( "%d\n", xmer_table->size );
-    printf( "%d\n", ymer_name_table->size );
-    printf( "%d\n", ymer_valid_table->size );
+    printf( "Ymer name size: %d\n", ymer_name_table->size );
+    printf( "ymer valid size: %d\n", ymer_valid_table->size );
     // free all of our allocated memory
     for( index = 0; index < num_seqs; index++ )
         {
