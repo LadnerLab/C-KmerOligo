@@ -171,7 +171,6 @@ int ht_delete( hash_table_t* table, char* in_key )
 
             return 1;
         }
-    printf( "Unable tod elete\n ");
     return 0;
 }
 
