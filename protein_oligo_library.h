@@ -13,7 +13,6 @@ typedef struct sequence_t
 
 typedef struct subset_data_t
 {
-    char* name;
     unsigned int start;
     unsigned int end;
 } subset_data_t;
