@@ -93,6 +93,8 @@ int ht_add( hash_table_t* table, char* to_add, void* add_val )
             // we don't want to add duplicates
             if( strcmp( current_node->key, to_add ) == 0 )
                 {
+                    // update the value
+                    current_node->value = add_val;
                     return 0;
                 }
             current_node->next = new_entry;

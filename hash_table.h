@@ -45,6 +45,8 @@ int generate_hash( char* key );
 /**
  * Adds an entry to the hashtable
  * Note: Uses linked list to resolve collisions
+ * Note: If a duplicate key is added, value at that key is updated 
+ *       to provided value
  * @param table pointer to hash_table_t to add data to
  * @param to_add string value to add as key to hash_table
  * @param add_val value to be added as value of the key
