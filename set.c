@@ -1,6 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-#include "hash_table.h"
 #include "set.h"
 
 #define DEFAULT_SIZE 256
@@ -8,6 +8,7 @@
 
 void set_init( set_t* to_init )
 {
+    to_init->data = malloc( sizeof( hash_table_t ) );
     ht_init( to_init->data, DEFAULT_SIZE );
 }
 
@@ -35,4 +36,19 @@ void set_update( set_t* dest, set_t* source )
         {
             ht_add( dest->data, source_data[ index ]->key, NULL );
         }
+}
+
+void set_difference( set_t* dest, set_t* first, set_t* second )
+{
+    int index;
+    HT_Entry** first_set_items = ht_get_items( first->data );
+
+    for( index = 0; index < second->data->size; index++ )
+        {
+            if( !ht_find( second->data, first_set_items[ index ]->key ) )
+                {
+                    set_add( dest, first_set_items[ index ]->key );
+                }
+        }
+
 }
