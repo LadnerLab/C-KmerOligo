@@ -31,7 +31,7 @@ void ar_init( array_list_t* to_init )
 {
     void* ptr = NULL;
     int index;
-    to_init->array_data = calloc( DEFAULT_CAPACITY, sizeof( void* ) ); 
+    to_init->array_data = malloc( DEFAULT_CAPACITY * sizeof( void* ) ); 
 
     for( index = 0; index < DEFAULT_CAPACITY; index++ )
         {
