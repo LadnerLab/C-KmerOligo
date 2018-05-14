@@ -49,7 +49,7 @@ void ht_clear( hash_table_t* table )
 int generate_hash( char* key )
 {
     int index = 0;
-    int total = 0;
+    unsigned total = 0;
     while( *( key + index ) )
         {
             total += (int) key[ index ] << ( index + 1 );
@@ -145,29 +145,33 @@ void *ht_find( hash_table_t* table, char* in_key )
 int ht_delete( hash_table_t* table, char* in_key )
 {
     HT_Entry *found_node = find_item( table, in_key );
-    int found_index = generate_hash( in_key ) % table->capacity;
+    unsigned int found_index = generate_hash( in_key ) % table->capacity;
 
     if( found_node != NULL )
         {
+            if( table->table_data[ found_index ] == found_node )
+                {
+                    table->table_data[ found_index ] = found_node->next;
+                }
+            if( found_node->next != NULL )
+                {
+                    found_node->next->prev = found_node->prev;
+                }
             if( found_node->prev != NULL )
                 {
                     found_node->prev->next = found_node->next;
                 }
-            else if( found_node->next == NULL )
-                {
-                    *found_node = *found_node->next;
-                }
-            else
-                {
-                    table->table_data[ found_index ] = found_node->next;
-                }
 
 
-            free( found_node->key );
+            /* free( found_node->key ); */
             free( found_node->value );
             free( found_node );
+
+            table->size -= 1;
+
             return 1;
         }
+    printf( "Unable tod elete\n ");
     return 0;
 }
 
