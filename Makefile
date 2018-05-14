@@ -18,12 +18,14 @@ array_list: array_list_main.o array_list.o
 array_list.o: array_list_main.c array_list.h
 array_list.o: array_list.c array_list.h
 
-set.o: set.c set.h hash_table.h
+set: set_main.o set.o hash_table.o
+set_main.o: set_main.c hash_table.h set.h 
+set.o: set.c set.h 
 
 .PHONY: debug clean
 debug: CFLAGS+= -g
 debug: clean
-debug: kmer_oligo
+debug: set 
 
 clean:
 	rm -rf *.o *.gch kmer_oligo
