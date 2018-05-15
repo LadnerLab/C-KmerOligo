@@ -33,11 +33,25 @@ void ht_init( hash_table_t* table, int size )
 
 void ht_clear( hash_table_t* table )
 {
-    int index;
+    uint32_t index;
+    HT_Entry* current_node;
     for( index = 0; index < table->capacity; index++ )
         {
-            free( table->table_data[ index ] );
-            table->table_data[ index ] = NULL;
+            current_node = table->table_data[ index ];
+            if( current_node != NULL )
+                {
+                    while( current_node->next != NULL )
+                        {
+                            current_node = current_node->next;
+                        }
+                    while( current_node->prev != NULL )
+                        {
+                            current_node = current_node->prev;
+                            free( current_node->next );
+                        }
+                    free( table->table_data[ index ] );
+                    table->table_data[ index ] = NULL;
+                }
         }
 
     free( table->table_data );
@@ -65,8 +79,9 @@ int ht_add( hash_table_t* table, char* to_add, void* add_val )
     HT_Entry *new_entry = malloc( sizeof( HT_Entry ) );
     HT_Entry *current_node;
 
-    char* key = malloc( strlen( to_add ) );
-    key = memcpy( key, to_add, strlen( to_add ) );
+    /* char* key = malloc( strlen( to_add ) ); */
+    char* key = to_add;
+    /* key = memcpy( key, to_add, strlen( to_add ) + 1 ); */
 
     new_entry->key = key;
     new_entry->value = add_val;
@@ -163,7 +178,6 @@ int ht_delete( hash_table_t* table, char* in_key )
                 }
 
 
-            /* free( found_node->key ); */
             free( found_node->value );
             free( found_node );
 
@@ -210,4 +224,32 @@ HT_Entry **ht_get_items( hash_table_t* input )
                 }
         }
     return output;
+}
+
+void ht_delete_all( hash_table_t* to_delete )
+{
+    uint32_t index;
+    HT_Entry* current_node;
+    for( index = 0; index < to_delete->capacity; index++ )
+        {
+            current_node = to_delete->table_data[ index ];
+            if( current_node != NULL )
+                {
+                    while( current_node->next != NULL )
+                        {
+                            current_node = current_node->next;
+                        }
+                    while( current_node->prev != NULL )
+                        {
+                            current_node = current_node->prev;
+                            free( current_node->next->key );
+                            current_node->next = NULL;
+                            to_delete->size--;
+                        }
+                    current_node = to_delete->table_data[ index ];
+                    free( current_node->key );
+                    to_delete->table_data[ index ] = NULL;
+                }
+        }
+    to_delete->size = 0;
 }
