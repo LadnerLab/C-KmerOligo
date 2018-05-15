@@ -105,4 +105,20 @@ int is_valid_sequence( char* sequence, int min_length, float percent_valid );
 hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* name,
                                       char* in_seq,
                                       int window_size, int step_size );
+
+/**
+ * Break a ymer down into into the unique locations of its xmers
+ * @param in_ymer_name string name of the ymer input to method
+ * @param in_ymer string ymer
+ * @param in_xmer_table pointer to xmer table containing xmers to search
+ * @param window_size integer size of each xmer
+ * @param step_size integer amount to move over after each ymer capture
+ * @returns set of strings containing the locations of in_ymer's xmers
+ **/
+set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
+                                   set_t* out_ymer,
+                                   hash_table_t* in_xmer_table,
+                                   int window_size, int step_size
+                          );
+
 #endif
