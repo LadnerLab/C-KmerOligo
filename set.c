@@ -53,3 +53,13 @@ void set_difference( set_t* dest, set_t* first, set_t* second )
         }
 
 }
+
+void set_add_all( set_t* dest, char** in_array, int num_elements )
+{
+    int index;
+
+    for( index = 0; index < num_elements; index++ )
+        {
+            set_add( dest, in_array[ index ] );
+        }
+}

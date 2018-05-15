@@ -57,4 +57,13 @@ void set_update( set_t* dest, set_t* source );
  **/
 void set_difference( set_t* dest, set_t* first, set_t* second );
 
+
+
+/**
+ * Adds num_elements items from an array of strings into a set
+ * @param dest set to add items to
+ * @param in_array string array of items to add
+ * @param num_elements number of elements to add to set 
+ **/
+void set_add_all( set_t* dest, char** in_array, int num_elements );
 #endif
