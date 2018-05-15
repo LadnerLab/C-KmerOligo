@@ -207,12 +207,13 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
     subset_data_t* current_xmer_data;
     array_list_t* xmer_locations;
 
-    char *current_xmer = malloc( window_size );
+    char *current_xmer;
     char* name_with_bounds;
 
     for( outer_index = 0; outer_index < num_subsets; outer_index++ )
         {
 
+            current_xmer = malloc( window_size + 1 );
             current_xmer_data = malloc( sizeof( subset_data_t ) );
             current_xmer_data->start = ( outer_index * step_size );
 
@@ -222,6 +223,8 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
                     current_xmer[ inner_index ] =
                         in_seq[ ( outer_index * step_size ) + inner_index ];
                 }
+            current_xmer[ inner_index ] = '\0';
+
 
             current_xmer_data->end = ( outer_index * step_size ) + window_size;
             name_with_bounds = malloc( strlen( in_name ) + num_digits_in_int( current_xmer_data->start ) +
