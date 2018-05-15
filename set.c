@@ -17,14 +17,15 @@ void set_add( set_t* set_to_add, char* add_data )
     ht_add( set_to_add->data, add_data, NULL );
 }
 
-void set_remove( set_t* set_to_remove, char* remove_data )
+int set_remove( set_t* set_to_remove, char* remove_data )
 {
-    ht_delete( set_to_remove->data, remove_data );
+    return ht_delete( set_to_remove->data, remove_data );
 }
 
 void set_clear( set_t* set_to_clear )
 {
     ht_clear( set_to_clear->data );
+    free( set_to_clear );
 }
 
 void set_update( set_t* dest, set_t* source )
