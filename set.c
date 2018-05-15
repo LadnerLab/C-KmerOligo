@@ -40,12 +40,12 @@ void set_update( set_t* dest, set_t* source )
 
 void set_difference( set_t* dest, set_t* first, set_t* second )
 {
-    int index;
+    unsigned int index;
     HT_Entry** first_set_items = ht_get_items( first->data );
 
     for( index = 0; index < second->data->size; index++ )
         {
-            if( !ht_find( second->data, first_set_items[ index ]->key ) )
+            if( find_item( second->data, first_set_items[ index ]->key ) == NULL )
                 {
                     set_add( dest, first_set_items[ index ]->key );
                 }
