@@ -172,11 +172,14 @@ int main( int argc, char* argv[] )
 
     while( current_iteration < iterations )
         {
-            max_score = 0;
 
-            total_ymers = ht_get_items( ymer_index_table );
-            for( ymer_index = 0; ymer_index < ymer_index_table->size; ymer_index++ )
+            do
                 {
+                    max_score = 0;
+
+                    total_ymers = ht_get_items( ymer_index_table );
+                    for( ymer_index = 0; ymer_index < ymer_index_table->size; ymer_index++ )
+                        {
                             set_t *current_data = (set_t*) total_ymers[ ymer_index ]->value;
                             if( current_data->data->size > max_score )
                                 {
@@ -194,8 +197,8 @@ int main( int argc, char* argv[] )
                                 {
                                     ar_add( to_add, total_ymers[ ymer_index ]->key );
                                 }
-                }
-
+                        }
+                } while( ymer_index_table->size > 0 && max_score > 0 );
 
             current_iteration++;
         }
