@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <getopt.h>
+#include <stdint.h>
 
 #include "protein_oligo_library.h"
 #include "hash_table.h"
@@ -16,7 +17,7 @@
 #define DEFAULT_ITERATIONS 1
 #define DEFAULT_OUTPUT "output.fasta"
 
-#define YMER_TABLE_SIZE 100000
+#define YMER_TABLE_SIZE 10000
 
 
 int main( int argc, char* argv[] )
@@ -44,6 +45,10 @@ int main( int argc, char* argv[] )
     hash_table_t* ymer_index_table;
     hash_table_t* xmer_table;
 
+    hash_table_t* array_design;
+    hash_table_t* array_xmers;
+    array_list_t* to_add;
+
     HT_Entry** total_ymers;
 
     set_t* current_ymer_locs;
@@ -51,7 +56,7 @@ int main( int argc, char* argv[] )
     int current_iteration;
     int num_seqs;
     int ymer_index;
-    int max_score;
+    uint64_t max_score;
     int index;
     int inner_index;
 
@@ -127,7 +132,6 @@ int main( int argc, char* argv[] )
                                     xmer_window_size, 1 );
         }
 
-    printf( "xmer dict done!\n" );
     for( index = 0; index < num_seqs; index++ )
         {
             sprintf( index_str, "%d", index );
@@ -141,6 +145,7 @@ int main( int argc, char* argv[] )
             for( inner_index = 0; inner_index < ymer_table->size; inner_index++ )
                 {
                     current_ymer = total_ymers[ inner_index ]->key;
+
                     if( is_valid_sequence( current_ymer, min_length, percent_valid ) &&
                         ht_find( ymer_index_table, current_ymer ) == NULL )
                         {
@@ -160,28 +165,35 @@ int main( int argc, char* argv[] )
             ht_init( ymer_table, YMER_TABLE_SIZE );
         }
 
-    printf( "ymer valid size: %d\n", ymer_index_table->size );
-
     current_iteration = 0;
     
+    to_add = malloc( sizeof( set_t ) );
+    ar_init( to_add );
+
     while( current_iteration < iterations )
         {
             max_score = 0;
 
-            set_t* set = malloc( sizeof( set_t ) );
-            set_init( set );
-            component_xmer_locs( "1", total_ymers[ 0 ]->key, set, xmer_table, xmer_window_size, 1 );
-
-            for( ymer_index = 0; ymer_index < ymer_table->capacity; ymer_index++ )
+            total_ymers = ht_get_items( ymer_index_table );
+            for( ymer_index = 0; ymer_index < ymer_index_table->size; ymer_index++ )
                 {
-                    if( ymer_table->table_data[ ymer_index ] != NULL )
-                        {
-                            array_list_t* current_data = (array_list_t*) ht_find( ymer_index_table, ymer_table->table_data[ ymer_index ]->key );
-                            if( current_data->size < max_score )
+                            set_t *current_data = (set_t*) total_ymers[ ymer_index ]->value;
+                            if( current_data->data->size > max_score )
                                 {
-                                    max_score = current_data->size;
+                                    max_score = current_data->data->size;
+
+                                    ar_clear( to_add );
+
+                                    to_add = malloc( sizeof( set_t ) );
+
+                                    ar_init( to_add );
+
+                                    ar_add( to_add, total_ymers[ ymer_index ]->key );
                                 }
-                        }
+                            else if( current_data->data->size == max_score )
+                                {
+                                    ar_add( to_add, total_ymers[ ymer_index ]->key );
+                                }
                 }
 
 
