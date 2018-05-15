@@ -263,8 +263,7 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
     int index;
     hash_table_t* subset_xmers = NULL;
     HT_Entry** subset_xmer_items = NULL;
-    char* xmer_loc_data;
-    char* xmer_loc_data_string;
+    array_list_t* found_data;
 
     subset_xmers = malloc( sizeof( hash_table_t ) );
 
@@ -275,24 +274,11 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
 
     subset_xmer_items = ht_get_items( subset_xmers );
 
-    
-
     for( index = 0; index < subset_xmers->size; index++ )
         {
-            unsigned int inner_index = 0;
-
-            while( ar_get( (array_list_t*) subset_xmer_items[ index ]->value, inner_index ) )
-                {
-                    array_list_t* found_data = (array_list_t*) ht_find( in_xmer_table, subset_xmer_items[ index ]->key );
-                    xmer_loc_data = (char*) ar_get( (array_list_t*) subset_xmer_items[ index ]->value, inner_index );
-                    xmer_loc_data_string = malloc( strlen( xmer_loc_data ) );
-
-                    strcpy( xmer_loc_data_string, xmer_loc_data );
-
-                    set_add( out_ymer, xmer_loc_data_string );
-                    inner_index++;
-                }
-        }
+            found_data = (array_list_t*) ht_find( in_xmer_table, subset_xmer_items[ index ]->key );
+            set_add_all( out_ymer, (char**) found_data->array_data, found_data->size );
+       }
 
     ht_clear( subset_xmers );
     return out_ymer ;
