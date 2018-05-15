@@ -1,8 +1,8 @@
 #ifndef HASHTTABLE_HH_INCLUDED
 #define HASHTTABLE_HH_INCLUDED
 
-#define ITEM_NOT_FOUND -1
 #include <stdint.h>
+#define ITEM_NOT_FOUND -1
 
 typedef struct HT_Entry
 {
@@ -92,6 +92,5 @@ int ht_delete( hash_table_t* table, char* in_key );
  * @returns pointer to array of pointers to HT_Entry items
  **/ 
 HT_Entry **ht_get_items( hash_table_t* input );
-
 #endif
 

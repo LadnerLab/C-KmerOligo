@@ -225,31 +225,3 @@ HT_Entry **ht_get_items( hash_table_t* input )
         }
     return output;
 }
-
-void ht_delete_all( hash_table_t* to_delete )
-{
-    uint32_t index;
-    HT_Entry* current_node;
-    for( index = 0; index < to_delete->capacity; index++ )
-        {
-            current_node = to_delete->table_data[ index ];
-            if( current_node != NULL )
-                {
-                    while( current_node->next != NULL )
-                        {
-                            current_node = current_node->next;
-                        }
-                    while( current_node->prev != NULL )
-                        {
-                            current_node = current_node->prev;
-                            free( current_node->next->key );
-                            current_node->next = NULL;
-                            to_delete->size--;
-                        }
-                    current_node = to_delete->table_data[ index ];
-                    free( current_node->key );
-                    to_delete->table_data[ index ] = NULL;
-                }
-        }
-    to_delete->size = 0;
-}
