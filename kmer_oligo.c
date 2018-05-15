@@ -126,6 +126,8 @@ int main( int argc, char* argv[] )
                                     current_seq->sequence->data,
                                     xmer_window_size, 1 );
         }
+
+    printf( "xmer dict done!\n" );
     for( index = 0; index < num_seqs; index++ )
         {
             sprintf( index_str, "%d", index );
@@ -135,16 +137,12 @@ int main( int argc, char* argv[] )
                                     current_seq->sequence->data,
                                     ymer_window_size, 1 );
 
-            /* create_xmers_with_locs( ymer_index_table, index_str, */
-            /*                         current_seq->sequence->data, */
-            /*                         ymer_window_size, 1 ); */
-
             total_ymers = ht_get_items( ymer_table );
-            printf( "%d\n", ymer_table->size );
             for( inner_index = 0; inner_index < ymer_table->size; inner_index++ )
                 {
                     current_ymer = total_ymers[ inner_index ]->key;
-                    if( is_valid_sequence( current_ymer, min_length, percent_valid ) )
+                    if( is_valid_sequence( current_ymer, min_length, percent_valid ) &&
+                        ht_find( ymer_index_table, current_ymer ) == NULL )
                         {
                             current_ymer_locs = malloc( sizeof( set_t ) );
                             set_init( current_ymer_locs );
@@ -152,22 +150,17 @@ int main( int argc, char* argv[] )
                             component_xmer_locs( current_ymer, total_ymers[ inner_index ]->key,
                                                                             current_ymer_locs, xmer_table, xmer_window_size, 1 );
                             ht_add( ymer_index_table, current_ymer, current_ymer_locs );
+                            ht_add( ymer_name_table, current_ymer, current_seq->name );
                         }
                 }
 
+            // clear the table
             ht_clear( ymer_table );
             ymer_table = malloc( sizeof( hash_table_t ) );
             ht_init( ymer_table, YMER_TABLE_SIZE );
         }
-    return EXIT_SUCCESS;
 
-
-    for( ymer_index = 0; ymer_index < ymer_table->capacity; ymer_index++ )
-        {
-            set_t* current_ymer_locs = component_xmer_locs( "1", total_ymers[ ymer_index ]->key, current_ymer_locs, xmer_table, xmer_window_size, 1 );
-        }
-
-    printf( "ymer valid size: %d\n", ymer_table->size );
+    printf( "ymer valid size: %d\n", ymer_index_table->size );
 
     current_iteration = 0;
     
