@@ -38,15 +38,19 @@ int main( int argc, char* argv[] )
     // program variables
     FILE* data_file;
     sequence_t **seqs_from_file;
-    int index;
-    int num_seqs;
+
     hash_table_t* ymer_name_table;
     hash_table_t* ymer_valid_table;
     hash_table_t* ymer_index_table;
-
     hash_table_t* xmer_table;
 
     HT_Entry** total_ymers;
+
+    int current_iteration;
+    int num_seqs;
+    int ymer_index;
+    int max_score;
+    int index;
 
     sequence_t* current_seq;
     char index_str[ DEFAULT_YMER_SIZE ];
@@ -141,6 +145,25 @@ int main( int argc, char* argv[] )
         }
 
     printf( "ymer valid size: %d\n", ymer_valid_table->size );
+
+    current_iteration = 0;
+    
+    while( current_iteration < iterations )
+        {
+            max_score = 0;
+
+            set_t* set = malloc( sizeof( set_t ) );
+            set_init( set );
+            component_xmer_locs( "1", total_ymers[ 0 ]->key, set, xmer_table, xmer_window_size, 1 );
+
+            for( ymer_index = 0; ymer_index < ymer_index_table->size; ymer_index++ )
+                {
+                    /* if(  */
+                }
+
+
+            current_iteration++;
+        }
     // free all of our allocated memory
     for( index = 0; index < num_seqs; index++ )
         {
