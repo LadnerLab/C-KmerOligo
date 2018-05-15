@@ -17,7 +17,7 @@
 #define DEFAULT_ITERATIONS 1
 #define DEFAULT_OUTPUT "output.fasta"
 
-#define YMER_TABLE_SIZE 10000
+#define YMER_TABLE_SIZE 100000
 
 
 int main( int argc, char* argv[] )
@@ -52,6 +52,7 @@ int main( int argc, char* argv[] )
     HT_Entry** total_ymers;
 
     set_t* current_ymer_locs;
+    set_t* covered_locations;
 
     int current_iteration;
     int num_seqs;
@@ -63,6 +64,7 @@ int main( int argc, char* argv[] )
     sequence_t* current_seq;
 
     char* current_ymer;
+    char* oligo_to_remove;
     char index_str[ DEFAULT_YMER_SIZE ];
 
     // parse options given from command lines
@@ -198,6 +200,25 @@ int main( int argc, char* argv[] )
                                     ar_add( to_add, total_ymers[ ymer_index ]->key );
                                 }
                         }
+
+                    oligo_to_remove = (char*) to_add->array_data[ rand() % to_add->size ];
+                    covered_locations = (set_t*) ht_find( ymer_index_table, oligo_to_remove );
+
+                    for( ymer_index = 0; ymer_index < ymer_index_table->size; ymer_index++ )
+                        {
+                            set_t *difference = malloc( sizeof( set_t ) );
+                            set_init( difference );
+                            set_t current_data = *(set_t*) total_ymers[ ymer_index ]->value;
+
+                            set_difference( difference, covered_locations, &current_data );
+
+                            set_clear( total_ymers[ index ]->value );
+                            total_ymers[ index ]->value = difference;
+                        }
+
+                    ht_delete( ymer_index_table, oligo_to_remove );
+                    printf( "%d\n", ymer_index_table->size );
+
                 } while( ymer_index_table->size > 0 && max_score > 0 );
 
             current_iteration++;
