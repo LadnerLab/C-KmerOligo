@@ -79,9 +79,7 @@ int ht_add( hash_table_t* table, char* to_add, void* add_val )
     HT_Entry *new_entry = malloc( sizeof( HT_Entry ) );
     HT_Entry *current_node;
 
-    /* char* key = malloc( strlen( to_add ) ); */
     char* key = to_add;
-    /* key = memcpy( key, to_add, strlen( to_add ) + 1 ); */
 
     new_entry->key = key;
     new_entry->value = add_val;
