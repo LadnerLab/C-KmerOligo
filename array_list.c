@@ -92,6 +92,7 @@ void *ar_remove( array_list_t *to_remove, unsigned int remove_index )
                 }
             to_remove->size--;
 
+            free( removed_data );
             return removed_data;
         }
     return NULL;
