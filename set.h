@@ -54,6 +54,7 @@ void set_update( set_t* dest, set_t* source );
  * @param dest set to store results in
  * @param first set to compare difference of
  * @param second set to compare difference of
+ **/
 void set_difference( set_t* dest, set_t* first, set_t* second );
 
 #endif
