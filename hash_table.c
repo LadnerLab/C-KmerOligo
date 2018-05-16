@@ -7,6 +7,12 @@
 #define HASH_NUMBER 158341
 #define ADDITIONAL_SPACE 256
 
+void bt_add( HT_Entry* local_root, HT_Entry* new_entry );
+HT_Entry* bt_search( HT_Entry* current_root, char *search_key );
+HT_Entry* bt_remove_from_max( HT_Entry* local_root, HT_Entry* max_val );
+void* bt_delete( HT_Entry* current_root, char *search_key );
+HT_Entry* bt_delete_helper( HT_Entry* current_root, char *search_key );
+
 // local method for calculating exponents
 int int_to_pow( int base, int exponent )
 {
@@ -51,9 +57,10 @@ void ht_clear( hash_table_t* table )
                             current_node = current_node->prev;
                             free( current_node->next );
                         }
-                    free( table->table_data[ index ] );
-                    table->table_data[ index ] = NULL;
                 }
+            free( table->table_data[ index ] );
+            table->table_data[ index ] = NULL;
+
         }
 
     free( table->table_data );
@@ -306,7 +313,17 @@ void* bt_delete( HT_Entry* current_root, char *search_key )
     return found_data;
 }
 
-HT_entry* bt_delete_helper( HT_Entry* current_root, char *search_key )
+HT_Entry* bt_remove_from_max( HT_Entry* local_root, HT_Entry* max_val )
+{
+    if( max_val->right != NULL )
+        {
+            return bt_remove_from_max( max_val, max_val->right );
+        }
+    return max_val;
+    local_root->right = NULL;
+}
+
+HT_Entry* bt_delete_helper( HT_Entry* current_root, char *search_key )
 {
     int compare_val;
     
