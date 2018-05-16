@@ -12,6 +12,7 @@ HT_Entry* bt_search( HT_Entry* current_root, char *search_key );
 HT_Entry* bt_remove_from_max( HT_Entry* local_root, HT_Entry* max_val );
 void* bt_delete( HT_Entry* current_root, char *search_key );
 HT_Entry* bt_delete_helper( HT_Entry* current_root, char *search_key );
+void bt_clear( HT_Entry* current_node );
 
 // local method for calculating exponents
 int int_to_pow( int base, int exponent )
@@ -48,17 +49,13 @@ void ht_clear( hash_table_t* table )
             current_node = table->table_data[ index ];
             if( current_node != NULL )
                 {
-                    while( current_node->next != NULL )
-                        {
-                            current_node = current_node->next;
-                        }
-                    while( current_node->prev != NULL )
-                        {
-                            current_node = current_node->prev;
-                            free( current_node->next );
-                        }
+                    bt_clear( current_node );
                 }
-            free( table->table_data[ index ] );
+            else
+                {
+                    // prevent double free of the root node
+                    free( table->table_data[ index ] );
+                }
             table->table_data[ index ] = NULL;
 
         }
@@ -375,5 +372,18 @@ HT_Entry* bt_delete_helper( HT_Entry* current_root, char *search_key )
                 }
             
             return current_root;
+        }
+}
+
+void bt_clear( HT_Entry* current_node )
+{
+    if( curent_node != NULL )
+        {
+            bt_clear( current_node->left );
+            bt_clear( current_node->right );
+
+            free( current_node->value );
+            free( current_node );
+            current_node = NULL;
         }
 }
