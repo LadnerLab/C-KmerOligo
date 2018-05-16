@@ -176,7 +176,7 @@ void *ht_find( hash_table_t* table, char* in_key )
     return NULL;
 }
 
-int ht_delete( hash_table_t* table, char* in_key )
+void* ht_delete( hash_table_t* table, char* in_key )
 {
     HT_Entry *found_node = find_item( table, in_key );
     uint32_t found_index = generate_hash( in_key, strlen( in_key ), HASH_NUMBER ) %
@@ -184,28 +184,11 @@ int ht_delete( hash_table_t* table, char* in_key )
 
     if( found_node != NULL )
         {
-            if( table->table_data[ found_index ] == found_node )
-                {
-                    table->table_data[ found_index ] = found_node->next;
-                }
-            if( found_node->next != NULL )
-                {
-                    found_node->next->prev = found_node->prev;
-                }
-            if( found_node->prev != NULL )
-                {
-                    found_node->prev->next = found_node->next;
-                }
-
-
-            free( found_node->value );
-            free( found_node );
+            bt_delete( table->table_data[ found_index ], in_key );
 
             table->size -= 1;
-
-            return 1;
         }
-    return 0;
+    return found_node;
 }
 
 
@@ -285,29 +268,28 @@ void bt_add( HT_Entry* local_root, HT_Entry* new_entry )
 HT_Entry* bt_search( HT_Entry* current_root, char *search_key )
 {
     int compare_val = strcmp( current_root->key, search_key )
-        if( compare_val > 0 )
+        if( current_root != NULL )
             {
-                return bt_search( current_root->left, search_key );
+                if( compare_val > 0 )
+                    {
+                        return bt_search( current_root->left, search_key );
+                    }
+                else if( compare_val < 0 )
+                    {
+                        return bt_search( current_root->right, search_key );
+                    }
+                else
+                    {
+                        return current_root;
+                    }
             }
-        else if( compare_val < 0 )
-            {
-                return bt_search( current_root->right, search_key );
-            }
-        else
-            {
-                return current_root;
-            }
+    return NULL;
 }
 
 
-void* bt_delete( HT_Entry* current_root, char *search_key )
+void bt_delete( HT_Entry* current_root, char *search_key )
 {
-    HT_Entry* found_data = bt_search( current_root, search_key )
-    if( found_data != NULL )
-        {
-            bt_delete_helper( current_root, search_key );
-        }
-    return found_data;
+    bt_delete_helper( current_root, search_key );
 }
 
 HT_Entry* bt_remove_from_max( HT_Entry* local_root, HT_Entry* max_val )
