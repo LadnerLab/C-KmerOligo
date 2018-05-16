@@ -7,13 +7,13 @@
 #define HASH_NUMBER 158341
 #define ADDITIONAL_SPACE 256
 
-void bt_add( HT_Entry* local_root, HT_Entry* new_entry );
+int bt_add( HT_Entry* local_root, HT_Entry* new_entry );
 HT_Entry* bt_search( HT_Entry* current_root, char *search_key );
 HT_Entry* bt_remove_from_max( HT_Entry* local_root, HT_Entry* max_val );
 void bt_delete( HT_Entry* current_root, char *search_key );
 HT_Entry* bt_delete_helper( HT_Entry* current_root, char *search_key );
 void bt_clear( HT_Entry* current_node );
-void bt_get_items( HT_Entry* local_root, HT_Entry** out_array, int index );
+void bt_get_items( HT_Entry* local_root, HT_Entry** out_array, uint32_t *index );
 
 // local method for calculating exponents
 int int_to_pow( int base, int exponent )
@@ -31,10 +31,10 @@ void ht_init( hash_table_t* table, int size )
     int index;
 
     table->table_data = malloc( sizeof( HT_Entry* ) * ( size + ADDITIONAL_SPACE ) ); 
-    table->capacity = size;
+    table->capacity = size + ADDITIONAL_SPACE;
     table->size = 0;
 
-    for( index = 0; index < size; index++ )
+    for( index = 0; index < ( size + ADDITIONAL_SPACE ); index++ )
         {
             table->table_data[ index ] = NULL;
         }
@@ -135,14 +135,17 @@ int ht_add( hash_table_t* table, char* to_add, void* add_val )
     if( table->table_data[ item_index ] == NULL )
         {
             table->table_data[ item_index ] = new_entry;
+            table->size++;
         }
     else
         {
             // item hash already in table
-            bt_add( table->table_data[ item_index ], new_entry );
+            if( bt_add( table->table_data[ item_index ], new_entry ) )
+                {
+                    table->size++;
+                }
         }
 
-    table->size++;
     return 1;
 }
 
@@ -210,14 +213,14 @@ HT_Entry **ht_get_items( hash_table_t* input )
                     if( input->table_data[ input_index ] )
                         {
                             bt_get_items( input->table_data[ input_index ],
-                                          output, output_index );
+                                          output, &output_index );
                         }
                 }
         }
     return output;
 }
 
-void bt_add( HT_Entry* local_root, HT_Entry* new_entry )
+int bt_add( HT_Entry* local_root, HT_Entry* new_entry )
 {
     int compare_val;
 
@@ -244,7 +247,7 @@ void bt_add( HT_Entry* local_root, HT_Entry* new_entry )
                         }
                     else
                         {
-                            bt_add( local_root->left, new_entry );
+                            bt_add( local_root->right, new_entry );
                         }
                 }
             else
@@ -252,9 +255,11 @@ void bt_add( HT_Entry* local_root, HT_Entry* new_entry )
                     free( local_root->value );
                     local_root->value = new_entry->value;
                     free( new_entry );
+                    return 0;
                 }
+            return 1;
         }
-    
+    return 0;
 }
 
 
@@ -316,7 +321,6 @@ HT_Entry* bt_delete_helper( HT_Entry* current_root, char *search_key )
                 {
                     if( current_root->left == NULL && current_root->right == NULL )
                         {
-                            free( current_root );
                             current_root = NULL;
                         }
                     else if( current_root->left == NULL )
@@ -364,14 +368,14 @@ void bt_clear( HT_Entry* current_node )
         }
 }
 
-void bt_get_items( HT_Entry* local_root, HT_Entry** out_array, int index )
+void bt_get_items( HT_Entry* local_root, HT_Entry** out_array, uint32_t *index )
 {
     if( local_root != NULL )
         {
             bt_get_items( local_root->left, out_array, index );
 
-            out_array[ index ] = local_root;
-            index++;
+            out_array[ *index ] = local_root;
+            (*index)++;
 
             bt_get_items( local_root->right, out_array, index );
         }
