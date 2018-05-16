@@ -17,7 +17,7 @@
 #define DEFAULT_ITERATIONS 1
 #define DEFAULT_OUTPUT "output.fasta"
 
-#define YMER_TABLE_SIZE 100000
+#define YMER_TABLE_SIZE 168789
 
 
 int main( int argc, char* argv[] )
@@ -117,15 +117,13 @@ int main( int argc, char* argv[] )
 
     xmer_table = malloc( sizeof( hash_table_t ) );
 
+
     ht_init( ymer_name_table, YMER_TABLE_SIZE );
     ht_init( ymer_table, YMER_TABLE_SIZE );
     ht_init( xmer_table, YMER_TABLE_SIZE );
     ht_init( ymer_index_table, YMER_TABLE_SIZE );
 
-    // create a table with xmers and their locations
-    // create a table with ymers and their sequence names
-    // create a table with ymers and their locations
-    for( index = 0; index < num_seqs; index++ )
+ for( index = 0; index < num_seqs; index++ )
         {
             sprintf( index_str, "%d", index );
             current_seq = seqs_from_file[ index ];
@@ -133,7 +131,6 @@ int main( int argc, char* argv[] )
                                     current_seq->sequence->data,
                                     xmer_window_size, 1 );
         }
-
     for( index = 0; index < num_seqs; index++ )
         {
             sprintf( index_str, "%d", index );
@@ -219,7 +216,7 @@ int main( int argc, char* argv[] )
                     ht_delete( ymer_index_table, oligo_to_remove );
                     printf( "%d\n", ymer_index_table->size );
 
-                } while( ymer_index_table->size > 0 && max_score > 0 );
+                } while( ymer_index_table->size > 6400 && max_score > 0 );
 
             current_iteration++;
         }
