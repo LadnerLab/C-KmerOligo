@@ -236,20 +236,23 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
 
             xmer_locations = ( array_list_t* ) ht_find( in_hash, current_xmer );
 
-            if( xmer_locations != NULL )
+            if( !char_in_string( current_xmer, 'X' ) )
                 {
-                    // update the entry at this location
-                    ar_add( xmer_locations, name_with_bounds );
-                }
-            else
-                {
-                    // create the entry at this location
-                    xmer_locations = malloc( sizeof( array_list_t ) );
+                    if( xmer_locations != NULL )
+                        {
+                            // update the entry at this location
+                            ar_add( xmer_locations, name_with_bounds );
+                        }
+                    else
+                        {
+                            // create the entry at this location
+                            xmer_locations = malloc( sizeof( array_list_t ) );
 
-                    ar_init( xmer_locations );
-                    ar_add( xmer_locations, name_with_bounds );
+                            ar_init( xmer_locations );
+                            ar_add( xmer_locations, name_with_bounds );
  
-                    ht_add( in_hash, current_xmer, xmer_locations );
+                            ht_add( in_hash, current_xmer, xmer_locations );
+                        }
                 }
         }
     return in_hash;
