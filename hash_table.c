@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include "hash_table.h"
 
 #define HASH_NUMBER 2069
@@ -60,21 +61,57 @@ void ht_clear( hash_table_t* table )
 }
 
 
-int generate_hash( char* key )
+uint32_t generate_hash( const void *key,  int len, uint32_t seed )
 {
-    int index = 0;
-    unsigned total = 0;
-    while( *( key + index ) )
-        {
-            total += (int) key[ index ] << ( index + 1 );
-            index++;
-        }
-    return total;
+ const unsigned int m = 0xc6a4a793;
+
+  const int r = 16;
+
+  unsigned int h = seed ^ (len * m);
+
+  //----------
+  
+  const unsigned char * data = (const unsigned char *)key;
+
+  while(len >= 4)
+  {
+    unsigned int k = *(unsigned int *)data;
+
+    h += k;
+    h *= m;
+    h ^= h >> 16;
+
+    data += 4;
+    len -= 4;
+  }
+  
+  //----------
+  
+  switch(len)
+  {
+  case 3:
+    h += data[2] << 16;
+  case 2:
+    h += data[1] << 8;
+  case 1:
+    h += data[0];
+    h *= m;
+    h ^= h >> r;
+  };
+ 
+  //----------
+
+  h *= m;
+  h ^= h >> 10;
+  h *= m;
+  h ^= h >> 17;
+
+  return h;
 }
 
 int ht_add( hash_table_t* table, char* to_add, void* add_val )
 {
-    int item_index;
+    uint32_t item_index;
 
     HT_Entry *new_entry = malloc( sizeof( HT_Entry ) );
     HT_Entry *current_node;
@@ -87,7 +124,7 @@ int ht_add( hash_table_t* table, char* to_add, void* add_val )
     new_entry->next = NULL;
     new_entry->prev = NULL;
 
-    item_index = generate_hash( to_add ) % table->capacity;
+    item_index = generate_hash( to_add, strlen( to_add), HASH_NUMBER ) % table->capacity;
 
     // item not already in table
     if( table->table_data[ item_index ] == NULL )
@@ -122,7 +159,8 @@ int ht_add( hash_table_t* table, char* to_add, void* add_val )
 
 HT_Entry* find_item( hash_table_t* table, char* in_key )
 {
-    int search_index = generate_hash( in_key ) % table->capacity;
+    uint32_t search_index = generate_hash( in_key, strlen( in_key ), HASH_NUMBER ) % table->capacity;
+
 
     HT_Entry* current_node;
 
@@ -158,7 +196,8 @@ void *ht_find( hash_table_t* table, char* in_key )
 int ht_delete( hash_table_t* table, char* in_key )
 {
     HT_Entry *found_node = find_item( table, in_key );
-    unsigned int found_index = generate_hash( in_key ) % table->capacity;
+    uint32_t found_index = generate_hash( in_key, strlen( in_key ), HASH_NUMBER ) %
+                           table->capacity;
 
     if( found_node != NULL )
         {

@@ -40,7 +40,7 @@ void ht_clear( hash_table_t* table );
  * @param input string to calculate hash for 
  * @return integer value representing hash of object
  **/
-int generate_hash( char* key );
+uint32_t generate_hash( const void *key,  int len, uint32_t seed );
 
 /**
  * Adds an entry to the hashtable
