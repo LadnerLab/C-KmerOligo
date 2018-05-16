@@ -8,8 +8,8 @@ typedef struct HT_Entry
 {
     char* key;
     void* value;
-    struct HT_Entry* next;
-    struct HT_Entry* prev;
+    struct HT_Entry* left;
+    struct HT_Entry* right;
 } HT_Entry;
 
 typedef struct hash_table_t

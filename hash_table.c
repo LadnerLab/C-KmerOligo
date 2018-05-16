@@ -118,12 +118,13 @@ int ht_add( hash_table_t* table, char* to_add, void* add_val )
     HT_Entry *current_node;
 
     char* key = to_add;
+    int compare_val = 0;
 
     new_entry->key = key;
     new_entry->value = add_val;
 
-    new_entry->next = NULL;
-    new_entry->prev = NULL;
+    new_entry->left = NULL;
+    new_entry->right = NULL;
 
     item_index = generate_hash( to_add, strlen( to_add), HASH_NUMBER ) % table->capacity;
 
@@ -131,29 +132,14 @@ int ht_add( hash_table_t* table, char* to_add, void* add_val )
     if( table->table_data[ item_index ] == NULL )
         {
             table->table_data[ item_index ] = new_entry;
-            table->size++;
         }
     else
         {
             // item hash already in table
-            current_node = table->table_data[ item_index ];
-            while( current_node->next != NULL )
-                {
-                    current_node = current_node->next;
-                }
-            // we don't want to add duplicates
-            if( strcmp( current_node->key, to_add ) == 0 )
-                {
-                    // update the value
-                    current_node->value = add_val;
-                    return 0;
-                }
-            current_node->next = new_entry;
-            new_entry->prev = current_node;
-
-            table->size++;
+            bt_add( table->table_data[ item_index ], new_entry );
         }
 
+    table->size++;
     return 1;
 }
 
@@ -262,4 +248,39 @@ HT_Entry **ht_get_items( hash_table_t* input )
                 }
         }
     return output;
+}
+
+void bt_add( HT_Entry* local_root, HT_Entry* new_entry )
+{
+    int compare_val = strcmp( local_root->key, new_entry->key );
+
+    if( compare_val > 0 )
+        {
+            if( local_root->left == NULL )
+                {
+                    local_root->left = new_entry;
+                }
+            else
+                {
+                    bt_add( local_root->left, new_entry );
+                }
+        }
+    else if( compare_val < 0 )
+        {
+            if( local_root->right == NULL )
+                {
+                    local_root->right = new_entry;
+                }
+            else
+                {
+                    bt_add( local_root->left, new_entry );
+                }
+        }
+    else
+        {
+            free( local_root->value );
+            local_root->value = new_entry->value;
+            free( new_entry );
+        }
+    
 }
