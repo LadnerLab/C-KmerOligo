@@ -3,8 +3,8 @@
 #include <stdint.h>
 typedef struct array_list_t
 {
-    uint64_t size;
-    uint64_t capacity;
+    uint32_t size;
+    uint32_t capacity;
 
     void **array_data;
 } array_list_t;
