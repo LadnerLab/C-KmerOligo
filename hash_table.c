@@ -149,22 +149,14 @@ HT_Entry* find_item( hash_table_t* table, char* in_key )
     uint32_t search_index = generate_hash( in_key, strlen( in_key ), HASH_NUMBER ) % table->capacity;
 
 
-    HT_Entry* current_node;
+    HT_Entry* current_root;
 
     if( table->table_data[ search_index ] != NULL )
         {
-            current_node = table->table_data[ search_index ];
-            while( strcmp( current_node->key, in_key ) != 0 ) 
-                {
-                    if( current_node->next == NULL )
-                        {
-                            return NULL;
-                        }
-                    current_node = current_node->next;
-                }
-            return current_node;
-        }
+            current_root = table->table_data[ search_index ];
 
+            return bt_search( current_root, in_key );
+        }
     return NULL;
 }
 
@@ -283,4 +275,29 @@ void bt_add( HT_Entry* local_root, HT_Entry* new_entry )
             free( new_entry );
         }
     
+}
+
+
+HT_Entry* bt_search( HT_Entry* current_root, char *search_key )
+{
+    int compare_val = strcmp( current_root->key, search_key )
+        {
+            if( compare_val > 0 )
+                {
+                    return bt_search( current_root->left, search_key );
+                }
+            else if( compare_val < 0 )
+                {
+                    return bt_search( current_root->right, search_key );
+                }
+            else
+                {
+                    return current_root;
+                }
+        }
+}
+
+void bt_delete( HT_Entry* current_root, char *search_key )
+{
+
 }
