@@ -10,7 +10,7 @@
 void bt_add( HT_Entry* local_root, HT_Entry* new_entry );
 HT_Entry* bt_search( HT_Entry* current_root, char *search_key );
 HT_Entry* bt_remove_from_max( HT_Entry* local_root, HT_Entry* max_val );
-void* bt_delete( HT_Entry* current_root, char *search_key );
+void bt_delete( HT_Entry* current_root, char *search_key );
 HT_Entry* bt_delete_helper( HT_Entry* current_root, char *search_key );
 void bt_clear( HT_Entry* current_node );
 void bt_get_items( HT_Entry* local_root, HT_Entry** out_array, int index );
@@ -120,10 +120,8 @@ int ht_add( hash_table_t* table, char* to_add, void* add_val )
     uint32_t item_index;
 
     HT_Entry *new_entry = malloc( sizeof( HT_Entry ) );
-    HT_Entry *current_node;
 
     char* key = to_add;
-    int compare_val = 0;
 
     new_entry->key = key;
     new_entry->value = add_val;
@@ -196,7 +194,6 @@ void* ht_delete( hash_table_t* table, char* in_key )
 HT_Entry **ht_get_items( hash_table_t* input )
 {
     HT_Entry **output = NULL;
-    HT_Entry* next_node;
 
     uint32_t input_index;
     uint32_t output_index;
@@ -258,7 +255,7 @@ void bt_add( HT_Entry* local_root, HT_Entry* new_entry )
 
 HT_Entry* bt_search( HT_Entry* current_root, char *search_key )
 {
-    int compare_val = strcmp( current_root->key, search_key )
+    int compare_val = strcmp( current_root->key, search_key );
         if( current_root != NULL )
             {
                 if( compare_val > 0 )
@@ -303,11 +300,11 @@ HT_Entry* bt_delete_helper( HT_Entry* current_root, char *search_key )
 
             if( compare_val > 0 )
                 {
-                    current_root->left = bt_delete( current_root->left, search_key );
+                    current_root->left = bt_delete_helper( current_root->left, search_key );
                 }
             else if( compare_val < 0 )
                     {
-                    current_root->right = bt_delete( current_root->right, search_key );
+                        current_root->right = bt_delete_helper( current_root->right, search_key );
                     }
             else
                 {
@@ -344,13 +341,13 @@ HT_Entry* bt_delete_helper( HT_Entry* current_root, char *search_key )
                         }
                 }
             
-            return current_root;
         }
+            return current_root;
 }
 
 void bt_clear( HT_Entry* current_node )
 {
-    if( curent_node != NULL )
+    if( current_node != NULL )
         {
             bt_clear( current_node->left );
             bt_clear( current_node->right );
