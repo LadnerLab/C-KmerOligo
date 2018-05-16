@@ -1,9 +1,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+
 #include "hash_table.h"
 
-#define HASH_NUMBER 2069
+#define HASH_NUMBER 158341
 #define ADDITIONAL_SPACE 256
 
 // local method for calculating exponents
