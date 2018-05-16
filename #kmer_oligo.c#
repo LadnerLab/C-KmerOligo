@@ -17,7 +17,7 @@
 #define DEFAULT_ITERATIONS 1
 #define DEFAULT_OUTPUT "output.fasta"
 
-#define YMER_TABLE_SIZE 641287
+#define YMER_TABLE_SIZE 100000
 
 
 int main( int argc, char* argv[] )
@@ -216,7 +216,7 @@ int main( int argc, char* argv[] )
                             total_ymers[ index ]->value = difference;
                         }
 
-                    free( ht_delete( ymer_index_table, oligo_to_remove ) );
+                    ht_delete( ymer_index_table, oligo_to_remove );
                     printf( "%d\n", ymer_index_table->size );
 
                 } while( ymer_index_table->size > 0 && max_score > 0 );

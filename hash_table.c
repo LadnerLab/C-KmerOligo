@@ -112,7 +112,7 @@ uint32_t generate_hash( const void *key,  int len, uint32_t seed )
   h *= m;
   h ^= h >> 17;
 
-  return h;
+  return 4;
 }
 
 int ht_add( hash_table_t* table, char* to_add, void* add_val )
@@ -222,7 +222,7 @@ HT_Entry **ht_get_items( hash_table_t* input )
 
 int bt_add( HT_Entry* local_root, HT_Entry* new_entry )
 {
-    int compare_val;
+    int compare_val = 0;
 
     if( local_root != NULL )
         {
@@ -252,7 +252,6 @@ int bt_add( HT_Entry* local_root, HT_Entry* new_entry )
                 }
             else
                 {
-                    free( local_root->value );
                     local_root->value = new_entry->value;
                     free( new_entry );
                     return 0;
@@ -297,8 +296,8 @@ HT_Entry* bt_remove_from_max( HT_Entry* local_root, HT_Entry* max_val )
         {
             return bt_remove_from_max( max_val, max_val->right );
         }
-    return max_val;
     local_root->right = NULL;
+    return max_val;
 }
 
 HT_Entry* bt_delete_helper( HT_Entry* current_root, char *search_key )
@@ -325,12 +324,10 @@ HT_Entry* bt_delete_helper( HT_Entry* current_root, char *search_key )
                         }
                     else if( current_root->left == NULL )
                         {
-                            free( current_root );
                             current_root = current_root->right;
                         }
                     else if( current_root->right == NULL )
                         {
-                            free( current_root );
                             current_root = current_root->left;
                         }
                     else
@@ -338,7 +335,6 @@ HT_Entry* bt_delete_helper( HT_Entry* current_root, char *search_key )
                             if( current_root->left->right == NULL )
                                 {
                                     current_root->value = current_root->left->value;
-                                    free( current_root->left );
                                     current_root->left = current_root->left->left;
                                 }
                             else
@@ -362,7 +358,6 @@ void bt_clear( HT_Entry* current_node )
             bt_clear( current_node->left );
             bt_clear( current_node->right );
 
-            free( current_node->value );
             free( current_node );
             current_node = NULL;
         }

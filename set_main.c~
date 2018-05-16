@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "set.h"
+
+
+int main( void )
+{
+    set_t* a = malloc( sizeof( set_t ) );
+    set_t* b = malloc( sizeof( set_t ) );
+    set_t* c = malloc( sizeof( set_t ) );
+    set_init( a );
+    set_init( b );
+    set_init( c );
+    char* del = "A";
+    char* del2 = "B";
+    char* del3 = "C";
+    char* del4 = "D";
+    char* del5 = "E";
+
+
+    int storage[ 25 ];
+
+    int index;
+
+            set_add( a, del );
+            set_add( a, del2 );
+            set_add( a, del3 );
+            set_add( a, del4 );
+
+    set_add( b, del2);
+    set_add( b, del3 );
+    set_add( b, del4 );
+    set_add( b, del5 );
+
+    set_difference( c, a, b );
+
+    return EXIT_SUCCESS;
+
+    
+}

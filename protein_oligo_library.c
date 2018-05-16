@@ -225,7 +225,6 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
                 }
             current_xmer[ inner_index ] = '\0';
 
-
             current_xmer_data->end = ( outer_index * step_size ) + window_size;
             name_with_bounds = malloc( strlen( in_name ) + num_digits_in_int( current_xmer_data->start ) +
                                        num_digits_in_int( current_xmer_data->end ) + 2 // two for the underscores stored in the string
@@ -271,6 +270,10 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
     subset_xmers = malloc( sizeof( hash_table_t ) );
 
     ht_init( subset_xmers, num_xmers );
+    if( strcmp( in_ymer, "ARKEKKRRGADTSVGIVGL" ) == 0 )
+        {
+            printf( "FOund it\n");
+        }
 
     create_xmers_with_locs( subset_xmers, in_ymer_name, in_ymer,
                             window_size, step_size );

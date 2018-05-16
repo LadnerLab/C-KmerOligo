@@ -28,9 +28,8 @@ void set_add( set_t* set_to_add, char* add_data );
  *       which frees the key stored there
  * @param set_to_remove set to remove string data from
  * @param remove_data string data to remove
- * @returns integer boolean success of operation 
  **/
-int set_remove( set_t* set_to_remove, char* remove_data );
+void set_remove( set_t* set_to_remove, char* remove_data );
 
 /**
  * clears a set object and frees all of its memory

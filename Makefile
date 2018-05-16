@@ -25,7 +25,7 @@ set.o: set.c set.h
 .PHONY: debug clean
 debug: CFLAGS+= -g
 debug: clean
-debug: kmer_oligo 
+debug: kmer_oligo
 
 clean:
 	rm -rf *.o *.gch kmer_oligo
