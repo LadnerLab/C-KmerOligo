@@ -13,6 +13,7 @@ HT_Entry* bt_remove_from_max( HT_Entry* local_root, HT_Entry* max_val );
 void* bt_delete( HT_Entry* current_root, char *search_key );
 HT_Entry* bt_delete_helper( HT_Entry* current_root, char *search_key );
 void bt_clear( HT_Entry* current_node );
+void bt_get_items( HT_Entry* local_root, HT_Entry** out_array, int index );
 
 // local method for calculating exponents
 int int_to_pow( int base, int exponent )
@@ -211,18 +212,8 @@ HT_Entry **ht_get_items( hash_table_t* input )
                 {
                     if( input->table_data[ input_index ] )
                         {
-                            output[ output_index ] = input->table_data[ input_index ];
-                            next_node = input->table_data[ input_index ]->next;
-
-                            output_index++;
-
-                            while( next_node )
-                                {
-                                    output[ output_index ] = next_node;
-                                    next_node = next_node->next;
-
-                                    output_index++;
-                                }
+                            bt_get_items( input->table_data[ input_index ],
+                                          output, output_index );
                         }
                 }
         }
@@ -367,5 +358,18 @@ void bt_clear( HT_Entry* current_node )
             free( current_node->value );
             free( current_node );
             current_node = NULL;
+        }
+}
+
+void bt_get_items( HT_Entry* local_root, HT_Entry** out_array, int index )
+{
+    if( local_root != NULL )
+        {
+            bt_get_items( local_root->left, out_array, index );
+
+            out_array[ index ] = local_root;
+            index++;
+
+            bt_get_items( local_root->right, out_array, index );
         }
 }
