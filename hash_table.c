@@ -281,22 +281,30 @@ void bt_add( HT_Entry* local_root, HT_Entry* new_entry )
 HT_Entry* bt_search( HT_Entry* current_root, char *search_key )
 {
     int compare_val = strcmp( current_root->key, search_key )
-        {
-            if( compare_val > 0 )
-                {
-                    return bt_search( current_root->left, search_key );
-                }
-            else if( compare_val < 0 )
-                {
-                    return bt_search( current_root->right, search_key );
-                }
-            else
-                {
-                    return current_root;
-                }
-        }
+        if( compare_val > 0 )
+            {
+                return bt_search( current_root->left, search_key );
+            }
+        else if( compare_val < 0 )
+            {
+                return bt_search( current_root->right, search_key );
+            }
+        else
+            {
+                return current_root;
+            }
 }
 
+
+void* bt_delete( HT_Entry* current_root, char *search_key )
+{
+    HT_Entry* found_data = bt_search( current_root, search_key )
+    if( found_data != NULL )
+        {
+            bt_delete_helper( current_root, search_key );
+        }
+    return found_data;
+}
 
 HT_entry* bt_delete_helper( HT_Entry* current_root, char *search_key )
 {
@@ -349,5 +357,6 @@ HT_entry* bt_delete_helper( HT_Entry* current_root, char *search_key )
                         }
                 }
             
+            return current_root;
         }
 }
