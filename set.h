@@ -4,6 +4,9 @@
 
 typedef struct set_t
 {
+    int* bit_arr;
+    int size;
+    int hash_count;
     hash_table_t* data;
 } set_t;
 
@@ -12,7 +15,7 @@ typedef struct set_t
  * Initializes set's hash_table data
  * @param init set member to initialize
  **/
-void set_init( set_t* init );
+void set_init( set_t* to_init, int items_count, float probability );
 
 /**
  * Adds a string value to a set.
@@ -21,6 +24,7 @@ void set_init( set_t* init );
  * @param add_data character string to add to
  **/
 void set_add( set_t* set_to_add, char* add_data );
+int set_check( set_t* source, char* item );
 
 /**
  * Removes a string from a set
