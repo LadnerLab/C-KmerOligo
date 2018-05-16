@@ -219,35 +219,40 @@ HT_Entry **ht_get_items( hash_table_t* input )
 
 void bt_add( HT_Entry* local_root, HT_Entry* new_entry )
 {
-    int compare_val = strcmp( local_root->key, new_entry->key );
+    int compare_val;
 
-    if( compare_val > 0 )
+    if( local_root != NULL )
         {
-            if( local_root->left == NULL )
+            compare_val = strcmp( local_root->key, new_entry->key );
+            if( compare_val > 0 )
                 {
-                    local_root->left = new_entry;
+
+                    if( local_root->left == NULL )
+                        {
+                            local_root->left = new_entry;
+                        }
+                    else
+                        {
+                            bt_add( local_root->left, new_entry );
+                        }
+                }
+            else if( compare_val < 0 )
+                {
+                    if( local_root->right == NULL )
+                        {
+                            local_root->right = new_entry;
+                        }
+                    else
+                        {
+                            bt_add( local_root->left, new_entry );
+                        }
                 }
             else
                 {
-                    bt_add( local_root->left, new_entry );
+                    free( local_root->value );
+                    local_root->value = new_entry->value;
+                    free( new_entry );
                 }
-        }
-    else if( compare_val < 0 )
-        {
-            if( local_root->right == NULL )
-                {
-                    local_root->right = new_entry;
-                }
-            else
-                {
-                    bt_add( local_root->left, new_entry );
-                }
-        }
-    else
-        {
-            free( local_root->value );
-            local_root->value = new_entry->value;
-            free( new_entry );
         }
     
 }
@@ -255,9 +260,10 @@ void bt_add( HT_Entry* local_root, HT_Entry* new_entry )
 
 HT_Entry* bt_search( HT_Entry* current_root, char *search_key )
 {
-    int compare_val = strcmp( current_root->key, search_key );
+    int compare_val;
         if( current_root != NULL )
             {
+                compare_val = strcmp( current_root->key, search_key );
                 if( compare_val > 0 )
                     {
                         return bt_search( current_root->left, search_key );
