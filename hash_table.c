@@ -297,7 +297,57 @@ HT_Entry* bt_search( HT_Entry* current_root, char *search_key )
         }
 }
 
-void bt_delete( HT_Entry* current_root, char *search_key )
-{
 
+HT_entry* bt_delete_helper( HT_Entry* current_root, char *search_key )
+{
+    int compare_val;
+    
+    if( current_root != NULL )
+        {
+            compare_val = strcmp( current_root->key, search_key );
+
+            if( compare_val > 0 )
+                {
+                    current_root->left = bt_delete( current_root->left, search_key );
+                }
+            else if( compare_val < 0 )
+                    {
+                    current_root->right = bt_delete( current_root->right, search_key );
+                    }
+            else
+                {
+                    if( current_root->left == NULL && current_root->right == NULL )
+                        {
+                            free( current_root );
+                            current_root = NULL;
+                        }
+                    else if( current_root->left == NULL )
+                        {
+                            free( current_root );
+                            current_root = current_root->right;
+                        }
+                    else if( current_root->right == NULL )
+                        {
+                            free( current_root );
+                            current_root = current_root->left;
+                        }
+                    else
+                        {
+                            if( current_root->left->right == NULL )
+                                {
+                                    current_root->value = current_root->left->value;
+                                    free( current_root->left );
+                                    current_root->left = current_root->left->left;
+                                }
+                            else
+                                {
+                                    current_root->value =
+                                        bt_remove_from_max( current_root,
+                                                            current_root->left
+                                                            )->value;
+                                }
+                        }
+                }
+            
+        }
 }
