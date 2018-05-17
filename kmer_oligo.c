@@ -17,7 +17,7 @@
 #define DEFAULT_ITERATIONS 1
 #define DEFAULT_OUTPUT "output.fasta"
 
-#define YMER_TABLE_SIZE 100043
+#define YMER_TABLE_SIZE 10
 
 
 int main( int argc, char* argv[] )
@@ -169,6 +169,7 @@ int main( int argc, char* argv[] )
     to_add = malloc( sizeof( set_t ) );
     ar_init( to_add );
 
+    set_t *current_data;
     while( current_iteration < iterations )
         {
 
@@ -181,7 +182,7 @@ int main( int argc, char* argv[] )
                     total_ymers = ht_get_items( ymer_index_table );
                     for( ymer_index = 0; ymer_index < ymer_index_table->size; ymer_index++ )
                         {
-                            set_t *current_data = (set_t*) total_ymers[ ymer_index ]->value;
+                            current_data = total_ymers[ ymer_index ]->value;
                             if( current_data->data->size > max_score )
                                 {
                                     max_score = current_data->data->size;
@@ -200,21 +201,20 @@ int main( int argc, char* argv[] )
                                 }
                         }
 
-                    oligo_to_remove = (char*) to_add->array_data[ rand() % to_add->size ];
-                    covered_locations = (set_t*) ht_find( ymer_index_table, oligo_to_remove );
+                    oligo_to_remove = to_add->array_data[ rand() % to_add->size ];
+                    covered_locations = ht_find( ymer_index_table, oligo_to_remove );
 
                     ht_add( array_design, oligo_to_remove, covered_locations );
                     ht_delete( ymer_index_table, oligo_to_remove );
 
-                    for( ymer_index = 0; ymer_index < ymer_index_table->capacity; ymer_index++ )
-                        {
-                            if( ymer_index_table->table_data[ ymer_index ] != NULL )
-                                {
-                                    set_t *current_data = (set_t*) ymer_index_table->
-                                                                   table_data[ ymer_index ]->value;
 
-                                    set_difference( current_data, covered_locations );
-                                }
+                    free( total_ymers );
+                    total_ymers = ht_get_items( ymer_index_table );
+                    for( ymer_index = 0; ymer_index < ymer_index_table->size; ymer_index++ )
+                        {
+                                    current_data = total_ymers[ ymer_index ]->value;
+                                    set_difference( NULL, current_data, covered_locations );
+
                         }
                     printf( "%d\n", ymer_index_table->size );
                     printf( "%d\n", max_score );
