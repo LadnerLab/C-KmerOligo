@@ -17,7 +17,7 @@
 #define DEFAULT_ITERATIONS 1
 #define DEFAULT_OUTPUT "output.fasta"
 
-#define YMER_TABLE_SIZE 156109
+#define YMER_TABLE_SIZE 100043
 
 
 int main( int argc, char* argv[] )
@@ -149,7 +149,7 @@ int main( int argc, char* argv[] )
                         ht_find( ymer_index_table, current_ymer ) == NULL )
                         {
                             current_ymer_locs = malloc( sizeof( set_t ) );
-                            set_init( current_ymer_locs, 1000, 0.01 );
+                            set_init( current_ymer_locs );
 
                             component_xmer_locs( current_ymer, total_ymers[ inner_index ]->key,
                                                                             current_ymer_locs, xmer_table, xmer_window_size, 1 );
