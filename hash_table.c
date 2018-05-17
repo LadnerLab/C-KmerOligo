@@ -1,10 +1,11 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <stdint.h>
 
 #include "hash_table.h"
 
-#define HASH_NUMBER 158341
+#define HASH_NUMBER 3187
 #define ADDITIONAL_SPACE 256
 
 // local method for calculating exponents
@@ -125,7 +126,7 @@ int ht_add( hash_table_t* table, char* to_add, void* add_val )
     new_entry->next = NULL;
     new_entry->prev = NULL;
 
-    item_index = generate_hash( to_add, strlen( to_add), HASH_NUMBER ) % table->capacity;
+    item_index = generate_hash( to_add, strlen( to_add ), HASH_NUMBER ) % table->capacity;
 
     // item not already in table
     if( table->table_data[ item_index ] == NULL )
@@ -220,7 +221,7 @@ int ht_delete( hash_table_t* table, char* in_key )
                 }
 
 
-            free( found_node->value );
+            /* free( found_node->value ); */
             free( found_node );
 
             table->size -= 1;
