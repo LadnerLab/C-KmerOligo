@@ -167,15 +167,19 @@ HT_Entry* find_item( hash_table_t* table, char* in_key )
 
     if( table->table_data[ search_index ] != NULL )
         {
+
             current_node = table->table_data[ search_index ];
+
             while( strcmp( current_node->key, in_key ) != 0 ) 
                 {
+
                     if( current_node->next == NULL )
                         {
                             return NULL;
                         }
                     current_node = current_node->next;
                 }
+
             return current_node;
         }
 
