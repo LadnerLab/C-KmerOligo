@@ -17,7 +17,7 @@
 #define DEFAULT_ITERATIONS 1
 #define DEFAULT_OUTPUT "output.fasta"
 
-#define YMER_TABLE_SIZE 168789
+#define YMER_TABLE_SIZE 31051
 
 
 int main( int argc, char* argv[] )
@@ -149,7 +149,7 @@ int main( int argc, char* argv[] )
                         ht_find( ymer_index_table, current_ymer ) == NULL )
                         {
                             current_ymer_locs = malloc( sizeof( set_t ) );
-                            set_init( current_ymer_locs );
+                            set_init( current_ymer_locs, 1000, 0.01 );
 
                             component_xmer_locs( current_ymer, total_ymers[ inner_index ]->key,
                                                                             current_ymer_locs, xmer_table, xmer_window_size, 1 );
@@ -194,29 +194,33 @@ int main( int argc, char* argv[] )
                                 }
                             else if( current_data->data->size == max_score )
                                 {
+                                    printf( "%d\n", max_score );
                                     ar_add( to_add, total_ymers[ ymer_index ]->key );
                                 }
                         }
 
                     oligo_to_remove = (char*) to_add->array_data[ rand() % to_add->size ];
                     covered_locations = (set_t*) ht_find( ymer_index_table, oligo_to_remove );
+                    ht_delete( ymer_index_table, oligo_to_remove );
 
-                    for( ymer_index = 0; ymer_index < ymer_index_table->size; ymer_index++ )
+                    for( ymer_index = 0; ymer_index < ymer_index_table->capacity; ymer_index++ )
                         {
-                            set_t *difference = malloc( sizeof( set_t ) );
-                            set_init( difference );
-                            set_t current_data = *(set_t*) total_ymers[ ymer_index ]->value;
+                            if( ymer_index_table->table_data[ index ] != NULL )
+                                {
+                                    set_t *difference = malloc( sizeof( set_t ) );
+                                    set_init( difference, 1000, 0.01 );
+                                    set_t current_data = *(set_t*) ymer_index_table->
+                                                                   table_data[ index ]->value;
 
-                            set_difference( difference, covered_locations, &current_data );
+                                    set_difference( difference, &current_data, covered_locations );
 
-                            set_clear( total_ymers[ index ]->value );
-                            total_ymers[ index ]->value = difference;
+                                    set_clear( ymer_index_table->table_data[ index ]->value );
+                                    ymer_index_table->table_data[ index ]->value = difference;
+                                }
                         }
 
-                    ht_delete( ymer_index_table, oligo_to_remove );
-                    printf( "%d\n", ymer_index_table->size );
 
-                } while( ymer_index_table->size > 6400 && max_score > 0 );
+                } while( ymer_index_table->size > 0 && max_score > 0 );
 
             current_iteration++;
         }
