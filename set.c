@@ -68,8 +68,9 @@ int set_remove( set_t* set_to_remove, char* remove_data )
 
 void set_clear( set_t* set_to_clear )
 {
-    /* ht_clear( set_to_clear->data ); */
-    /* free( set_to_clear ); */
+    ht_clear( set_to_clear->data );
+    free( set_to_clear->bit_arr );
+    free( set_to_clear );
 }
 
 int set_check( set_t* source, char* item )
@@ -108,10 +109,10 @@ void set_difference( set_t* dest, set_t* first, set_t* second )
 
 void set_add_all( set_t* dest, char** in_array, int num_elements )
 {
-    /* int index; */
+    int index;
 
-    /* for( index = 0; index < num_elements; index++ ) */
-    /*     { */
-    /*         set_add( dest, in_array[ index ] ); */
-    /*     } */
+    for( index = 0; index < num_elements; index++ )
+        {
+            set_add( dest, in_array[ index ] );
+        }
 }
