@@ -25,7 +25,6 @@ void set_add( set_t* set_to_add, char* add_data )
 int set_remove( set_t* set_to_remove, char* remove_data )
 {
     return ht_delete( set_to_remove->data, remove_data );
-    return NULL;
 }
 
 void set_clear( set_t* set_to_clear )
@@ -34,18 +33,18 @@ void set_clear( set_t* set_to_clear )
     free( set_to_clear );
 }
 
-void set_difference( set_t* first, set_t* second )
+void set_difference( set_t* dest, set_t* first, set_t* second )
 {
     uint32_t index;
-    for( index = 0; ( index < first->data->capacity ); index++ )
+    uint32_t max = (first->data->size < first->data->capacity || first->data->size > first->data->capacity ? first->data->size : first->data->capacity); 
+        
+    HT_Entry **found_data = ht_get_items( first->data );
+    for( index = 0; index < (max); index++ )
         {
-            if( first->data->table_data[ index ] )
-                {
-                    if( find_item( second->data, first->data->table_data[ index ]->key ) )
+                    if( find_item( second->data, found_data[ index ]->key ) )
                         {
-                            ht_delete( first->data, first->data->table_data[ index ]->key );
+                            ht_delete( first->data, found_data[ index ]->key );
                         }
-                }
         }
 }
 
