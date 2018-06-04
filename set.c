@@ -41,7 +41,7 @@ void set_difference( set_t* first, set_t* second )
                     first->data->size : first->data->capacity ); 
         
     HT_Entry **found_data = ht_get_items( first->data );
-    for( index = 0; index < (max); index++ )
+    for( index = 0; index < ( max ); index++ )
         {
                     if( find_item( second->data, found_data[ index ]->key ) )
                         {

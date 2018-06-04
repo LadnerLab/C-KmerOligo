@@ -288,5 +288,5 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
        }
 
     ht_clear( subset_xmers );
-    return out_ymer ;
+    return out_ymer;
 }
