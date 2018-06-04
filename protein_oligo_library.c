@@ -8,7 +8,6 @@
 #include "array_list.h"
 
 #define LINE_SIZE 256
-#define HT_SURPLUS 1024
 #define DASH_CHAR '-'
 
 void read_sequences( FILE* file_to_read, sequence_t** in_sequence )
@@ -227,8 +226,10 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
 
 
             current_xmer_data->end = ( outer_index * step_size ) + window_size;
-            name_with_bounds = malloc( strlen( in_name ) + num_digits_in_int( current_xmer_data->start ) +
-                                       num_digits_in_int( current_xmer_data->end ) + 2 // two for the underscores stored in the string
+
+            name_with_bounds = malloc( strlen( in_name ) +
+                                       num_digits_in_int( current_xmer_data->start ) +
+                                       num_digits_in_int( current_xmer_data->end ) + 2 // 2 _ stored in string 
                                        + 1 );
 
 
@@ -266,7 +267,7 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
                                  )
 {
     int num_xmers = ( window_size - step_size ) + 1;
-    int index;
+    uint32_t index;
     hash_table_t* subset_xmers = NULL;
     HT_Entry** subset_xmer_items = NULL;
     array_list_t* found_data;
