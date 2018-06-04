@@ -33,8 +33,7 @@ void ht_init( hash_table_t* table, int size );
  * allocated for each HT_entry
  * @param table hash_table_t object to free
  **/
-void ht_clear( hash_table_t* table );
-
+void ht_clear( hash_table_t* table ); 
 /**
  * Generates the hash for use by the table.
  * @param input string to calculate hash for 

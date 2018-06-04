@@ -45,8 +45,6 @@ void ar_init( array_list_t* to_init )
 
 void ar_clear( array_list_t* to_clear )
 {
-    unsigned int index;
-
     free( to_clear->array_data );
     free( to_clear );
 }
