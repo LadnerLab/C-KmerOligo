@@ -120,5 +120,19 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
                                    hash_table_t* in_xmer_table,
                                    int window_size, int step_size
                           );
+/**
+ * Break a ymer down into its xmers, the value of each xmer is 0
+ * @param in_hash pointer to hash_table to add the valid xmers to
+ * @param in_seq pointer to string to create a subset of 
+ * @param window_size integer number of characters to capture with each iteration
+ * @param step_size integer number of characters to move over after each iteration
+ * @returns pointer to hash table containing all of the subsets of the sequence, 
+ *          as key, and an array list of subset_data_t as key containing start/end
+ **/
+
+hash_table_t* subset_lists( hash_table_t* in_hash, char* in_name,
+                                      char* in_seq,
+                            int window_size, int step_size
+                          );
 
 #endif

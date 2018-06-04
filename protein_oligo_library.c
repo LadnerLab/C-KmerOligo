@@ -195,6 +195,41 @@ void append_suffix( char* result, char* in_name, int start, int end )
     sprintf( result, "%s_%d_%d", in_name, start, end );
 }
 
+hash_table_t* subset_lists( hash_table_t* in_hash, char* in_name,
+                                      char* in_seq,
+                                      int window_size, int step_size )
+{
+    int outer_index;
+    int inner_index;
+    int num_subsets = calc_num_subseqs( strlen( in_seq ), window_size );
+    int *value = malloc( 1 );
+
+    char *current_xmer;
+
+    for( outer_index = 0; outer_index < num_subsets; outer_index++ )
+        {
+
+            current_xmer = malloc( window_size + 1 );
+
+            for( inner_index = 0; inner_index < window_size; inner_index++ )
+                {
+                    current_xmer[ inner_index ] =
+                        in_seq[ ( outer_index * step_size ) + inner_index ];
+                }
+            current_xmer[ inner_index ] = '\0';
+
+            if( !char_in_string( current_xmer, 'X' ) )
+                {
+                    if( xmer_locations == NULL )
+                        {
+                            // update the entry at this location
+                            ht_add( in_hash, current_xmer, value );
+                        }
+               }
+        }
+    return in_hash;
+}
+
 hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
                                       char* in_seq,
                                       int window_size, int step_size )
@@ -258,6 +293,8 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
         }
     return in_hash;
 }
+
+
 
 
 set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
