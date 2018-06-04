@@ -1,4 +1,4 @@
-CFLAGS= -O2 -Wall -Wextra -std=c99 -mtune=native 
+CFLAGS= -O0 -Wall -Wextra -std=c99 -mtune=native 
 
 kmer_oligo: kmer_oligo.o protein_oligo_library.o dynamic_string.o hash_table.o array_list.o set.o
 	gcc kmer_oligo.o protein_oligo_library.o dynamic_string.o hash_table.o array_list.o set.o -lm -o kmer_oligo
@@ -28,7 +28,7 @@ debug: CFLAGS+= -g -O0
 debug: clean
 debug: kmer_oligo
 
-optimized: CFLAGS += -funswitch-loops -fpredictive-commoning -ftree-loop-vectorize -floop-interchange -floop-unroll-and-jam -fvect-cost-model -ftree-partial-pre -fpeel-loops -fipa-cp-clone
+optimized: CFLAGS += -O2 -funswitch-loops -fpredictive-commoning -ftree-loop-vectorize -floop-interchange -floop-unroll-and-jam -fvect-cost-model -ftree-partial-pre -fpeel-loops -fipa-cp-clone -fomit-frame-pointer
 optimized: clean
 optimized: kmer_oligo
 clean:
