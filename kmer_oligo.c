@@ -230,10 +230,13 @@ int main( int argc, char* argv[] )
                                           );
                                             
                     HT_Entry** xmer_items = ht_get_items( current_ymer_xmers );
-                    int xmer_value = 0;
+                    int *xmer_value = NULL;
 
                     for( index = 0; index < current_ymer_xmers->size; index++ )
                         {
+                            xmer_value = malloc( 1 );
+                            *xmer_value = 1;
+
                             if( ht_find( array_xmers,
                                          xmer_items[ index ]->key
                                        ) == NULL
@@ -241,14 +244,14 @@ int main( int argc, char* argv[] )
                                 {
                                     ht_add( array_xmers,
                                             xmer_items[ index ]->key,
-                                            &xmer_value
+                                            xmer_value
                                           );
                                 }
                             else
                                 {
                                     ( *(int*) ht_find( array_xmers,
-                                                     xmer_items[ index ]->key
-                                                       )
+                                                       xmer_items[ index ]->key
+                                                     )
                                     )++;
                                 }
                         }
@@ -274,19 +277,22 @@ int main( int argc, char* argv[] )
         }
 
 
+    // statistics output
     printf( "Final design includes %d %d-mers ( %.1f%% of total ).\n", array_design->size,
             ymer_window_size, ( array_design->size / (float) total_ymer_count ) * 100
           );
 
     printf( "%d unique %d-mers in final %d-mers ( %.2f%% of total ).\n",
             array_xmers->size, xmer_window_size, ymer_window_size,
-            ( (float) array_xmers->size / xmer_table->size ) 
+            ( (float) array_xmers->size / xmer_table->size ) * 100 
             );
 
     printf( "Average redundancy of %d-mers in %d-mers: %.2f\n",
              xmer_window_size, ymer_window_size,
             ( (float) sum_values_of_table( array_xmers ) / xmer_table->size ) );
             
+    // write output to specified file
+    
     // free all of our allocated memory
     for( index = 0; index < num_seqs; index++ )
         {
@@ -313,7 +319,7 @@ int sum_values_of_table( hash_table_t* in_table )
 
     for( index = 0; index < in_table->size; index++ )
         {
-            total += ( *(int*) table_values[ index ]->value );
+            total += *( (int*) table_values[ index ]->value );
         }
 
     free( table_values );
