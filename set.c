@@ -33,10 +33,12 @@ void set_clear( set_t* set_to_clear )
     free( set_to_clear );
 }
 
-void set_difference( set_t* dest, set_t* first, set_t* second )
+void set_difference( set_t* first, set_t* second )
 {
     uint32_t index;
-    uint32_t max = (first->data->size < first->data->capacity || first->data->size > first->data->capacity ? first->data->size : first->data->capacity); 
+    uint32_t max = ( first->data->size < first->data->capacity ||
+                    first->data->size > first->data->capacity ?
+                    first->data->size : first->data->capacity ); 
         
     HT_Entry **found_data = ht_get_items( first->data );
     for( index = 0; index < (max); index++ )
