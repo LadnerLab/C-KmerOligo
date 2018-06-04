@@ -142,7 +142,9 @@ int main( int argc, char* argv[] )
             current_seq = seqs_from_file[ index ];
             create_xmers_with_locs( ymer_table, current_seq->name,
                                     current_seq->sequence->data,
-                                    ymer_window_size, 1 );
+                                    ymer_window_size, 1
+                                  );
+
 
             total_ymers = ht_get_items( ymer_table );
             for( inner_index = 0; inner_index < ymer_table->size; inner_index++ )
@@ -156,9 +158,13 @@ int main( int argc, char* argv[] )
                             set_init( current_ymer_locs );
 
                             component_xmer_locs( current_ymer, total_ymers[ inner_index ]->key,
-                                                                            current_ymer_locs, xmer_table, xmer_window_size, 1 );
+                                                 current_ymer_locs, xmer_table, xmer_window_size, 1
+                                               );
+                            ht_add( ymer_name_table, current_ymer, ht_find( ymer_table, current_ymer ) );
+
                             ht_add( ymer_index_table, current_ymer, current_ymer_locs );
-                            ht_add( ymer_name_table, current_ymer, current_seq->name );
+
+
                         }
                 }
 
