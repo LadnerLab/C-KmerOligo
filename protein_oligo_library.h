@@ -121,7 +121,7 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
                                    int window_size, int step_size
                           );
 /**
- * Break a ymer down into its xmers, the value of each xmer is 0
+ * Break a ymer down into its xmers, the value of each xmer is NULL
  * @param in_hash pointer to hash_table to add the valid xmers to
  * @param in_seq pointer to string to create a subset of 
  * @param window_size integer number of characters to capture with each iteration

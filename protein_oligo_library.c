@@ -202,7 +202,6 @@ hash_table_t* subset_lists( hash_table_t* in_hash, char* in_name,
     int outer_index;
     int inner_index;
     int num_subsets = calc_num_subseqs( strlen( in_seq ), window_size );
-    int *value = malloc( 1 );
 
     char *current_xmer;
 
@@ -223,7 +222,7 @@ hash_table_t* subset_lists( hash_table_t* in_hash, char* in_name,
                     if( xmer_locations == NULL )
                         {
                             // update the entry at this location
-                            ht_add( in_hash, current_xmer, value );
+                            ht_add( in_hash, current_xmer, NULL );
                         }
                }
         }
