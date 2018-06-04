@@ -217,11 +217,9 @@ hash_table_t* subset_lists( hash_table_t* in_hash,
                 }
             current_xmer[ inner_index ] = '\0';
 
-            if( !char_in_string( current_xmer, 'X' ) )
-                {
-                            // update the entry at this location
-                            ht_add( in_hash, current_xmer, NULL );
-                }
+            // update the entry at this location
+            ht_add( in_hash, current_xmer, NULL );
+
         }
     return in_hash;
 }
