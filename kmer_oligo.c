@@ -276,7 +276,11 @@ int main( int argc, char* argv[] )
     printf( "Final design includes %d %d-mers ( %.1f%% of total ).\n", array_design->size,
             ymer_window_size, ( array_design->size / (float) total_ymer_count ) * 100
           );
-    printf( "%d %d\n", array_design->size, total_ymer_count );
+
+    printf( "%d unique %d-mers in final %d-mers ( %.2f%% of total ).\n",
+            array_xmers->size, xmer_window_size, ymer_window_size,
+            ( (float) array_xmers->size / xmer_table->size ) * 100
+            );
     // free all of our allocated memory
     for( index = 0; index < num_seqs; index++ )
         {
