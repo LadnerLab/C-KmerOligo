@@ -19,6 +19,7 @@
 
 #define YMER_TABLE_SIZE 10000
 
+int sum_values_of_table( hash_table_t* in_table );
 
 int main( int argc, char* argv[] )
 {
@@ -279,8 +280,13 @@ int main( int argc, char* argv[] )
 
     printf( "%d unique %d-mers in final %d-mers ( %.2f%% of total ).\n",
             array_xmers->size, xmer_window_size, ymer_window_size,
-            ( (float) array_xmers->size / xmer_table->size ) * 100
+            ( (float) array_xmers->size / xmer_table->size ) 
             );
+
+    printf( "Average redundancy of %d-mers in %d-mers: %.2f\n",
+             xmer_window_size, ymer_window_size,
+            ( (float) sum_values_of_table( array_xmers ) / xmer_table->size ) );
+            
     // free all of our allocated memory
     for( index = 0; index < num_seqs; index++ )
         {
@@ -298,3 +304,18 @@ int main( int argc, char* argv[] )
 }
 
 
+int sum_values_of_table( hash_table_t* in_table )
+{
+    uint32_t index;
+    int total = 0;
+    
+    HT_Entry** table_values = ht_get_items( in_table );
+
+    for( index = 0; index < in_table->size; index++ )
+        {
+            total += ( *(int*) table_values[ index ]->value );
+        }
+
+    free( table_values );
+    return total;
+}
