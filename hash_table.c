@@ -166,7 +166,7 @@ HT_Entry* find_item( hash_table_t* table, char* in_key )
 
     HT_Entry* current_node;
 
-    if( table->table_data[ search_index ] != NULL )
+    if( ( table->size > 0 ) && ( table->table_data[ search_index ] != NULL ) )
         {
 
             current_node = table->table_data[ search_index ];
