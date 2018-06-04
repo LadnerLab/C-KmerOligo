@@ -130,7 +130,7 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
  *          as key, and an array list of subset_data_t as key containing start/end
  **/
 
-hash_table_t* subset_lists( hash_table_t* in_hash, char* in_name,
+hash_table_t* subset_lists( hash_table_t* in_hash,
                                       char* in_seq,
                             int window_size, int step_size
                           );

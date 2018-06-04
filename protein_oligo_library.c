@@ -195,7 +195,7 @@ void append_suffix( char* result, char* in_name, int start, int end )
     sprintf( result, "%s_%d_%d", in_name, start, end );
 }
 
-hash_table_t* subset_lists( hash_table_t* in_hash, char* in_name,
+hash_table_t* subset_lists( hash_table_t* in_hash,
                                       char* in_seq,
                                       int window_size, int step_size )
 {
@@ -219,12 +219,9 @@ hash_table_t* subset_lists( hash_table_t* in_hash, char* in_name,
 
             if( !char_in_string( current_xmer, 'X' ) )
                 {
-                    if( xmer_locations == NULL )
-                        {
                             // update the entry at this location
                             ht_add( in_hash, current_xmer, NULL );
-                        }
-               }
+                }
         }
     return in_hash;
 }
