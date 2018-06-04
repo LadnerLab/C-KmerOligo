@@ -55,11 +55,11 @@ int main( int argc, char* argv[] )
     set_t* covered_locations;
 
     int current_iteration;
-    int num_seqs;
-    int ymer_index;
+    uint32_t num_seqs;
+    uint32_t ymer_index;
     uint64_t max_score;
-    int index;
-    int inner_index;
+    uint32_t index;
+    uint32_t inner_index;
 
     sequence_t* current_seq;
 
@@ -213,7 +213,7 @@ int main( int argc, char* argv[] )
                     for( ymer_index = 0; ymer_index < ymer_index_table->size; ymer_index++ )
                         {
                                     current_data = total_ymers[ ymer_index ]->value;
-                                    set_difference( NULL, current_data, covered_locations );
+                                    set_difference( current_data, covered_locations );
 
                         }
                     printf( "%d\n", ymer_index_table->size );
