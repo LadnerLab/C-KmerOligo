@@ -256,7 +256,10 @@ int main( int argc, char* argv[] )
                         }
                     printf( "%d\n", ymer_index_table->size );
 
-                } while( ymer_index_table->size > 0 && max_score > 0 );
+                } while( ymer_index_table->size > 0 &&
+                         max_score > 0 &&
+                         current_iteration < iterations
+                       );
 
             current_iteration++;
         }
