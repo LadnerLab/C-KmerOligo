@@ -10,6 +10,12 @@
 #define LINE_SIZE 256
 #define DASH_CHAR '-'
 
+int num_digits_in_int( int input )
+{
+    char int_as_str[ LINE_SIZE ];
+    return sprintf( int_as_str, "%d", input );
+}
+
 void read_sequences( FILE* file_to_read, sequence_t** in_sequence )
 {
     int has_line;
@@ -184,12 +190,6 @@ int calc_num_subseqs( int length, int window_size )
     return length - window_size + 1;
 }
 
-int num_digits_in_int( int input )
-{
-    char int_as_str[ LINE_SIZE ];
-    return sprintf( int_as_str, "%d", input );
-}
-
 void append_suffix( char* result, char* in_name, int start, int end )
 {
     sprintf( result, "%s_%d_%d", in_name, start, end );
@@ -264,9 +264,12 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
 
             append_suffix( name_with_bounds, in_name, current_xmer_data->start, current_xmer_data->end );
 
-            xmer_locations = ( array_list_t* ) ht_find( in_hash, current_xmer );
+            if( in_hash != NULL )
+                {
+                    xmer_locations = ( array_list_t* ) ht_find( in_hash, current_xmer );
+                }
 
-            if( !char_in_string( current_xmer, 'X' ) )
+            if( in_hash != NULL && !char_in_string( current_xmer, 'X' ) )
                 {
                     if( xmer_locations != NULL )
                         {
