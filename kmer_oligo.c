@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <stdint.h>
+#include <time.h>
 
 #include "protein_oligo_library.h"
 #include "hash_table.h"
@@ -17,7 +18,7 @@
 #define DEFAULT_ITERATIONS 1
 #define DEFAULT_OUTPUT "output.fasta"
 
-#define YMER_TABLE_SIZE 10
+#define YMER_TABLE_SIZE 10000
 
 
 int main( int argc, char* argv[] )
@@ -209,6 +210,7 @@ int main( int argc, char* argv[] )
 
 
                     free( total_ymers );
+
                     total_ymers = ht_get_items( ymer_index_table );
                     for( ymer_index = 0; ymer_index < ymer_index_table->size; ymer_index++ )
                         {
@@ -217,8 +219,6 @@ int main( int argc, char* argv[] )
 
                         }
                     printf( "%d\n", ymer_index_table->size );
-                    printf( "%d\n", max_score );
-
 
                 } while( ymer_index_table->size > 0 && max_score > 0 );
 
