@@ -47,6 +47,7 @@ int main( int argc, char* argv[] )
     hash_table_t* xmer_table;
 
     hash_table_t* array_design;
+    hash_table_t* current_ymer_xmers;
     hash_table_t* array_xmers;
     array_list_t* to_add;
 
@@ -116,6 +117,7 @@ int main( int argc, char* argv[] )
 
     ymer_index_table = malloc( sizeof( hash_table_t ) );
 
+    array_xmers = malloc( sizeof( hash_table_t ) );
     xmer_table = malloc( sizeof( hash_table_t ) );
 
 
@@ -123,6 +125,7 @@ int main( int argc, char* argv[] )
     ht_init( ymer_table, YMER_TABLE_SIZE );
     ht_init( xmer_table, YMER_TABLE_SIZE );
     ht_init( ymer_index_table, YMER_TABLE_SIZE );
+    ht_init( array_xmers, YMER_TABLE_SIZE );
 
  for( index = 0; index < num_seqs; index++ )
         {
@@ -209,7 +212,40 @@ int main( int argc, char* argv[] )
                     ht_delete( ymer_index_table, oligo_to_remove );
 
 
+                    current_ymer_xmers = malloc( sizeof( hash_table_t ) );
+                    ht_init( current_ymer_xmers, YMER_TABLE_SIZE );
+
+
+                    subset_lists( current_ymer_xmers, oligo_to_remove,
+                                            xmer_window_size, 1
+                                          );
+                                            
+                    HT_Entry** xmer_items = ht_get_items( current_ymer_xmers );
+                    int xmer_value = 0;
+
+                    for( index = 0; index < current_ymer_xmers->size; index++ )
+                        {
+                            if( ht_find( array_xmers,
+                                         xmer_items[ index ]->key
+                                       ) == NULL
+                               )
+                                {
+                                    ht_add( array_xmers,
+                                            xmer_items[ index ]->key,
+                                            &xmer_value
+                                          );
+                                }
+                            else
+                                {
+                                    ( *(int*) ht_find( array_xmers,
+                                                     xmer_items[ index ]->key
+                                                       )
+                                    )++;
+                                }
+                        }
+
                     free( total_ymers );
+                    ht_clear( current_ymer_xmers );
 
                     total_ymers = ht_get_items( ymer_index_table );
                     for( ymer_index = 0; ymer_index < ymer_index_table->size; ymer_index++ )
