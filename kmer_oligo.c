@@ -3,7 +3,6 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <stdint.h>
-#include <time.h>
 
 #include "protein_oligo_library.h"
 #include "hash_table.h"
@@ -46,7 +45,7 @@ int main( int argc, char* argv[] )
     hash_table_t* ymer_index_table;
     hash_table_t* xmer_table;
 
-    hash_table_t* array_design;
+    hash_table_t* array_design = NULL ;
     hash_table_t* current_ymer_xmers;
     hash_table_t* array_xmers;
     array_list_t* to_add;
@@ -57,6 +56,7 @@ int main( int argc, char* argv[] )
     set_t* covered_locations;
 
     int current_iteration;
+    int total_ymer_count = 0;
     uint32_t num_seqs;
     uint32_t ymer_index;
     uint64_t max_score;
@@ -179,6 +179,8 @@ int main( int argc, char* argv[] )
     to_add = malloc( sizeof( set_t ) );
     ar_init( to_add );
 
+    total_ymer_count = ymer_index_table->size;
+
     set_t *current_data;
     while( current_iteration < iterations )
         {
@@ -269,6 +271,12 @@ int main( int argc, char* argv[] )
 
             current_iteration++;
         }
+
+
+    printf( "Final design includes %d %d-mers ( %.1f%% of total ).\n", array_design->size,
+            ymer_window_size, ( array_design->size / (float) total_ymer_count ) * 100
+          );
+    printf( "%d %d\n", array_design->size, total_ymer_count );
     // free all of our allocated memory
     for( index = 0; index < num_seqs; index++ )
         {
