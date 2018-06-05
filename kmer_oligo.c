@@ -136,7 +136,7 @@ int main( int argc, char* argv[] )
     ht_init( ymer_index_table, YMER_TABLE_SIZE );
     ht_init( array_xmers, YMER_TABLE_SIZE );
 
- for( index = 0; index < num_seqs; index++ )
+ for( index = 0; index < 5; index++ )
         {
             sprintf( index_str, "%d", index );
             current_seq = seqs_from_file[ index ];
@@ -144,7 +144,7 @@ int main( int argc, char* argv[] )
                                     current_seq->sequence->data,
                                     xmer_window_size, 1 );
         }
-    for( index = 0; index < num_seqs; index++ )
+    for( index = 0; index < 5; index++ )
         {
             sprintf( index_str, "%d", index );
 
@@ -179,6 +179,22 @@ int main( int argc, char* argv[] )
 
             // clear the table
            
+            uint32_t clear_index;
+            uint32_t clear2_index;
+
+            HT_Entry** ymer_locs = ht_get_items( current_ymer_locs );
+            for( clear_index = 0; clear_index < ymer_locs; clear_index++ )
+                {
+                    set_t* current_array_list = ymer_locs[ clear_index ]->value;
+                    for( clear2_index = 0; clear2_index < current_array_list->data->size; index ++ )
+                        {
+                            /* set_clear( ->data[ clear2_index ] ); */
+                            /* free( current_array_list->array_data[ clear2_index ] ); */
+                        }
+                    ar_clear( current_array_list );
+                }
+            
+            free( ymer_locs );
             ht_clear( ymer_table );
             ymer_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
             ht_init( ymer_table, YMER_TABLE_SIZE );
@@ -186,8 +202,7 @@ int main( int argc, char* argv[] )
 
     current_iteration = 0;
     
-    to_add = malloc( sizeof( set_t ) );
-    ar_init( to_add );
+
 
     total_ymer_count = ymer_index_table->size;
     array_design = malloc_track( tracked_data, sizeof( hash_table_t ) );
@@ -199,6 +214,8 @@ int main( int argc, char* argv[] )
 
            do
                 {
+                    to_add = malloc( sizeof( set_t ) );
+                    ar_init( to_add );
                     max_score = 0;
 
                     total_ymers = ht_get_items( ymer_index_table );
@@ -231,7 +248,7 @@ int main( int argc, char* argv[] )
 
 
                     current_ymer_xmers = malloc( sizeof( hash_table_t ) );
-                    ht_init( current_ymer_xmers, YMER_TABLE_SIZE );
+                    ht_init( current_ymer_xmers, calc_num_subseqs( ymer_window_size, xmer_window_size ) );
 
 
                     subset_lists( current_ymer_xmers, oligo_to_remove,
@@ -258,6 +275,7 @@ int main( int argc, char* argv[] )
                                 }
                             else
                                 {
+                                    free( xmer_value );
                                     ( *(int*) ht_find( array_xmers,
                                                        xmer_items[ index ]->key
                                                      )
@@ -265,8 +283,7 @@ int main( int argc, char* argv[] )
                                 }
                         }
 
-                    free( total_ymers );
-                    ht_clear( current_ymer_xmers );
+
 
                     total_ymers = ht_get_items( ymer_index_table );
                     for( ymer_index = 0; ymer_index < ymer_index_table->size; ymer_index++ )
@@ -276,6 +293,11 @@ int main( int argc, char* argv[] )
 
                         }
                     printf( "%d\n", ymer_index_table->size );
+
+                    free( total_ymers );
+                    ht_clear( current_ymer_xmers );
+                    ar_clear( to_add );
+                    free( current_ymer_xmers );
 
                 } while( ymer_index_table->size > 0 &&
                          max_score > 0 &&
@@ -306,7 +328,7 @@ int main( int argc, char* argv[] )
 
     
     // free all of our allocated memory
-    for( index = 0; index < num_seqs; index++ )
+    for( index = 0; index < 5; index++ )
         {
             ds_clear( seqs_from_file[ index ]->sequence );
         }
