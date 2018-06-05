@@ -23,6 +23,11 @@ set: set_main.o set.o hash_table.o
 set_main.o: set_main.c hash_table.h set.h 
 set.o: set.c set.h 
 
+plug_leaks: plug_leaks.o protein_oligo_library.o dynamic_string.o hash_table.o array_list.o set.o
+	gcc plug_leaks.o protein_oligo_library.o dynamic_string.o hash_table.o array_list.o set.o -lm -o plug_leaks
+plug_leaks.o: plug_leaks.c protein_oligo_library.h hash_table.h array_list.h set.h
+
+
 .PHONY: debug clean optimized
 debug: CFLAGS+= -g -O0
 debug: clean
