@@ -80,10 +80,9 @@ void *ht_find( hash_table_t* table, char* in_key );
  * Note: Uses find_item
  * @param table pointer to hash_table_t to delete from
  * @param in_key String key value to search
- * @returns integer true if item was successfully found and deleted
- *          integer false otherwise
+ * @returns pointer to value of node that was deleted
  **/
-int ht_delete( hash_table_t* table, char* in_key );
+void* ht_delete( hash_table_t* table, char* in_key );
 
 /** 
  * Gets all of the HT_Entry items, stores them in an array
