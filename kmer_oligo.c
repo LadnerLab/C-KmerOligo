@@ -184,14 +184,14 @@ int main( int argc, char* argv[] )
     ar_init( to_add );
 
     total_ymer_count = ymer_index_table->size;
-
+    array_design = malloc( sizeof( hash_table_t ) );
+    ht_init( array_design, YMER_TABLE_SIZE );
+ 
     set_t *current_data;
     while( current_iteration < iterations )
         {
 
-            array_design = malloc( sizeof( hash_table_t ) );
-            ht_init( array_design, YMER_TABLE_SIZE );
-            do
+           do
                 {
                     max_score = 0;
 
@@ -295,7 +295,6 @@ int main( int argc, char* argv[] )
             ( (float) sum_values_of_table( array_xmers ) / xmer_table->size ) );
             
     // write output to specified file
-    printf( "%d\n", array_design->size );
     write_outputs( array_design, ymer_name_table, output, redundancy );
 
     
