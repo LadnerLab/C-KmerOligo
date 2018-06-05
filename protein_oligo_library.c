@@ -324,3 +324,21 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
     ht_clear( subset_xmers );
     return out_ymer;
 }
+
+
+void *malloc_track( array_list_t* data, int num_bytes )
+{
+    void* tracked_ptr = malloc( num_bytes );
+    ar_add( data, tracked_ptr );
+
+    return tracked_ptr;
+}
+
+void free_data( array_list_t* in_data )
+{
+    unsigned int index;
+    for( index = 0; index < in_data->size; index++ )
+        {
+            free( in_data->array_data[ index ] );
+        }
+}

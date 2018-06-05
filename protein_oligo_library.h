@@ -2,6 +2,7 @@
 #define PROTEIN_OLIGO_H_INCLUDED
 
 #include "dynamic_string.h"
+#include "array_list.h"
 #include "hash_table.h"
 #include "set.h"
 
@@ -135,4 +136,6 @@ hash_table_t* subset_lists( hash_table_t* in_hash,
                             int window_size, int step_size
                           );
 
+void free_data( array_list_t* in_data );
+void *malloc_track( array_list_t* data, int num_bytes );
 #endif
