@@ -6,7 +6,7 @@
 #include "set.h"
 #include "hash_table.h"
 
-#define DEFAULT_SIZE 256
+#define DEFAULT_SIZE 1000
 
 void set_init( set_t* to_init )
 {
