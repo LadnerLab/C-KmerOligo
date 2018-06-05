@@ -24,7 +24,11 @@ void set_add( set_t* set_to_add, char* add_data )
 
 int set_remove( set_t* set_to_remove, char* remove_data )
 {
-    return ht_delete( set_to_remove->data, remove_data );
+    void* return_result = ht_delete( set_to_remove->data, remove_data );
+
+    free( return_result );
+
+    return return_result == NULL;
 }
 
 void set_clear( set_t* set_to_clear )
@@ -45,7 +49,7 @@ void set_difference( set_t* first, set_t* second )
         {
                     if( find_item( second->data, found_data[ index ]->key ) )
                         {
-                            ht_delete( first->data, found_data[ index ]->key );
+                            free( ht_delete( first->data, found_data[ index ]->key ) );
                         }
         }
 }
