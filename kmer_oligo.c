@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <stdint.h>
+#include <string.h>
 
 #include "protein_oligo_library.h"
 #include "hash_table.h"
@@ -20,6 +21,8 @@
 #define YMER_TABLE_SIZE 10000
 
 int sum_values_of_table( hash_table_t* in_table );
+void write_outputs( hash_table_t* output_oligos, hash_table_t* name_table,
+                    char* outfile_name, int redundancy );
 
 int main( int argc, char* argv[] )
 {
@@ -292,6 +295,9 @@ int main( int argc, char* argv[] )
             ( (float) sum_values_of_table( array_xmers ) / xmer_table->size ) );
             
     // write output to specified file
+    printf( "%d\n", array_design->size );
+    write_outputs( array_design, ymer_name_table, output, redundancy );
+
     
     // free all of our allocated memory
     for( index = 0; index < num_seqs; index++ )
@@ -324,4 +330,55 @@ int sum_values_of_table( hash_table_t* in_table )
 
     free( table_values );
     return total;
+}
+
+void write_outputs( hash_table_t* output_oligos, hash_table_t* name_table,
+                    char* outfile_name, int redundancy
+                  )
+{
+    uint32_t index;
+    uint32_t num_ymers = output_oligos->size;
+    
+    HT_Entry** array_design_items = ht_get_items( output_oligos );
+    HT_Entry* current_item = NULL;
+
+    sequence_t* output_seqs[ num_ymers ];
+    sequence_t* to_write;
+
+    dynamic_string_t *ymer;
+
+    int outfile_len = strlen( outfile_name );
+    // padding for characters added to string
+    int extra_chars = 12;
+
+    char* ymer_name = NULL;
+    char outfile_name_with_redundancy[ outfile_len + extra_chars ];
+    
+    for( index = 0; index < num_ymers; index++ )
+        {
+            to_write = malloc( sizeof( sequence_t ) );
+            ymer = malloc( sizeof( dynamic_string_t ) );
+
+            current_item = find_item( name_table, array_design_items[ index ]->key );
+
+            ymer_name = (char*) ( ( *(array_list_t*)current_item->value ).array_data[ 0 ] );
+
+            ymer->data = current_item->key;
+
+            to_write->name = ymer_name;
+            to_write->sequence = ymer;
+            
+            output_seqs[ index ] = to_write;
+        }
+
+    sprintf( outfile_name_with_redundancy, "%s_R_%d", outfile_name, redundancy ); 
+    write_fastas( output_seqs, num_ymers, outfile_name_with_redundancy );
+
+    for( index = 0; index < num_ymers; index++ )
+        {
+            free( output_seqs[ index ]->sequence );
+            free( output_seqs[ index ] );
+        }
+
+    free( array_design_items );
 }
