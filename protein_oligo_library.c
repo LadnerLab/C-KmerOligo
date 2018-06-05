@@ -61,7 +61,7 @@ void write_fastas( sequence_t** in_seqs, int num_seqs, char* output )
 
     for( index = 0; index < num_seqs; index++ )
         {
-            fprintf( out_file, ">%s\n", in_seqs[ index ]->name );
+            fprintf( out_file, "%s\n", in_seqs[ index ]->name );
 
             fprintf( out_file, "%s\n", in_seqs[ index ]->sequence->data );
         }
