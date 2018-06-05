@@ -60,7 +60,6 @@ void ht_clear( hash_table_t* table )
         }
 
     free( table->table_data );
-    free( table );
     table = NULL;
 }
 
