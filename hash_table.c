@@ -221,7 +221,6 @@ void* ht_delete( hash_table_t* table, char* in_key )
                     found_node->prev->next = found_node->next;
                 }
 
-            free( found_node->key );
             free( found_node );
 
             table->size -= 1;
