@@ -56,8 +56,7 @@ void write_fastas( sequence_t** in_seqs, int num_seqs, char* output )
 
     if( !out_file )
         {
-            printf( "Unable to open file %s for output. Exiting..." , output );
-            exit( EXIT_FAILURE );
+            printf( "Unable to open file %s for output." , output );
         }
 
     for( index = 0; index < num_seqs; index++ )
@@ -258,8 +257,9 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
 
             name_with_bounds = malloc( strlen( in_name ) +
                                        num_digits_in_int( current_xmer_data->start ) +
-                                       num_digits_in_int( current_xmer_data->end ) + 2 // 2 _ stored in string 
-                                       + 1 );
+                                       num_digits_in_int( current_xmer_data->end ) +
+                                       2+ 1
+                                      );
 
 
             append_suffix( name_with_bounds, in_name, current_xmer_data->start, current_xmer_data->end );
