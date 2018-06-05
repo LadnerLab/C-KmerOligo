@@ -34,6 +34,7 @@ int set_remove( set_t* set_to_remove, char* remove_data )
 void set_clear( set_t* set_to_clear )
 {
     ht_clear( set_to_clear->data );
+    free( set_to_clear->data );
     free( set_to_clear );
 }
 
@@ -52,6 +53,7 @@ void set_difference( set_t* first, set_t* second )
                             free( ht_delete( first->data, found_data[ index ]->key ) );
                         }
         }
+    free( found_data );
 }
 
 void set_add_all( set_t* dest, char** in_array, int num_elements )
