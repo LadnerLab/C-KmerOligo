@@ -50,8 +50,10 @@ void ht_clear( hash_table_t* table )
                     while( current_node->prev != NULL )
                         {
                             current_node = current_node->prev;
+                            free( current_node->next->key );
                             free( current_node->next );
                         }
+                    free( table->table_data[ index ]->key );
                     free( table->table_data[ index ] );
                     table->table_data[ index ] = NULL;
                 }
@@ -118,9 +120,8 @@ int ht_add( hash_table_t* table, char* to_add, void* add_val )
     HT_Entry *new_entry = malloc( sizeof( HT_Entry ) );
     HT_Entry *current_node;
 
-    char* key = to_add;
-
-    new_entry->key = key;
+    new_entry->key = malloc( strlen( to_add ) + 1 );
+    strcpy( new_entry->key, to_add );
     new_entry->value = add_val;
 
     new_entry->next = NULL;
@@ -220,6 +221,7 @@ int ht_delete( hash_table_t* table, char* in_key )
                     found_node->prev->next = found_node->next;
                 }
 
+            free( found_node->key );
             free( found_node );
 
             table->size -= 1;
