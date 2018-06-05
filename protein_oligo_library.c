@@ -287,6 +287,7 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
                             ht_add( in_hash, current_xmer, xmer_locations );
                         }
                 }
+            free( current_xmer_data );
         }
     return in_hash;
 }
@@ -321,7 +322,9 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
             set_add_all( out_ymer, (char**) found_data->array_data, found_data->size );
        }
 
+    free( subset_xmer_items );
     ht_clear( subset_xmers );
+    free( subset_xmers );
     return out_ymer;
 }
 

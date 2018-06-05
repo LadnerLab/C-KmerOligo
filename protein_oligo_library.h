@@ -138,4 +138,5 @@ hash_table_t* subset_lists( hash_table_t* in_hash,
 
 void free_data( array_list_t* in_data );
 void *malloc_track( array_list_t* data, int num_bytes );
+int calc_num_subseqs( int length, int window_size );
 #endif
