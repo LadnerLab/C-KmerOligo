@@ -4,6 +4,7 @@
 #include <getopt.h>
 #include <stdint.h>
 #include <string.h>
+#include <time.h>
 
 #include "protein_oligo_library.h"
 #include "hash_table.h"
@@ -69,6 +70,7 @@ int main( int argc, char* argv[] )
     uint64_t max_score;
     uint32_t index;
     uint32_t inner_index;
+    uint32_t min_ymers;
 
     set_t* current_set;
     set_t *current_data;
@@ -126,7 +128,6 @@ int main( int argc, char* argv[] )
 
     read_sequences( data_file, seqs_from_file );
 
-
     ymer_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
     ymer_name_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
 
@@ -141,6 +142,9 @@ int main( int argc, char* argv[] )
     ht_init( xmer_table, YMER_TABLE_SIZE );
     ht_init( ymer_index_table, YMER_TABLE_SIZE );
     ht_init( array_xmers, YMER_TABLE_SIZE );
+
+    // seed our random number
+    srand( time( NULL ) );
 
  for( index = 0; index < num_seqs; index++ )
         {
@@ -195,6 +199,8 @@ int main( int argc, char* argv[] )
     total_ymer_count = ymer_index_table->size;
     array_design = malloc_track( tracked_data, sizeof( hash_table_t ) );
     ht_init( array_design, YMER_TABLE_SIZE );
+
+    min_ymers = ymer_index_table->size;
  
     while( current_iteration < iterations )
         {
@@ -294,30 +300,38 @@ int main( int argc, char* argv[] )
                        );
 
 
+           if( array_design->size < min_ymers )
+               {
+                   min_ymers = array_design->size;
+               }
+
            total_ymers_clear = ht_get_items( ymer_index_table );
            for( index = 0; index < ymer_index_table->size; index++ )
                {
                    current_set = total_ymers_clear[ index ]->value;
                    set_clear( current_set );
                }
-            current_iteration++;
+
+           // statistics output
+           printf( "Final design includes %d %d-mers ( %.1f%% of total ).\n", array_design->size,
+                   ymer_window_size, ( array_design->size / (float) total_ymer_count ) * 100
+                   );
+
+           printf( "%d unique %d-mers in final %d-mers ( %.2f%% of total ).\n",
+                   array_xmers->size, xmer_window_size, ymer_window_size,
+                   ( (float) array_xmers->size / xmer_table->size ) * 100 
+                   );
+
+           printf( "Average redundancy of %d-mers in %d-mers: %.2f\n",
+                   xmer_window_size, ymer_window_size,
+                   ( (float) sum_values_of_table( array_xmers ) / xmer_table->size ) );
+
+           current_iteration++;
+
         }
 
 
-    // statistics output
-    printf( "Final design includes %d %d-mers ( %.1f%% of total ).\n", array_design->size,
-            ymer_window_size, ( array_design->size / (float) total_ymer_count ) * 100
-          );
-
-    printf( "%d unique %d-mers in final %d-mers ( %.2f%% of total ).\n",
-            array_xmers->size, xmer_window_size, ymer_window_size,
-            ( (float) array_xmers->size / xmer_table->size ) * 100 
-            );
-
-    printf( "Average redundancy of %d-mers in %d-mers: %.2f\n",
-             xmer_window_size, ymer_window_size,
-            ( (float) sum_values_of_table( array_xmers ) / xmer_table->size ) );
-            
+              
     // write output to specified file
     write_outputs( array_design, ymer_name_table, output, redundancy );
 
