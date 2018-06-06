@@ -18,6 +18,7 @@
 #define DEFAULT_PERCENT_VALID 90.00
 #define DEFAULT_ITERATIONS 1
 #define DEFAULT_OUTPUT "output.fasta"
+#define DISPLAY_INTERVAL 100
 
 #define YMER_TABLE_SIZE 10000
 
@@ -66,6 +67,8 @@ int main( int argc, char* argv[] )
     int current_iteration;
     int *xmer_value = NULL;
     int total_ymer_count = 0;
+    int count_val = 0;
+        
     uint32_t num_seqs;
     uint32_t ymer_index;
     uint64_t max_score;
@@ -238,6 +241,13 @@ int main( int argc, char* argv[] )
                     ht_add( array_design, oligo_to_remove, covered_locations );
                     ht_delete( ymer_index_table, oligo_to_remove );
 
+                    count_val++;
+                    if( !( count_val % DISPLAY_INTERVAL ) )
+                        {
+                            printf( "Current iteration: %d.\n", count_val );
+                            printf( "Current max score: %d.\n", max_score );
+                        }
+
                                                                      
                     current_ymer_xmers = malloc( sizeof( hash_table_t ) );
                     ht_init( current_ymer_xmers, calc_num_subseqs( ymer_window_size, xmer_window_size ) );
@@ -286,7 +296,6 @@ int main( int argc, char* argv[] )
                             set_difference( current_data, covered_locations );
 
                         }
-                    printf( "%d\n", ymer_index_table->size );
 
                     free( total_ymers );
                     ht_clear( current_ymer_xmers );
@@ -298,7 +307,7 @@ int main( int argc, char* argv[] )
                          current_iteration < iterations
                          );
             // statistics output
-            printf( "Final design includes %d %d-mers ( %.1f%% of total ).\n", array_design->size,
+            printf( "\nFinal design includes %d %d-mers ( %.1f%% of total ).\n", array_design->size,
                     ymer_window_size, ( array_design->size / (float) total_ymer_count ) * 100
                     );
 
@@ -347,6 +356,11 @@ int main( int argc, char* argv[] )
             ht_clear( xmer_table );
             ht_clear( ymer_index_table );
             ht_clear( array_xmers );
+
+            free( ymer_name_table );
+            free( xmer_table );
+            free( ymer_index_table );
+            free( array_xmers );
  
             current_iteration++;
         }
