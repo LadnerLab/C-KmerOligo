@@ -73,7 +73,6 @@ int main( int argc, char* argv[] )
     uint32_t inner_index;
     uint32_t min_ymers;
 
-    set_t* current_set;
     set_t *current_data;
 
     sequence_t* current_seq;
@@ -190,7 +189,6 @@ int main( int argc, char* argv[] )
                                     ht_add( ymer_name_table, current_ymer, ht_find( ymer_table, current_ymer ) );
 
                                     ht_add( ymer_index_table, current_ymer, current_ymer_locs );
-
 
                                 }
                         }
@@ -315,10 +313,16 @@ int main( int argc, char* argv[] )
 
 
             total_ymers_clear = ht_get_items( ymer_index_table );
+            total_ymers = ht_get_items( ymer_index_table );
             for( index = 0; index < ymer_index_table->size; index++ )
                 {
-                    current_set = total_ymers_clear[ index ]->value;
-                    set_clear( current_set );
+                    current_data = total_ymers[ index ]->value;
+                    total_ymers_clear = ht_get_items( current_data->data );
+                    for( inner_index = 0; inner_index < current_data->data->size; inner_index++ )
+                        {
+                            free( total_ymers_clear[ inner_index ]->key );
+                        }
+                    set_clear( current_data );
                 }
 
             if( array_design->size < min_ymers )
@@ -335,6 +339,8 @@ int main( int argc, char* argv[] )
                 }
             // write output to specified file
             write_outputs( best_iteration, ymer_name_table, output, redundancy );
+
+
 
             // free all of our allocated memory
             ht_clear( ymer_name_table );
