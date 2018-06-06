@@ -55,17 +55,23 @@ int main( int argc, char* argv[] )
     array_list_t* to_add;
 
     HT_Entry** total_ymers;
+    HT_Entry** xmer_items;
+    HT_Entry** total_ymers_clear;
 
     set_t* current_ymer_locs;
     set_t* covered_locations;
 
     int current_iteration;
+    int *xmer_value = NULL;
     int total_ymer_count = 0;
     uint32_t num_seqs;
     uint32_t ymer_index;
     uint64_t max_score;
     uint32_t index;
     uint32_t inner_index;
+
+    set_t* current_set;
+    set_t *current_data;
 
     sequence_t* current_seq;
     array_list_t* tracked_data;
@@ -136,7 +142,7 @@ int main( int argc, char* argv[] )
     ht_init( ymer_index_table, YMER_TABLE_SIZE );
     ht_init( array_xmers, YMER_TABLE_SIZE );
 
- for( index = 0; index < 5; index++ )
+ for( index = 0; index < num_seqs; index++ )
         {
             sprintf( index_str, "%d", index );
             current_seq = seqs_from_file[ index ];
@@ -144,7 +150,7 @@ int main( int argc, char* argv[] )
                                     current_seq->sequence->data,
                                     xmer_window_size, 1 );
         }
-    for( index = 0; index < 5; index++ )
+    for( index = 0; index < num_seqs; index++ )
         {
             sprintf( index_str, "%d", index );
 
@@ -163,7 +169,7 @@ int main( int argc, char* argv[] )
                     if( is_valid_sequence( current_ymer, min_length, percent_valid ) &&
                         ht_find( ymer_index_table, current_ymer ) == NULL )
                         {
-                            current_ymer_locs = malloc_track( tracked_data, sizeof( set_t ) );
+                            current_ymer_locs = malloc( sizeof( set_t ) );
                             set_init( current_ymer_locs );
 
                             component_xmer_locs( current_ymer, total_ymers[ inner_index ]->key,
@@ -177,38 +183,19 @@ int main( int argc, char* argv[] )
                         }
                 }
 
-            // clear the table
-           
-            uint32_t clear_index;
-            uint32_t clear2_index;
-
-            HT_Entry** ymer_locs = ht_get_items( current_ymer_locs );
-            for( clear_index = 0; clear_index < ymer_locs; clear_index++ )
-                {
-                    set_t* current_array_list = ymer_locs[ clear_index ]->value;
-                    for( clear2_index = 0; clear2_index < current_array_list->data->size; index ++ )
-                        {
-                            /* set_clear( ->data[ clear2_index ] ); */
-                            /* free( current_array_list->array_data[ clear2_index ] ); */
-                        }
-                    ar_clear( current_array_list );
-                }
-            
-            free( ymer_locs );
             ht_clear( ymer_table );
+            free( total_ymers );
+ 
             ymer_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
             ht_init( ymer_table, YMER_TABLE_SIZE );
         }
 
     current_iteration = 0;
-    
-
 
     total_ymer_count = ymer_index_table->size;
     array_design = malloc_track( tracked_data, sizeof( hash_table_t ) );
     ht_init( array_design, YMER_TABLE_SIZE );
  
-    set_t *current_data;
     while( current_iteration < iterations )
         {
 
@@ -246,7 +233,7 @@ int main( int argc, char* argv[] )
                     ht_add( array_design, oligo_to_remove, covered_locations );
                     ht_delete( ymer_index_table, oligo_to_remove );
 
-
+                                                                     
                     current_ymer_xmers = malloc( sizeof( hash_table_t ) );
                     ht_init( current_ymer_xmers, calc_num_subseqs( ymer_window_size, xmer_window_size ) );
 
@@ -255,8 +242,7 @@ int main( int argc, char* argv[] )
                                             xmer_window_size, 1
                                           );
                                             
-                    HT_Entry** xmer_items = ht_get_items( current_ymer_xmers );
-                    int *xmer_value = NULL;
+                    xmer_items = ht_get_items( current_ymer_xmers );
 
                     for( index = 0; index < current_ymer_xmers->size; index++ )
                         {
@@ -285,6 +271,9 @@ int main( int argc, char* argv[] )
 
 
 
+                    free( total_ymers );
+                    free( xmer_items );
+
                     total_ymers = ht_get_items( ymer_index_table );
                     for( ymer_index = 0; ymer_index < ymer_index_table->size; ymer_index++ )
                         {
@@ -305,6 +294,12 @@ int main( int argc, char* argv[] )
                        );
 
 
+           total_ymers_clear = ht_get_items( ymer_index_table );
+           for( index = 0; index < ymer_index_table->size; index++ )
+               {
+                   current_set = total_ymers_clear[ index ]->value;
+                   set_clear( current_set );
+               }
             current_iteration++;
         }
 
@@ -328,12 +323,18 @@ int main( int argc, char* argv[] )
 
     
     // free all of our allocated memory
-    for( index = 0; index < 5; index++ )
+    ht_clear( ymer_name_table );
+    ht_clear( xmer_table );
+    ht_clear( ymer_index_table );
+    ht_clear( array_xmers );
+    ht_clear( array_design );
+    for( index = 0; index < num_seqs; index++ )
         {
             ds_clear( seqs_from_file[ index ]->sequence );
         }
 
     free_data( tracked_data );
+    ar_clear( tracked_data );
     return EXIT_SUCCESS;
 }
 
