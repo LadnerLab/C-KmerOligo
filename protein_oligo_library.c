@@ -320,6 +320,7 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
         {
             found_data = (array_list_t*) ht_find( in_xmer_table, subset_xmer_items[ index ]->key );
             set_add_all( out_ymer, (char**) found_data->array_data, found_data->size );
+
        }
 
     free( subset_xmer_items );

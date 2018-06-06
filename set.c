@@ -12,7 +12,6 @@ void set_init( set_t* to_init )
 {
     to_init->data = malloc( sizeof( hash_table_t ) );
     ht_init( to_init->data, DEFAULT_SIZE );
-
 }
 
 
