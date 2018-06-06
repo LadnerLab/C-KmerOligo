@@ -49,6 +49,7 @@ int main( int argc, char* argv[] )
     hash_table_t* ymer_table;
     hash_table_t* ymer_index_table;
     hash_table_t* xmer_table;
+    hash_table_t* best_iteration = NULL;
 
     hash_table_t* array_design = NULL ;
     hash_table_t* current_ymer_xmers;
@@ -298,20 +299,6 @@ int main( int argc, char* argv[] )
                          max_score > 0 &&
                          current_iteration < iterations
                        );
-
-
-           if( array_design->size < min_ymers )
-               {
-                   min_ymers = array_design->size;
-               }
-
-           total_ymers_clear = ht_get_items( ymer_index_table );
-           for( index = 0; index < ymer_index_table->size; index++ )
-               {
-                   current_set = total_ymers_clear[ index ]->value;
-                   set_clear( current_set );
-               }
-
            // statistics output
            printf( "Final design includes %d %d-mers ( %.1f%% of total ).\n", array_design->size,
                    ymer_window_size, ( array_design->size / (float) total_ymer_count ) * 100
@@ -328,12 +315,32 @@ int main( int argc, char* argv[] )
 
            current_iteration++;
 
+           if( array_design->size < min_ymers )
+               {
+                   min_ymers = array_design->size;
+                   best_iteration = array_design;
+
+                   array_design = malloc_track( tracked_data, sizeof( hash_table_t ) );
+                   ht_init( array_design, YMER_TABLE_SIZE );
+               }
+           else
+               {
+                   ht_clear( array_design );
+                   ht_init( array_design, YMER_TABLE_SIZE );
+               }
+
         }
 
 
-              
+    total_ymers_clear = ht_get_items( ymer_index_table );
+    for( index = 0; index < ymer_index_table->size; index++ )
+        {
+            current_set = total_ymers_clear[ index ]->value;
+            set_clear( current_set );
+        }
+
     // write output to specified file
-    write_outputs( array_design, ymer_name_table, output, redundancy );
+    write_outputs( best_iteration, ymer_name_table, output, redundancy );
 
     
     // free all of our allocated memory
