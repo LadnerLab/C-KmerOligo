@@ -57,9 +57,9 @@ int main( int argc, char* argv[] )
     hash_table_t* array_xmers;
     array_list_t* to_add;
 
-    HT_Entry** total_ymers;
-    HT_Entry** xmer_items;
-    HT_Entry** total_ymers_clear;
+    HT_Entry* total_ymers;
+    HT_Entry* xmer_items;
+    HT_Entry* total_ymers_clear;
 
     set_t* current_ymer_locs;
     set_t* covered_locations;
@@ -178,7 +178,7 @@ int main( int argc, char* argv[] )
                     total_ymers = ht_get_items( ymer_table );
                     for( inner_index = 0; inner_index < ymer_table->size; inner_index++ )
                         {
-                            current_ymer = total_ymers[ inner_index ]->key;
+                            current_ymer = total_ymers[ inner_index ].key;
 
                             if( is_valid_sequence( current_ymer, min_length, percent_valid ) &&
                                 ht_find( ymer_index_table, current_ymer ) == NULL )
@@ -186,7 +186,7 @@ int main( int argc, char* argv[] )
                                     current_ymer_locs = malloc( sizeof( set_t ) );
                                     set_init( current_ymer_locs );
 
-                                    component_xmer_locs( current_ymer, total_ymers[ inner_index ]->key,
+                                    component_xmer_locs( current_ymer, total_ymers[ inner_index ].key,
                                                          current_ymer_locs, xmer_table, xmer_window_size, 1
                                                          );
                                     ht_add( ymer_name_table, current_ymer, ht_find( ymer_table, current_ymer ) );
@@ -216,7 +216,7 @@ int main( int argc, char* argv[] )
                     total_ymers = ht_get_items( ymer_index_table );
                     for( ymer_index = 0; ymer_index < ymer_index_table->size; ymer_index++ )
                         {
-                            current_data = total_ymers[ ymer_index ]->value;
+                            current_data = total_ymers[ ymer_index ].value;
                             if( current_data->data->size > max_score )
                                 {
                                     max_score = current_data->data->size;
@@ -227,11 +227,11 @@ int main( int argc, char* argv[] )
 
                                     ar_init( to_add );
 
-                                    ar_add( to_add, total_ymers[ ymer_index ]->key );
+                                    ar_add( to_add, total_ymers[ ymer_index ].key );
                                 }
                             else if( current_data->data->size == max_score )
                                 {
-                                    ar_add( to_add, total_ymers[ ymer_index ]->key );
+                                    ar_add( to_add, total_ymers[ ymer_index ].key );
                                 }
                         }
 
@@ -265,12 +265,12 @@ int main( int argc, char* argv[] )
                             *xmer_value = 1;
 
                             if( ht_find( array_xmers,
-                                         xmer_items[ index ]->key
+                                         xmer_items[ index ].key
                                          ) == NULL
                                 )
                                 {
                                     ht_add( array_xmers,
-                                            xmer_items[ index ]->key,
+                                            xmer_items[ index ].key,
                                             xmer_value
                                             );
                                 }
@@ -278,7 +278,7 @@ int main( int argc, char* argv[] )
                                 {
                                     free( xmer_value );
                                     ( *(int*) ht_find( array_xmers,
-                                                       xmer_items[ index ]->key
+                                                       xmer_items[ index ].key
                                                        )
                                       )++;
                                 }
@@ -292,7 +292,7 @@ int main( int argc, char* argv[] )
                     total_ymers = ht_get_items( ymer_index_table );
                     for( ymer_index = 0; ymer_index < ymer_index_table->size; ymer_index++ )
                         {
-                            current_data = total_ymers[ ymer_index ]->value;
+                            current_data = total_ymers[ ymer_index ].value;
                             set_difference( current_data, covered_locations );
 
                         }
@@ -325,11 +325,11 @@ int main( int argc, char* argv[] )
             total_ymers = ht_get_items( ymer_index_table );
             for( index = 0; index < ymer_index_table->size; index++ )
                 {
-                    current_data = total_ymers[ index ]->value;
+                    current_data = total_ymers[ index ].value;
                     total_ymers_clear = ht_get_items( current_data->data );
                     for( inner_index = 0; inner_index < current_data->data->size; inner_index++ )
                         {
-                            free( total_ymers_clear[ inner_index ]->key );
+                            free( total_ymers_clear[ inner_index ].key );
                         }
                     set_clear( current_data );
                 }
@@ -383,11 +383,11 @@ int sum_values_of_table( hash_table_t* in_table )
     uint32_t index;
     int total = 0;
     
-    HT_Entry** table_values = ht_get_items( in_table );
+    HT_Entry* table_values = ht_get_items( in_table );
 
     for( index = 0; index < in_table->size; index++ )
         {
-            total += *( (int*) table_values[ index ]->value );
+            total += *( (int*) table_values[ index ].value );
         }
 
     free( table_values );
@@ -401,7 +401,7 @@ void write_outputs( hash_table_t* output_oligos, hash_table_t* name_table,
     uint32_t index;
     uint32_t num_ymers = output_oligos->size;
     
-    HT_Entry** array_design_items = ht_get_items( output_oligos );
+    HT_Entry* array_design_items = ht_get_items( output_oligos );
     HT_Entry* current_item = NULL;
 
     sequence_t* output_seqs[ num_ymers ];
@@ -421,7 +421,7 @@ void write_outputs( hash_table_t* output_oligos, hash_table_t* name_table,
             to_write = malloc( sizeof( sequence_t ) );
             ymer = malloc( sizeof( dynamic_string_t ) );
 
-            current_item = find_item( name_table, array_design_items[ index ]->key );
+            current_item = find_item( name_table, array_design_items[ index ].key );
 
             ymer_name = (char*) ( ( *(array_list_t*)current_item->value ).array_data[ 0 ] );
 
