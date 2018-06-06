@@ -129,6 +129,13 @@ int main( int argc, char* argv[] )
 
     read_sequences( data_file, seqs_from_file );
 
+
+    array_design = malloc_track( tracked_data, sizeof( hash_table_t ) );
+    ht_init( array_design, YMER_TABLE_SIZE );
+
+    current_iteration = 0;
+    while( current_iteration < iterations )
+        {
     ymer_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
     ymer_name_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
 
@@ -195,17 +202,10 @@ int main( int argc, char* argv[] )
             ht_init( ymer_table, YMER_TABLE_SIZE );
         }
 
-    current_iteration = 0;
 
     total_ymer_count = ymer_index_table->size;
-    array_design = malloc_track( tracked_data, sizeof( hash_table_t ) );
-    ht_init( array_design, YMER_TABLE_SIZE );
-
     min_ymers = ymer_index_table->size;
  
-    while( current_iteration < iterations )
-        {
-
            do
                 {
                     to_add = malloc( sizeof( set_t ) );
@@ -313,24 +313,6 @@ int main( int argc, char* argv[] )
                    xmer_window_size, ymer_window_size,
                    ( (float) sum_values_of_table( array_xmers ) / xmer_table->size ) );
 
-           current_iteration++;
-
-           if( array_design->size < min_ymers )
-               {
-                   min_ymers = array_design->size;
-                   best_iteration = array_design;
-
-                   array_design = malloc_track( tracked_data, sizeof( hash_table_t ) );
-                   ht_init( array_design, YMER_TABLE_SIZE );
-               }
-           else
-               {
-                   ht_clear( array_design );
-                   ht_init( array_design, YMER_TABLE_SIZE );
-               }
-
-        }
-
 
     total_ymers_clear = ht_get_items( ymer_index_table );
     for( index = 0; index < ymer_index_table->size; index++ )
@@ -339,17 +321,33 @@ int main( int argc, char* argv[] )
             set_clear( current_set );
         }
 
+   if( array_design->size < min_ymers )
+       {
+           min_ymers = array_design->size;
+           best_iteration = array_design;
+
+           array_design = malloc_track( tracked_data, sizeof( hash_table_t ) );
+           ht_init( array_design, YMER_TABLE_SIZE );
+       }
+   else
+       {
+           ht_clear( array_design );
+       }
     // write output to specified file
     write_outputs( best_iteration, ymer_name_table, output, redundancy );
 
-    
     // free all of our allocated memory
     ht_clear( ymer_name_table );
     ht_clear( xmer_table );
     ht_clear( ymer_index_table );
     ht_clear( array_xmers );
-    ht_clear( array_design );
-    for( index = 0; index < num_seqs; index++ )
+ 
+    current_iteration++;
+        }
+
+
+
+   for( index = 0; index < num_seqs; index++ )
         {
             ds_clear( seqs_from_file[ index ]->sequence );
         }
