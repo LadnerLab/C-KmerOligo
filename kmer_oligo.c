@@ -245,7 +245,7 @@ int main( int argc, char* argv[] )
                     if( !( count_val % DISPLAY_INTERVAL ) )
                         {
                             printf( "Current iteration: %d.\n", count_val );
-                            printf( "Current max score: %d.\n", max_score );
+                            printf( "Current max score: %lu.\n", max_score );
                         }
 
                                                                      
