@@ -296,10 +296,10 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
 
 
 set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
-                                   set_t* out_ymer,
-                                   hash_table_t* in_xmer_table,
-                                   int window_size, int step_size
-                                 )
+                            set_t* out_ymer,
+                            hash_table_t* in_xmer_table,
+                            int window_size, int step_size
+                          )
 {
     int num_xmers = ( window_size - step_size ) + 1;
     uint32_t index;
