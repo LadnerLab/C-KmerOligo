@@ -194,6 +194,10 @@ int main( int argc, char* argv[] )
                                     ht_add( ymer_index_table, current_ymer, current_ymer_locs );
 
                                 }
+                            else
+                                {
+                                    ar_clear( total_ymers[ inner_index ].value );
+                                }
                         }
 
                     ht_clear( ymer_table );
@@ -238,7 +242,7 @@ int main( int argc, char* argv[] )
                     oligo_to_remove = to_add->array_data[ rand() % to_add->size ];
                     covered_locations = ht_find( ymer_index_table, oligo_to_remove );
 
-                    ht_add( array_design, oligo_to_remove, covered_locations );
+                    ht_add( array_design, oligo_to_remove, NULL );
                     ht_delete( ymer_index_table, oligo_to_remove );
 
                     count_val++;
@@ -297,6 +301,7 @@ int main( int argc, char* argv[] )
 
                         }
 
+                    set_clear( covered_locations );
                     free( total_ymers );
                     ht_clear( current_ymer_xmers );
                     ar_clear( to_add );
@@ -352,15 +357,34 @@ int main( int argc, char* argv[] )
 
 
             // free all of our allocated memory
+            xmer_items = ht_get_items( xmer_table );
+            for( index = 0; index < xmer_table->size; index++ )
+                {
+                    ar_clear( xmer_items[ index ].value );
+                }
+            HT_Entry* all_ymers = ht_get_items( ymer_name_table );
+            for( index = 0; index < ymer_name_table->size; index++ )
+                {
+                    for( inner_index = 0; inner_index <
+                             ((array_list_t*) all_ymers[ index ].value )->size; inner_index++
+                       )
+                        {
+                            free( ((array_list_t*) (all_ymers[ index ].value))->array_data[ inner_index ] );
+                        }
+                    ar_clear( all_ymers[ index ].value );
+                }
+
+            free( all_ymers );
+
             ht_clear( ymer_name_table );
             ht_clear( xmer_table );
             ht_clear( ymer_index_table );
             ht_clear( array_xmers );
 
             free( ymer_name_table );
-            free( xmer_table );
             free( ymer_index_table );
             free( array_xmers );
+            free( xmer_items );
  
             current_iteration++;
         }
