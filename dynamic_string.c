@@ -23,7 +23,7 @@ void ds_check_for_resize( dynamic_string_t* input, char string_to_add[] )
     if( input->capacity <= input->size + add_length + 10 )
         {
             new_capacity = ( input->capacity ) + add_length + DEFAULT_LENGTH;
-            new_data =  (char*) realloc( input->data, new_capacity );
+            new_data = realloc( input->data, new_capacity );
 
             if( !new_data )
                 {

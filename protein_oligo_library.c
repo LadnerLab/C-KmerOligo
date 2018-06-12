@@ -155,15 +155,11 @@ void remove_char_from_string( char* test_string, char to_remove )
 
     for( index = 0; test_string[ index ]; index++ )
         {
-            if( test_string[ index ] == to_remove )
+            if( test_string[ index ] != to_remove )
                 {
-                    continue;
+                    test_string[ valid_index ] = test_string[ index ];
+                    valid_index++;
                 }
-
-            test_string[ valid_index ] = test_string[ index ];
-
-            valid_index++;
-
         }
     *( test_string + valid_index ) = '\0';
 }
