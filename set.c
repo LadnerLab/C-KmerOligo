@@ -51,6 +51,7 @@ void set_difference( set_t* first, set_t* second )
             if( find_item( second->data, found_data[ index ].key ) )
                 {
                     free( ht_delete( first->data, found_data[ index ].key ) );
+                    free( found_data[ index ].key );
                 }
         }
     free( found_data );
