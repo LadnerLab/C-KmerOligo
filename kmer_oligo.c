@@ -20,7 +20,7 @@
 #define DEFAULT_OUTPUT "output.fasta"
 #define DISPLAY_INTERVAL 100
 
-#define YMER_TABLE_SIZE 10000
+#define YMER_TABLE_SIZE 100000
 
 int sum_values_of_table( hash_table_t* in_table );
 void write_outputs( hash_table_t* output_oligos, hash_table_t* name_table,
@@ -127,6 +127,7 @@ int main( int argc, char* argv[] )
 
     num_seqs = count_seqs_in_file( data_file );
     seqs_from_file = malloc_track( tracked_data, sizeof( sequence_t * ) * num_seqs );
+    printf( "%d\n", num_seqs );
 
 
     read_sequences( data_file, seqs_from_file );
