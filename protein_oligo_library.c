@@ -80,6 +80,7 @@ int count_seqs_in_file( FILE* data_file )
         {
             return -1; 
         }
+    current_char = fgetc( data_file );
     while( current_char != EOF )
         {
             if( (char) current_char == '>' )
@@ -94,20 +95,17 @@ int count_seqs_in_file( FILE* data_file )
 
 int get_a_line( FILE* stream, dynamic_string_t* to_read )
 {
-    char current_char[ 1 ] ;
+    char current_char[ 256 ] ;
 
     ds_init( to_read );
 
-    while( *current_char != '\n' && (int) *current_char != EOF )
+    if( fgets( current_char, 256, stream ) ) 
         {
-            current_char[ 0 ] = (char) fgetc( stream );
-            if( *current_char != '\n' ) 
-                {
-                    ds_add( to_read, current_char );
-                }
-
+            ds_add( to_read, current_char );
+            return true;
         }
-    return !( *current_char == EOF );
+    return false;
+
 }
 
 
