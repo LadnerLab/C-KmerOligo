@@ -122,7 +122,7 @@ int main( int argc, char* argv[] )
             return EXIT_FAILURE;
         }
 
-    tracked_data = malloc( sizeof( array_list_t* ) );
+    tracked_data = malloc( sizeof( array_list_t ) );
     ar_init( tracked_data );
 
     num_seqs = count_seqs_in_file( data_file );
@@ -208,13 +208,13 @@ int main( int argc, char* argv[] )
                     ht_init( ymer_table, YMER_TABLE_SIZE );
                 }
 
-
+            ht_clear( ymer_table );
             total_ymer_count = ymer_index_table->size;
             min_ymers = ymer_index_table->size;
  
             do
                 {
-                    to_add = malloc( sizeof( set_t ) );
+                    to_add = malloc( sizeof( array_list_t ) );
                     ar_init( to_add );
                     max_score = 0;
 
@@ -228,7 +228,7 @@ int main( int argc, char* argv[] )
 
                                     ar_clear( to_add );
 
-                                    to_add = malloc( sizeof( set_t ) );
+                                    to_add = malloc( sizeof( array_list_t ) );
 
                                     ar_init( to_add );
 
@@ -266,7 +266,7 @@ int main( int argc, char* argv[] )
 
                     for( index = 0; index < current_ymer_xmers->size; index++ )
                         {
-                            xmer_value = malloc( 1 );
+                            xmer_value = malloc( sizeof( int ) );
                             *xmer_value = 1;
 
                             if( ht_find( array_xmers,
@@ -355,8 +355,6 @@ int main( int argc, char* argv[] )
             // write output to specified file
             write_outputs( best_iteration, ymer_name_table, output, redundancy );
 
-
-
             // free all of our allocated memory
             xmer_items = ht_get_items( xmer_table );
             for( index = 0; index < xmer_table->size; index++ )
@@ -382,9 +380,6 @@ int main( int argc, char* argv[] )
             ht_clear( ymer_index_table );
             ht_clear( array_xmers );
 
-            free( ymer_name_table );
-            free( ymer_index_table );
-            free( array_xmers );
             free( xmer_items );
  
             current_iteration++;
