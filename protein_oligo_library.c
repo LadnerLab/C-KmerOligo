@@ -27,10 +27,10 @@ void read_sequences( FILE* file_to_read, sequence_t** in_sequence )
     has_line = get_a_line( file_to_read, line );
     while( has_line )
         {
-            *( in_sequence + index ) = malloc( sizeof( sequence_t ) );
 
             if( line->data[ 0 ] == '>' )
                 {
+                    *( in_sequence + index ) = malloc( sizeof( sequence_t ) );
                     sequence = malloc( sizeof( dynamic_string_t ) );
                     ds_init( sequence );
 
@@ -263,7 +263,8 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
                     xmer_locations = ( array_list_t* ) ht_find( in_hash, current_xmer );
                 }
 
-            if( in_hash != NULL && !char_in_string( current_xmer, 'X' ) )
+            if( in_hash != NULL )
+			//&& !char_in_string( current_xmer, 'X' ) ) 
                 {
                     if( xmer_locations != NULL )
                         {
