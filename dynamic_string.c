@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -17,7 +18,7 @@
 void ds_check_for_resize( dynamic_string_t* input, char string_to_add[] )
 {
     int new_capacity;
-    int add_length = string_length( string_to_add );
+    int add_length = strlen( string_to_add );
     char* new_data;
 
     if( input->capacity <= input->size + add_length + 10 )
@@ -61,7 +62,7 @@ void ds_init( dynamic_string_t* input )
 void ds_add( dynamic_string_t* input, char string[] )
 {
     int size = input->size;
-    int input_length = string_length( string );
+    int input_length = strlen( string );
     int new_size = size + input_length;
 
     int index = 0;
