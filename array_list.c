@@ -29,9 +29,9 @@ int ar_check_for_resize( array_list_t* array_check )
 }
 void ar_init( array_list_t* to_init )
 {
-    to_init->array_data = calloc( DEFAULT_CAPACITY, sizeof( void* ) ); 
     to_init->size = 0;
     to_init->capacity = DEFAULT_CAPACITY;
+    to_init->array_data = calloc( DEFAULT_CAPACITY, sizeof( char* ) ); 
 }
 
 
@@ -54,7 +54,6 @@ void *ar_get( array_list_t* to_get, unsigned int index )
 void ar_add( array_list_t *to_add, void* new_data )
 {
     ar_check_for_resize( to_add );
-
     to_add->array_data[ to_add->size ] = new_data;
     to_add->size++;
 }
