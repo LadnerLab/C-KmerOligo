@@ -202,6 +202,7 @@ void *ht_find( hash_table_t* table, char* in_key )
 void* ht_delete( hash_table_t* table, char* in_key )
 {
     HT_Entry *found_node = find_item( table, in_key );
+    void* return_val = found_node->value;
     uint32_t found_index = generate_hash( in_key, strlen( in_key ), HASH_NUMBER ) %
                            table->capacity;
 
@@ -224,7 +225,7 @@ void* ht_delete( hash_table_t* table, char* in_key )
 
             table->size -= 1;
 
-            return found_node->value;
+            return return_val;
         }
 
 
