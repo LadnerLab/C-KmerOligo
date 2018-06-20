@@ -33,7 +33,7 @@ debug: CFLAGS+= -g -O0
 debug: clean
 debug: kmer_oligo
 
-optimized: CFLAGS += -O2 -funswitch-loops -fpredictive-commoning -ftree-loop-vectorize -floop-interchange -floop-unroll-and-jam -fvect-cost-model -ftree-partial-pre -fpeel-loops -fipa-cp-clone -fomit-frame-pointer -ffast-math -fsplit-paths -ftree-slp-vectorize -ftree-loop-distribute-patterns -fgcse-after-reload
+optimized: CFLAGS += -O3  -ffast-math
 optimized: clean
 optimized: kmer_oligo
 clean:
