@@ -510,7 +510,7 @@ void create_threads( int num_threads, int size, set_t* covered_locs, HT_Entry* t
 
     uint32_t start_index;
     uint32_t end_index;
-    int remainder = num_threads % size;
+    int remainder = size % num_threads;
 
     thread_info_t thread_info[ num_threads ];
     pthread_t thread_id[ num_threads ];
