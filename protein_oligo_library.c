@@ -263,8 +263,9 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
                     xmer_locations = ( array_list_t* ) ht_find( in_hash, current_xmer );
                 }
 
-            if( in_hash != NULL )
-			//&& !char_in_string( current_xmer, 'X' ) ) 
+                if( in_hash != NULL &&
+			        !char_in_string( current_xmer, 'X' )
+                  ) 
                 {
                     if( xmer_locations != NULL )
                         {
@@ -282,6 +283,10 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
                             ht_add( in_hash, current_xmer, xmer_locations );
                         }
                 }
+                else
+                    {
+                        free( current_xmer );
+                    }
             free( current_xmer_data );
         }
     return in_hash;
