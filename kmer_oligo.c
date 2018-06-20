@@ -21,6 +21,7 @@
 #define DEFAULT_ITERATIONS 1
 #define DEFAULT_OUTPUT "output.fasta"
 #define DISPLAY_INTERVAL 100
+#define DEFAULT_THREADS 1
 
 #define YMER_TABLE_SIZE 100000
 
@@ -35,7 +36,7 @@ typedef struct thread_info_t
 } thread_info_t;
 
 
-
+void create_threads( int num_threads, int size, set_t* covered_locs, HT_Entry* total_ymers );
 void *thread_difference( void* arg );
 int sum_values_of_table( hash_table_t* in_table );
 void write_outputs( hash_table_t* output_oligos, hash_table_t* name_table,
@@ -83,6 +84,7 @@ int main( int argc, char* argv[] )
     int *xmer_value = NULL;
     int total_ymer_count = 0;
     int count_val = 0;
+    int num_threads = DEFAULT_THREADS;
         
     uint32_t num_seqs;
     uint32_t ymer_index;
@@ -101,7 +103,7 @@ int main( int argc, char* argv[] )
     char index_str[ DEFAULT_YMER_SIZE ];
 
     // parse options given from command lines
-    while( ( option = getopt( argc, argv, "x:y:l:r:i:q:o:" ) ) != -1 )
+    while( ( option = getopt( argc, argv, "x:y:l:r:i:q:o:t:" ) ) != -1 )
         {
             switch( option )
                 {
@@ -125,6 +127,9 @@ int main( int argc, char* argv[] )
                     break;
                 case 'o':
                     output = optarg;
+                    break;
+                case 't':
+                    num_threads = atoi( optarg );
                     break;
                 }
         }
@@ -311,27 +316,7 @@ int main( int argc, char* argv[] )
 
                     total_ymers = ht_get_items( ymer_index_table );
 
-                    uint32_t start = ymer_index_table->size / 2;
-                    uint32_t end = ymer_index_table->size;
-                    thread_info_t ymer_info;
-                    pthread_t pth;
-
-                    ymer_info.start_index = start + 1;
-                    ymer_info.end_index = end;
-                    ymer_info.difference_func = &set_difference;
-                    ymer_info.covered_locations = covered_locations;
-                    ymer_info.total_ymers = total_ymers;
-
-                    pthread_create( &pth, NULL, thread_difference, &ymer_info );
-
-                    for( ymer_index = 0; ymer_index < start; ymer_index++ )
-                        {
-                            current_data = total_ymers[ ymer_index ].value;
-                            set_difference( current_data, covered_locations );
-
-                        }
-
-                    pthread_join( pth, NULL );
+                    create_threads( num_threads, ymer_index_table->size, covered_locations, total_ymers );
 
                     set_clear( covered_locations );
                     free( total_ymers );
@@ -501,15 +486,13 @@ void *thread_difference( void* arg )
     thread_info_t* info = arg;
 
     uint32_t index;
-    uint32_t size;
     uint32_t start_index = info->start_index;
 
     set_t* current_data;
     set_t* covered_locs = info->covered_locations;
 
-    size = info->end_index;
 
-    for( index = start_index; index < size; index++ )
+    for( index = start_index; index < info->end_index; index++ )
         {
             current_data = info->total_ymers[ index ].value;
 
@@ -517,4 +500,44 @@ void *thread_difference( void* arg )
         }
 
     return NULL;
+}
+
+
+void create_threads( int num_threads, int size, set_t* covered_locs, HT_Entry* total_ymers )
+{
+    int seqs_per_thread = size / num_threads;
+    int index;
+
+    uint32_t start_index;
+    uint32_t end_index;
+    int remainder = num_threads % size;
+
+    thread_info_t thread_info[ num_threads ];
+    pthread_t thread_id[ num_threads ];
+
+    start_index = 0;
+
+    for( index = 0; index < num_threads; index++ )
+        {
+            end_index = seqs_per_thread * ( index + 1 ) + remainder;
+
+            thread_info[ index ].start_index = start_index;
+            thread_info[ index ].end_index = end_index;
+            thread_info[ index ].difference_func = &set_difference;
+            thread_info[ index ].covered_locations = covered_locs;
+            thread_info[ index ].total_ymers = total_ymers;
+
+            pthread_create( &thread_id[ index ], NULL, thread_difference, &thread_info[ index ] );
+            start_index = end_index + 1;
+
+            remainder = 0;
+            
+        }
+
+    for( index = 0; index < num_threads; index++ )
+        {
+            pthread_join( thread_id[ index ], NULL );
+        }
+
+
 }
