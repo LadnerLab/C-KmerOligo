@@ -205,7 +205,7 @@ void* ht_delete( hash_table_t* table, char* in_key )
     void* return_val;
     uint32_t found_index; 
 
-    if( found_node != NULL )
+    if( found_node != NULL && found_node->key != NULL )
         {
             return_val = found_node->value;
             found_index = generate_hash( in_key, strlen( in_key ), HASH_NUMBER ) % table->capacity;
