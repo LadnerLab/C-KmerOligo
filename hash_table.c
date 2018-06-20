@@ -202,12 +202,13 @@ void *ht_find( hash_table_t* table, char* in_key )
 void* ht_delete( hash_table_t* table, char* in_key )
 {
     HT_Entry *found_node = find_item( table, in_key );
-    void* return_val = found_node->value;
-    uint32_t found_index = generate_hash( in_key, strlen( in_key ), HASH_NUMBER ) %
-                           table->capacity;
+    void* return_val;
+    uint32_t found_index; 
 
     if( found_node != NULL )
         {
+            return_val = found_node->value;
+            found_index = generate_hash( in_key, strlen( in_key ), HASH_NUMBER ) % table->capacity;
             if( table->table_data[ found_index ] == found_node )
                 {
                     table->table_data[ found_index ] = found_node->next;
