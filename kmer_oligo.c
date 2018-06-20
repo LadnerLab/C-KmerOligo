@@ -4,7 +4,9 @@
 #include <getopt.h>
 #include <stdint.h>
 #include <string.h>
+#include <pthread.h>
 #include <time.h>
+
 
 #include "protein_oligo_library.h"
 #include "hash_table.h"
@@ -22,6 +24,19 @@
 
 #define YMER_TABLE_SIZE 100000
 
+typedef struct thread_info_t
+{
+    uint32_t start_index;
+    uint32_t end_index;
+
+    void (*difference_func)( set_t*, set_t* ); 
+    set_t* covered_locations;
+    HT_Entry* total_ymers;
+} thread_info_t;
+
+
+
+void *thread_difference( void* arg );
 int sum_values_of_table( hash_table_t* in_table );
 void write_outputs( hash_table_t* output_oligos, hash_table_t* name_table,
                     char* outfile_name, int redundancy );
@@ -295,12 +310,28 @@ int main( int argc, char* argv[] )
                     free( xmer_items );
 
                     total_ymers = ht_get_items( ymer_index_table );
-                    for( ymer_index = 0; ymer_index < ymer_index_table->size; ymer_index++ )
+
+                    uint32_t start = ymer_index_table->size / 2;
+                    uint32_t end = ymer_index_table->size;
+                    thread_info_t ymer_info;
+                    pthread_t pth;
+
+                    ymer_info.start_index = start + 1;
+                    ymer_info.end_index = end;
+                    ymer_info.difference_func = &set_difference;
+                    ymer_info.covered_locations = covered_locations;
+                    ymer_info.total_ymers = total_ymers;
+
+                    pthread_create( &pth, NULL, thread_difference, &ymer_info );
+
+                    for( ymer_index = 0; ymer_index < start; ymer_index++ )
                         {
                             current_data = total_ymers[ ymer_index ].value;
                             set_difference( current_data, covered_locations );
 
                         }
+
+                    pthread_join( pth, NULL );
 
                     set_clear( covered_locations );
                     free( total_ymers );
@@ -463,4 +494,27 @@ void write_outputs( hash_table_t* output_oligos, hash_table_t* name_table,
         }
 
     free( array_design_items );
+}
+
+void *thread_difference( void* arg )
+{
+    thread_info_t* info = arg;
+
+    uint32_t index;
+    uint32_t size;
+    uint32_t start_index = info->start_index;
+
+    set_t* current_data;
+    set_t* covered_locs = info->covered_locations;
+
+    size = info->end_index;
+
+    for( index = start_index; index < size; index++ )
+        {
+            current_data = info->total_ymers[ index ].value;
+
+            info->difference_func( current_data, covered_locs );
+        }
+
+    return NULL;
 }
