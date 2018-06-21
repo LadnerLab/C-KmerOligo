@@ -25,6 +25,18 @@
 
 #define YMER_TABLE_SIZE 100000
 
+
+
+// ================== PROTOTYPES ========================== 
+void create_threads( int num_threads, int size, set_t* covered_locs, HT_Entry* total_ymers );
+
+void *thread_difference( void* arg );
+
+int sum_values_of_table( hash_table_t* in_table );
+
+void write_outputs( hash_table_t* output_oligos, hash_table_t* name_table,
+                    char* outfile_name, int redundancy );
+
 typedef struct thread_info_t
 {
     uint32_t start_index;
@@ -35,12 +47,6 @@ typedef struct thread_info_t
     HT_Entry* total_ymers;
 } thread_info_t;
 
-
-void create_threads( int num_threads, int size, set_t* covered_locs, HT_Entry* total_ymers );
-void *thread_difference( void* arg );
-int sum_values_of_table( hash_table_t* in_table );
-void write_outputs( hash_table_t* output_oligos, hash_table_t* name_table,
-                    char* outfile_name, int redundancy );
 
 int main( int argc, char* argv[] )
 {
