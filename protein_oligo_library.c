@@ -313,10 +313,11 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
                           )
 {
     int num_xmers = ( window_size - step_size ) + 1;
+    uint32_t inner_index;
     uint32_t index;
     hash_table_t* subset_xmers = NULL;
     HT_Entry* subset_xmer_items = NULL;
-    array_list_t* found_data;
+    array_list_t* found_data = NULL;
 
     subset_xmers = malloc( sizeof( hash_table_t ) );
 
@@ -329,9 +330,36 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
 
     for( index = 0; index < subset_xmers->size; index++ )
         {
+
+            found_data = malloc( sizeof( array_list_t ) );
+            ar_init( found_data );
+
+            permute_xmer_functional_groups( subset_xmer_items[ index ].key, found_data );
+            for( inner_index = 0; inner_index < found_data->size; index++ )
+                {
+                    ht_add( subset_xmers, ar_get( found_data, inner_index ), NULL );
+                }
+
+
+            for( inner_index = 0; inner_index < found_data->size; inner_index++ )
+                {
+                    free( ar_get( found_data, inner_index ) );
+                }
+            ar_clear( found_data );
+        }
+
+    free( subset_xmer_items );
+    subset_xmer_items = ht_get_items( subset_xmers );
+
+    for( index = 0; index < subset_xmers->size; index++ )
+        {
             found_data = (array_list_t*) ht_find( in_xmer_table, subset_xmer_items[ index ].key );
             set_add_all( out_ymer, (char**) found_data->array_data, found_data->size );
 
+            for( inner_index = 0; inner_index < found_data->size; inner_index++ )
+                {
+                    free( ar_get( found_data, inner_index ) );
+                }
             ar_clear( ( subset_xmer_items[ index ].value ) );
        }
 
@@ -362,26 +390,39 @@ void free_data( array_list_t* in_data )
 void permute_xmer_functional_groups( char* str_to_change, array_list_t* permutations )
 {
     int length = strlen( str_to_change );
-    int index;
-    char copied[ length + 1 ];
+    char *copied_string;
 
-    strcpy( copied, str_to_change );
-    xmer_first_functional_group( copied, str_len );
+    copied_string = malloc( sizeof( char ) * length + 1 );
 
-    permute_string_helper( 0, 0, length, copied, permutations );
+    strcpy( copied_string, str_to_change );
+    xmer_first_functional_group( copied_string, length );
+
+    ar_add( permutations, copied_string );
+
+    permute_string_helper( 0, 0, length, copied_string, permutations );
 }
 
 
 void permute_string_helper( int pivot, int current_index, int str_len, char* string, array_list_t* permutations )
 {
+    char *copied_string;
+
     if( pivot < str_len )
         {
-            if( current_index < str_len && pivot != current_index )
-                {
-                    
-                }
+            permute_string_helper( pivot + 1, current_index, str_len, string, permutations );
 
-            permute_string_helper( pivot + 1, 0, str_len, string, permutations );
+            while( get_corresponding_char( string[ pivot ] ) )
+                {
+                    string[ pivot ] = get_corresponding_char( string[ pivot ] );
+
+                    copied_string = malloc( sizeof( char ) * str_len + 1 );
+
+                    strcpy( copied_string, string );
+
+                    permute_string_helper( pivot + 1, current_index, str_len, string, permutations );
+                    ar_add( permutations, copied_string );
+                }
+                    string[ pivot ] = get_first_char_in_functional_group( string[ pivot ] );
         }
 }
 
@@ -418,7 +459,7 @@ char get_corresponding_char( char in_char )
         case 'L':
             return 'M';
         case 'M':
-            return 'F';
+            return 'V';
         case 'N':
             return 'Q';
         case 'P':

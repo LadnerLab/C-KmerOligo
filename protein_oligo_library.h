@@ -141,6 +141,6 @@ void *malloc_track( array_list_t* data, int num_bytes );
 int calc_num_subseqs( int length, int window_size );
 
 
-void permute_xmer_functional_groups( char* str_to_change, array_list_t* permutations )
+void permute_xmer_functional_groups( char* str_to_change, array_list_t* permutations );
 
 #endif
