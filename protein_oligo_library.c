@@ -14,7 +14,8 @@
 
 char get_first_char_in_functional_group( char in_char );
 char get_corresponding_char( char in_char );
-void permute_string_helper( int pivot, int current_index, int str_len, char* string );
+void permute_string_helper( int pivot, int current_index, int str_len, char* string, array_list_t* permutations );
+void xmer_first_functional_group( char* in_string, int str_len  );
 
 
 
@@ -358,27 +359,40 @@ void free_data( array_list_t* in_data )
         }
 }
 
-void permute_string( char* str_to_change, array_list_t* permutations )
+void permute_xmer_functional_groups( char* str_to_change, array_list_t* permutations )
 {
     int length = strlen( str_to_change );
     int index;
     char copied[ length + 1 ];
 
     strcpy( copied, str_to_change );
+    xmer_first_functional_group( copied, str_len );
 
-    for( index = 0; index < length; index++ )
-        {
-            copied[ index ] = get_first_char_in_functional_group( copied[ index ] );
-        }
-    printf( "%s\n", copied );
-
-    permute_string_helper( 0, 0, length, copied );
+    permute_string_helper( 0, 0, length, copied, permutations );
 }
 
 
-void permute_string_helper( int pivot, int current_index, int str_len, char* string )
+void permute_string_helper( int pivot, int current_index, int str_len, char* string, array_list_t* permutations )
 {
+    if( pivot < str_len )
+        {
+            if( current_index < str_len && pivot != current_index )
+                {
+                    
+                }
 
+            permute_string_helper( pivot + 1, 0, str_len, string, permutations );
+        }
+}
+
+void xmer_first_functional_group( char* in_string, int str_len  )
+{
+    int index;
+    
+    for( index = 0; index < str_len; index++ )
+        {
+            in_string[ index ] = get_first_char_in_functional_group( in_string[ index ] );
+        }
 }
 
 char get_corresponding_char( char in_char )
