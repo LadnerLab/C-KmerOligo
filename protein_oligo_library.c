@@ -347,3 +347,92 @@ void free_data( array_list_t* in_data )
             free( in_data->array_data[ index ] );
         }
 }
+
+void permute_string( char* str_to_change, array_list_t* permutations )
+{
+    int length = strlen( str_to_change );
+    char copied[ length + 1 ];
+
+    strcpy( copied, str_to_change );
+
+    permute_string_helper( 0, 0, length, copied );
+}
+
+
+void permute_string_helper( int pivot, int current_index, int str_len, char* string )
+{
+
+}
+
+char get_corresponding_char( char in_char )
+{
+    switch( in_char )
+        {
+        case 'A':
+            return 'I';
+        case 'C':
+            return 'G';
+        case 'D':
+            return 'E';
+        case 'F':
+            return 'I';
+        case 'G':
+            return 'P';
+        case 'H':
+            return 'K';
+        case 'I':
+            return 'L';
+        case 'K':
+            return 'R';
+        case 'L':
+            return 'M';
+        case 'M':
+            return 'F';
+        case 'N':
+            return 'Q';
+        case 'P':
+            return 'U';
+        case 'Q':
+            return 'S';
+        case 'S':
+            return 'T';
+        case 'V'
+            return 'W';
+        case 'W':
+            return 'Y';
+        default:
+            return '\0';
+            
+            
+        }
+}
+
+char get_first_char_in_functional_group( char in_char )
+{
+    switch( in_char )
+        {
+        case 'R': // FALLTHROUGH INTENTIONAL
+        case 'K':
+            return 'H';
+        case 'E':
+            return 'D';
+        case 'T': // FALLTHROUGH INTENTIONAL
+        case 'S':
+        case 'Q':
+            return 'N';
+        case 'U': // FALLTHROUGH INTENTIONAL
+        case 'P':
+        case 'G':
+            return 'C';
+        case 'Y': // FALLTHROUGH INTENTIONAL
+        case 'W':
+        case 'V':
+        case 'M':
+        case 'L':
+        case 'I':
+        case 'F':
+            return 'A';
+        default:
+            return in_char;
+        }
+}
