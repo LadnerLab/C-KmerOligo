@@ -10,6 +10,16 @@
 #define LINE_SIZE 256
 #define DASH_CHAR '-'
 
+// ============== Local Function Prototypes ==================== // 
+
+char get_first_char_in_functional_group( char in_char );
+char get_corresponding_char( char in_char );
+void permute_string_helper( int pivot, int current_index, int str_len, char* string );
+
+
+
+// ============================================================= // 
+
 int num_digits_in_int( int input )
 {
     char int_as_str[ LINE_SIZE ];
@@ -351,9 +361,16 @@ void free_data( array_list_t* in_data )
 void permute_string( char* str_to_change, array_list_t* permutations )
 {
     int length = strlen( str_to_change );
+    int index;
     char copied[ length + 1 ];
 
     strcpy( copied, str_to_change );
+
+    for( index = 0; index < length; index++ )
+        {
+            copied[ index ] = get_first_char_in_functional_group( copied[ index ] );
+        }
+    printf( "%s\n", copied );
 
     permute_string_helper( 0, 0, length, copied );
 }
@@ -396,7 +413,7 @@ char get_corresponding_char( char in_char )
             return 'S';
         case 'S':
             return 'T';
-        case 'V'
+        case 'V':
             return 'W';
         case 'W':
             return 'Y';
