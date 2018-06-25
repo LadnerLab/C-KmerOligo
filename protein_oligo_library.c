@@ -14,7 +14,6 @@
 
 char get_first_char_in_functional_group( char in_char );
 char get_corresponding_char( char in_char );
-void permute_string_helper( int pivot, int current_index, int str_len, char* string, array_list_t* permutations );
 void xmer_first_functional_group( char* in_string, int str_len  );
 
 
@@ -392,30 +391,21 @@ void permute_xmer_functional_groups( char* str_to_change, array_list_t* permutat
 {
     int length = strlen( str_to_change );
     char *copied_string;
-
-    permute_string_helper( 0, 0, length, str_to_change, permutations );
-}
-
-
-void permute_string_helper( int pivot, int current_index, int str_len, char* string, array_list_t* permutations )
-{
-    char *copied_string;
-    char copy_string[ str_len + 1 ];
+    char copy_string[ length + 1 ];
     int index;
-    char corresponding_char;
     char different_char;
 
-    copied_string = malloc( sizeof( char ) * str_len + 1 );
-    for( index = 0; index < str_len; index++ )
+    copied_string = malloc( sizeof( char ) * length + 1 );
+    for( index = 0; index < length; index++ )
         {
-            strcpy( copy_string, string );
+            strcpy( copy_string, str_to_change );
 
             different_char = get_first_char_in_functional_group( copy_string[ index ] );
 
             while( different_char )
                 {
                     copy_string[ index ] = different_char;
-                    copied_string = malloc( sizeof( char ) * str_len + 1 );
+                    copied_string = malloc( sizeof( char ) * length + 1 );
                     strcpy( copied_string, copy_string );
                     ar_add( permutations, copied_string );
 
@@ -502,23 +492,23 @@ char get_first_char_in_functional_group( char in_char )
             return 'H';
         case 'E':
             return 'D';
-        case 'T': // FALLTHROUGH INTENTIONAL
-        case 'S':
-        case 'Q':
-            return 'N';
-        case 'U': // FALLTHROUGH INTENTIONAL
-        case 'P':
-        case 'G':
-            return 'C';
-        case 'Y': // FALLTHROUGH INTENTIONAL
-        case 'W':
-        case 'V':
-        case 'M':
-        case 'L':
-        case 'I':
-        case 'F':
-            return 'A';
+        /* case 'T': // FALLTHROUGH INTENTIONAL */
+        /* case 'S': */
+        /* case 'Q': */
+        /*     return 'N'; */
+        /* case 'U': // FALLTHROUGH INTENTIONAL */
+        /* case 'P': */
+        /* case 'G': */
+        /*     return 'C'; */
+        /* case 'Y': // FALLTHROUGH INTENTIONAL */
+        /* case 'W': */
+        /* case 'V': */
+        /* case 'M': */
+        /* case 'L': */
+        /* case 'I': */
+        /* case 'F': */
+        /*     return 'A'; */
         default:
-            return in_char;
+            return '\0';
         }
 }
