@@ -153,11 +153,8 @@ int main( int argc, char* argv[] )
 
     num_seqs = count_seqs_in_file( data_file );
     seqs_from_file = malloc_track( tracked_data, sizeof( sequence_t * ) * num_seqs );
-    printf( "%d\n", num_seqs );
-
 
     read_sequences( data_file, seqs_from_file );
-
 
     array_design = malloc_track( tracked_data, sizeof( hash_table_t ) );
     ht_init( array_design, YMER_TABLE_SIZE );
