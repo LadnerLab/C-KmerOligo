@@ -140,15 +140,18 @@ int ht_add( hash_table_t* table, char* to_add, void* add_val )
             current_node = table->table_data[ item_index ];
             while( current_node->next != NULL )
                 {
-                    current_node = current_node->next;
+                    // we don't want to add duplicates
+                    if( strcmp( current_node->key, to_add ) != 0 )
+                        {
+                            // update the value
+                            current_node = current_node->next;
+                        }
+                    else
+                        {
+                            return 0;
+                        }
                 }
-            // we don't want to add duplicates
-            if( strcmp( current_node->key, to_add ) == 0 )
-                {
-                    // update the value
-                    current_node->value = add_val;
-                    return 0;
-                }
+
             current_node->next = new_entry;
             new_entry->prev = current_node;
 
