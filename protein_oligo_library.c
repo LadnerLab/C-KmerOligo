@@ -319,6 +319,8 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
     HT_Entry* subset_xmer_items = NULL;
     array_list_t* found_data = NULL;
 
+    uint32_t size;
+
     subset_xmers = malloc( sizeof( hash_table_t ) );
 
     ht_init( subset_xmers, num_xmers );
@@ -328,14 +330,16 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
 
     subset_xmer_items = ht_get_items( subset_xmers );
 
-    for( index = 0; index < subset_xmers->size; index++ )
+    size = subset_xmers->size;
+
+    for( index = 0; index < size; index++ )
         {
 
             found_data = malloc( sizeof( array_list_t ) );
             ar_init( found_data );
 
             permute_xmer_functional_groups( subset_xmer_items[ index ].key, found_data );
-            for( inner_index = 0; inner_index < found_data->size; index++ )
+            for( inner_index = 0; inner_index < found_data->size; inner_index++ )
                 {
                     ht_add( subset_xmers, ar_get( found_data, inner_index ), NULL );
                 }
@@ -354,14 +358,11 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
     for( index = 0; index < subset_xmers->size; index++ )
         {
             found_data = (array_list_t*) ht_find( in_xmer_table, subset_xmer_items[ index ].key );
-            set_add_all( out_ymer, (char**) found_data->array_data, found_data->size );
-
-            for( inner_index = 0; inner_index < found_data->size; inner_index++ )
+            if( found_data != NULL )
                 {
-                    free( ar_get( found_data, inner_index ) );
+                    set_add_all( out_ymer, (char**) found_data->array_data, found_data->size );
                 }
-            ar_clear( ( subset_xmer_items[ index ].value ) );
-       }
+        }
 
     free( subset_xmer_items );
     ht_clear( subset_xmers );
@@ -392,37 +393,34 @@ void permute_xmer_functional_groups( char* str_to_change, array_list_t* permutat
     int length = strlen( str_to_change );
     char *copied_string;
 
-    copied_string = malloc( sizeof( char ) * length + 1 );
-
-    strcpy( copied_string, str_to_change );
-    xmer_first_functional_group( copied_string, length );
-
-    ar_add( permutations, copied_string );
-
-    permute_string_helper( 0, 0, length, copied_string, permutations );
+    permute_string_helper( 0, 0, length, str_to_change, permutations );
 }
 
 
 void permute_string_helper( int pivot, int current_index, int str_len, char* string, array_list_t* permutations )
 {
     char *copied_string;
+    char copy_string[ str_len + 1 ];
+    int index;
+    char corresponding_char;
+    char different_char;
 
-    if( pivot < str_len )
+    copied_string = malloc( sizeof( char ) * str_len + 1 );
+    for( index = 0; index < str_len; index++ )
         {
-            permute_string_helper( pivot + 1, current_index, str_len, string, permutations );
+            strcpy( copy_string, string );
 
-            while( get_corresponding_char( string[ pivot ] ) )
+            different_char = get_first_char_in_functional_group( copy_string[ index ] );
+
+            while( different_char )
                 {
-                    string[ pivot ] = get_corresponding_char( string[ pivot ] );
-
+                    copy_string[ index ] = different_char;
                     copied_string = malloc( sizeof( char ) * str_len + 1 );
-
-                    strcpy( copied_string, string );
-
-                    permute_string_helper( pivot + 1, current_index, str_len, string, permutations );
+                    strcpy( copied_string, copy_string );
                     ar_add( permutations, copied_string );
+
+                    different_char = get_corresponding_char( copy_string[ index ] );
                 }
-                    string[ pivot ] = get_first_char_in_functional_group( string[ pivot ] );
         }
 }
 
@@ -436,49 +434,65 @@ void xmer_first_functional_group( char* in_string, int str_len  )
         }
 }
 
+/* char get_corresponding_char( char in_char ) */
+/* { */
+/*     switch( in_char ) */
+/*         { */
+/*         case 'A': */
+/*             return 'I'; */
+/*         case 'C': */
+/*             return 'G'; */
+/*         case 'D': */
+/*             return 'E'; */
+/*         case 'F': */
+/*             return 'I'; */
+/*         case 'G': */
+/*             return 'P'; */
+/*         case 'H': */
+/*             return 'K'; */
+/*         case 'I': */
+/*             return 'L'; */
+/*         case 'K': */
+/*             return 'R'; */
+/*         case 'L': */
+/*             return 'M'; */
+/*         case 'M': */
+/*             return 'V'; */
+/*         case 'N': */
+/*             return 'Q'; */
+/*         case 'P': */
+/*             return 'U'; */
+/*         case 'Q': */
+/*             return 'S'; */
+/*         case 'S': */
+/*             return 'T'; */
+/*         case 'V': */
+/*             return 'W'; */
+/*         case 'W': */
+/*             return 'Y'; */
+/*         default: */
+/*             return '\0'; */
+            
+            
+/*         } */
+/* } */
+
 char get_corresponding_char( char in_char )
 {
     switch( in_char )
         {
-        case 'A':
-            return 'I';
-        case 'C':
-            return 'G';
         case 'D':
             return 'E';
-        case 'F':
-            return 'I';
-        case 'G':
-            return 'P';
         case 'H':
             return 'K';
-        case 'I':
-            return 'L';
         case 'K':
             return 'R';
-        case 'L':
-            return 'M';
-        case 'M':
-            return 'V';
-        case 'N':
-            return 'Q';
-        case 'P':
-            return 'U';
-        case 'Q':
-            return 'S';
-        case 'S':
-            return 'T';
-        case 'V':
-            return 'W';
-        case 'W':
-            return 'Y';
         default:
             return '\0';
             
             
         }
 }
-
 char get_first_char_in_functional_group( char in_char )
 {
     switch( in_char )
