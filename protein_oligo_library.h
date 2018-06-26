@@ -136,8 +136,28 @@ hash_table_t* subset_lists( hash_table_t* in_hash,
                             int window_size, int step_size
                           );
 
+/**
+ *  Frees all of the pointers found in in_data array_list
+ *  @param in_data array_list of pointers to be free'd
+ **/
 void free_data( array_list_t* in_data );
+
+/**
+ * allocates num_bytes of memory, stores the pointer in an array list
+ * and returns the pointer given by malloc
+ * @param data pointer to array_list to hold pointers
+ * @param num_bytes number of bytes to allocate
+ * @returns integer boolean success of operation 
 void *malloc_track( array_list_t* data, int num_bytes );
+
+/**
+ * Calculates the number of subsequences created, using
+ * length of the sequence and the stepsize
+ * @param length integer length of the sequence to calculate
+ * 		  number of subsequences for
+ * @param window_size integer number of sequences to capture per iteration
+ * @returns integer number of subsequences created
+ * */
 int calc_num_subseqs( int length, int window_size );
 
 
