@@ -148,6 +148,7 @@ void free_data( array_list_t* in_data );
  * @param data pointer to array_list to hold pointers
  * @param num_bytes number of bytes to allocate
  * @returns integer boolean success of operation 
+**/
 void *malloc_track( array_list_t* data, int num_bytes );
 
 /**
