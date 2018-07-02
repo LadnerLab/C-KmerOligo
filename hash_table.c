@@ -93,13 +93,16 @@ uint32_t generate_hash( const void *key,  int len, uint32_t seed )
   switch(len)
   {
   case 3:
-    h += data[2] << 16;
+    h += data[2] << 16; 
+	break;
   case 2:
     h += data[1] << 8;
+	break;
   case 1:
     h += data[0];
     h *= m;
     h ^= h >> r;
+	break;
   };
  
   //----------
