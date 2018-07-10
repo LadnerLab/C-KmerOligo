@@ -451,65 +451,49 @@ void xmer_first_functional_group( char* in_string, int str_len  )
         }
 }
 
-/* char get_corresponding_char( char in_char ) */
-/* { */
-/*     switch( in_char ) */
-/*         { */
-/*         case 'A': */
-/*             return 'I'; */
-/*         case 'C': */
-/*             return 'G'; */
-/*         case 'D': */
-/*             return 'E'; */
-/*         case 'F': */
-/*             return 'I'; */
-/*         case 'G': */
-/*             return 'P'; */
-/*         case 'H': */
-/*             return 'K'; */
-/*         case 'I': */
-/*             return 'L'; */
-/*         case 'K': */
-/*             return 'R'; */
-/*         case 'L': */
-/*             return 'M'; */
-/*         case 'M': */
-/*             return 'V'; */
-/*         case 'N': */
-/*             return 'Q'; */
-/*         case 'P': */
-/*             return 'U'; */
-/*         case 'Q': */
-/*             return 'S'; */
-/*         case 'S': */
-/*             return 'T'; */
-/*         case 'V': */
-/*             return 'W'; */
-/*         case 'W': */
-/*             return 'Y'; */
-/*         default: */
-/*             return '\0'; */
-            
-            
-/*         } */
-/* } */
-
 char get_corresponding_char( char in_char )
 {
     switch( in_char )
         {
+        case 'A':
+            return 'I';
+        case 'C':
+            return 'G';
         case 'D':
             return 'E';
+        case 'F':
+            return 'I';
+        case 'G':
+            return 'P';
         case 'H':
             return 'K';
+        case 'I':
+            return 'L';
         case 'K':
             return 'R';
+        case 'L':
+            return 'M';
+        case 'M':
+            return 'V';
+        case 'N':
+            return 'Q';
+        case 'P':
+            return 'U';
+        case 'Q':
+            return 'S';
+        case 'S':
+            return 'T';
+        case 'V':
+            return 'W';
+        case 'W':
+            return 'Y';
         default:
             return '\0';
             
             
         }
 }
+
 char get_first_char_in_functional_group( char in_char )
 {
     switch( in_char )
@@ -519,22 +503,22 @@ char get_first_char_in_functional_group( char in_char )
             return 'H';
         case 'E':
             return 'D';
-        /* case 'T': // FALLTHROUGH INTENTIONAL */
-        /* case 'S': */
-        /* case 'Q': */
-        /*     return 'N'; */
-        /* case 'U': // FALLTHROUGH INTENTIONAL */
-        /* case 'P': */
-        /* case 'G': */
-        /*     return 'C'; */
-        /* case 'Y': // FALLTHROUGH INTENTIONAL */
-        /* case 'W': */
-        /* case 'V': */
-        /* case 'M': */
-        /* case 'L': */
-        /* case 'I': */
-        /* case 'F': */
-        /*     return 'A'; */
+        case 'T': // FALLTHROUGH INTENTIONAL
+        case 'S':
+        case 'Q':
+            return 'N';
+        case 'U': // FALLTHROUGH INTENTIONAL
+        case 'P':
+        case 'G':
+            return 'C';
+        case 'Y': // FALLTHROUGH INTENTIONAL
+        case 'W':
+        case 'V':
+        case 'M':
+        case 'L':
+        case 'I':
+        case 'F':
+            return 'A';
         default:
             return '\0';
         }
