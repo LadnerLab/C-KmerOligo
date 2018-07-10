@@ -199,14 +199,18 @@ void append_suffix( char* result, char* in_name, int start, int end )
 }
 
 hash_table_t* subset_lists( hash_table_t* in_hash,
-                                      char* in_seq,
-                                      int window_size, int step_size )
+                            char* in_seq,
+                            int window_size, int step_size,
+                            int permute
+                          )
 {
     int outer_index;
     int inner_index;
     int num_subsets = calc_num_subseqs( strlen( in_seq ), window_size );
 
     char *current_xmer;
+
+    array_list_t *current_xmer_permutations;
 
     for( outer_index = 0; outer_index < num_subsets; outer_index++ )
         {
@@ -219,6 +223,24 @@ hash_table_t* subset_lists( hash_table_t* in_hash,
                         in_seq[ ( outer_index * step_size ) + inner_index ];
                 }
             current_xmer[ inner_index ] = '\0';
+
+            if( permute )
+                {
+                    current_xmer_permutations = malloc( sizeof( array_list_t ) );
+                    ar_init( current_xmer_permutations );
+                    permute_xmer_functional_groups( current_xmer, current_xmer_permutations );
+
+                    for(  inner_index = 0; inner_index < current_xmer_permutations->size; inner_index++ )
+                        {
+                            current_xmer = ar_get( current_xmer_permutations, inner_index );
+                            ht_add( in_hash, current_xmer, NULL );
+
+                            free( current_xmer );
+                        }
+
+                    ar_clear( current_xmer_permutations );
+
+                }
 
             // update the entry at this location
             ht_add( in_hash, current_xmer, NULL );
