@@ -91,6 +91,7 @@ int main( int argc, char* argv[] )
     int total_ymer_count = 0;
     int count_val = 0;
     int num_threads = DEFAULT_THREADS;
+    int permute = 0;
         
     uint32_t num_seqs;
     uint32_t ymer_index;
@@ -109,7 +110,7 @@ int main( int argc, char* argv[] )
     char index_str[ DEFAULT_YMER_SIZE ];
 
     // parse options given from command lines
-    while( ( option = getopt( argc, argv, "x:y:l:r:i:q:o:t:" ) ) != -1 )
+    while( ( option = getopt( argc, argv, "x:y:l:r:i:q:o:t:p::" ) ) != -1 )
         {
             switch( option )
                 {
@@ -121,6 +122,9 @@ int main( int argc, char* argv[] )
                     break;
                 case 'l':
                     min_length = atoi( optarg );
+                    break;
+                case 'p':
+                    permute = 1;
                     break;
                 case 'r':
                     redundancy = atoi( optarg );
@@ -211,7 +215,8 @@ int main( int argc, char* argv[] )
                                     set_init( current_ymer_locs );
 
                                     component_xmer_locs( current_ymer, total_ymers[ inner_index ].key,
-                                                         current_ymer_locs, xmer_table, xmer_window_size, 1
+                                                         current_ymer_locs, xmer_table, xmer_window_size, 1,
+                                                         permute
                                                          );
                                     ht_add( ymer_name_table, current_ymer, ht_find( ymer_table, current_ymer ) );
 
