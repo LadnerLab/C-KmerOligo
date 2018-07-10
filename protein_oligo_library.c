@@ -208,6 +208,8 @@ hash_table_t* subset_lists( hash_table_t* in_hash,
     int inner_index;
     int num_subsets = calc_num_subseqs( strlen( in_seq ), window_size );
 
+    uint32_t permute_index;
+
     char *current_xmer;
 
     array_list_t *current_xmer_permutations;
@@ -230,7 +232,7 @@ hash_table_t* subset_lists( hash_table_t* in_hash,
                     ar_init( current_xmer_permutations );
                     permute_xmer_functional_groups( current_xmer, current_xmer_permutations );
 
-                    for(  inner_index = 0; inner_index < current_xmer_permutations->size; inner_index++ )
+                    for(  permute_index = 0; permute_index < current_xmer_permutations->size; permute_index++ )
                         {
                             current_xmer = ar_get( current_xmer_permutations, inner_index );
                             ht_add( in_hash, current_xmer, NULL );
