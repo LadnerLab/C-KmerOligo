@@ -389,6 +389,8 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
             if( found_data != NULL )
                 {
                     set_add_all( out_ymer, (char**) found_data->array_data, found_data->size );
+
+                    ar_clear( subset_xmer_items[ index ].value );
                 }
         }
 
