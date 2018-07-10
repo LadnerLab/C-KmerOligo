@@ -12,6 +12,8 @@
 #include "hash_table.h"
 #include "array_list.h"
 
+#define ARGS "x:y:l:r:i:q:o:t:p::"
+
 // program defaults
 #define DEFAULT_XMER_SIZE 100
 #define DEFAULT_YMER_SIZE 100
@@ -110,7 +112,7 @@ int main( int argc, char* argv[] )
     char index_str[ DEFAULT_YMER_SIZE ];
 
     // parse options given from command lines
-    while( ( option = getopt( argc, argv, "x:y:l:r:i:q:o:t:p::" ) ) != -1 )
+    while( ( option = getopt( argc, argv, ARGS ) ) != -1 )
         {
             switch( option )
                 {
