@@ -402,6 +402,8 @@ int main( int argc, char* argv[] )
                 }
             // write output to specified file
             write_outputs( best_iteration, ymer_name_table, output, redundancy );
+            ht_clear( best_iteration );
+
 
             // free all of our allocated memory
             xmer_items = ht_get_items( xmer_table );
@@ -438,7 +440,13 @@ int main( int argc, char* argv[] )
    for( index = 0; index < num_seqs; index++ )
         {
             ds_clear( seqs_from_file[ index ]->sequence );
+            free( seqs_from_file[ index ]->name );
+            free( seqs_from_file[ index ] );
         }
+
+    free( seqs_from_file );
+    ht_clear( array_design );
+    free( array_design );
 
     free_data( tracked_data );
     ar_clear( tracked_data );
