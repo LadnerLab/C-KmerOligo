@@ -117,9 +117,10 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* name,
  * @returns set of strings containing the locations of in_ymer's xmers
  **/
 set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
-                                   set_t* out_ymer,
-                                   hash_table_t* in_xmer_table,
-                                   int window_size, int step_size
+                            set_t* out_ymer,
+                            hash_table_t* in_xmer_table,
+                            int window_size, int step_size,
+                            int permute
                           );
 /**
  * Break a ymer down into its xmers, the value of each xmer is NULL

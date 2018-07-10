@@ -308,7 +308,8 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
 set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
                             set_t* out_ymer,
                             hash_table_t* in_xmer_table,
-                            int window_size, int step_size
+                            int window_size, int step_size,
+                            int permute
                           )
 {
     int num_xmers = ( window_size - step_size ) + 1;
@@ -331,29 +332,33 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
 
     size = subset_xmers->size;
 
-//    for( index = 0; index < size; index++ )
-//        {
-//
-//            found_data = malloc( sizeof( array_list_t ) );
-//            ar_init( found_data );
-//
-//            permute_xmer_functional_groups( subset_xmer_items[ index ].key, found_data );
-//            for( inner_index = 0; inner_index < found_data->size; inner_index++ )
-//                {
-//                    ht_add( subset_xmers, ar_get( found_data, inner_index ), NULL );
-//                }
-//
-//
-//            for( inner_index = 0; inner_index < found_data->size; inner_index++ )
-//                {
-//                    free( ar_get( found_data, inner_index ) );
-//                }
-//            ar_clear( found_data );
-//        }
-//
-//    free( subset_xmer_items );
-//    subset_xmer_items = ht_get_items( subset_xmers );
-//
+    if( permute )
+        {
+            for( index = 0; index < size; index++ )
+                {
+
+                    found_data = malloc( sizeof( array_list_t ) );
+                    ar_init( found_data );
+
+                    permute_xmer_functional_groups( subset_xmer_items[ index ].key, found_data );
+                    for( inner_index = 0; inner_index < found_data->size; inner_index++ )
+                        {
+                            ht_add( subset_xmers, ar_get( found_data, inner_index ), NULL );
+                        }
+
+
+                    for( inner_index = 0; inner_index < found_data->size; inner_index++ )
+                        {
+                            free( ar_get( found_data, inner_index ) );
+                        }
+                    ar_clear( found_data );
+                }
+
+        }
+
+   free( subset_xmer_items );
+   subset_xmer_items = ht_get_items( subset_xmers );
+
     for( index = 0; index < subset_xmers->size; index++ )
         {
             found_data = (array_list_t*) ht_find( in_xmer_table, subset_xmer_items[ index ].key );
