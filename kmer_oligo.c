@@ -11,6 +11,7 @@
 #include "protein_oligo_library.h"
 #include "hash_table.h"
 #include "array_list.h"
+#include "thpool.h"
 
 #define ARGS "x:y:l:r:i:q:o:t:p::c::"
 
@@ -31,9 +32,9 @@
 
 
 // ================== PROTOTYPES ========================== 
-void create_threads( int num_threads, int size, set_t* covered_locs, HT_Entry* total_ymers );
+void start_threads( int num_threads, int size, set_t* covered_locs, HT_Entry* total_ymers, threadpool thpool );
 
-void *thread_difference( void* arg );
+void thread_difference( void* arg );
 
 int sum_values_of_table( hash_table_t* in_table );
 
@@ -67,6 +68,7 @@ int main( int argc, char* argv[] )
     char* output = DEFAULT_OUTPUT;
 
     int option;
+    threadpool thpool;
 
     // program variables
     FILE* data_file;
@@ -187,6 +189,8 @@ int main( int argc, char* argv[] )
             ht_init( xmer_table, YMER_TABLE_SIZE );
             ht_init( ymer_index_table, YMER_TABLE_SIZE );
             ht_init( array_xmers, YMER_TABLE_SIZE );
+
+            thpool = thpool_init( num_threads );
 
             // seed our random number
             srand( time( NULL ) );
@@ -336,7 +340,7 @@ int main( int argc, char* argv[] )
 
                     total_ymers = ht_get_items( ymer_index_table );
 
-                    create_threads( num_threads, ymer_index_table->size, covered_locations, total_ymers );
+                    start_threads( num_threads, ymer_index_table->size, covered_locations, total_ymers, thpool );
 
                     set_clear( covered_locations );
                     free( total_ymers );
@@ -501,7 +505,7 @@ void write_outputs( hash_table_t* output_oligos, hash_table_t* name_table,
     free( array_design_items );
 }
 
-void *thread_difference( void* arg )
+void thread_difference( void* arg )
 {
     thread_info_t* info = arg;
 
@@ -518,12 +522,10 @@ void *thread_difference( void* arg )
 
             info->difference_func( current_data, covered_locs );
         }
-
-    return NULL;
 }
 
 
-void create_threads( int num_threads, int size, set_t* covered_locs, HT_Entry* total_ymers )
+void start_threads( int num_threads, int size, set_t* covered_locs, HT_Entry* total_ymers, threadpool thpool )
 {
     int seqs_per_thread = size / num_threads;
     int index;
@@ -533,7 +535,6 @@ void create_threads( int num_threads, int size, set_t* covered_locs, HT_Entry* t
     int remainder = size % num_threads;
 
     thread_info_t thread_info[ num_threads ];
-    pthread_t thread_id[ num_threads ];
 
     start_index = 0;
 
@@ -547,17 +548,14 @@ void create_threads( int num_threads, int size, set_t* covered_locs, HT_Entry* t
             thread_info[ index ].covered_locations = covered_locs;
             thread_info[ index ].total_ymers = total_ymers;
 
-            pthread_create( &thread_id[ index ], NULL, thread_difference, &thread_info[ index ] );
+            thpool_add_work( thpool, thread_difference, &thread_info[ index ] );
             start_index = end_index + 1;
 
             remainder = 0;
             
         }
 
-    for( index = 0; index < num_threads; index++ )
-        {
-            pthread_join( thread_id[ index ], NULL );
-        }
+    thpool_wait( thpool );
 
 
 }
