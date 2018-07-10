@@ -151,6 +151,8 @@ int ht_add( hash_table_t* table, char* to_add, void* add_val )
                         }
                     else
                         {
+                            free( new_entry->key );
+                            free( new_entry );
                             return 0;
                         }
                 }
