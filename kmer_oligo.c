@@ -12,7 +12,7 @@
 #include "hash_table.h"
 #include "array_list.h"
 
-#define ARGS "x:y:l:r:i:q:o:t:p::"
+#define ARGS "x:y:l:r:i:q:o:t:p::c::"
 
 // program defaults
 #define DEFAULT_XMER_SIZE 100
@@ -24,6 +24,7 @@
 #define DEFAULT_OUTPUT "output.fasta"
 #define DISPLAY_INTERVAL 100
 #define DEFAULT_THREADS 1
+#define DEFAULT_XMER_COVERAGE 1.0
 
 #define YMER_TABLE_SIZE 100000
 
@@ -60,6 +61,7 @@ int main( int argc, char* argv[] )
     int redundancy = DEFAULT_REDUNDANCY;
     int iterations = DEFAULT_ITERATIONS;
     float percent_valid = DEFAULT_PERCENT_VALID;
+    float min_xmer_coverage = DEFAULT_XMER_COVERAGE;
 
     char* query = NULL;
     char* output = DEFAULT_OUTPUT;
@@ -133,6 +135,9 @@ int main( int argc, char* argv[] )
                     break;
                 case 'i':
                     iterations = atoi( optarg );
+                    break;
+                case 'c':
+                    min_xmer_coverage = atof( optarg );
                     break;
                 case 'q':
                     query = optarg;
@@ -341,7 +346,7 @@ int main( int argc, char* argv[] )
 
                 } while( ymer_index_table->size > 0 &&
                          max_score > 0 &&
-                         (float) array_xmers->size / xmer_table->size < 1
+                         (float) array_xmers->size / xmer_table->size < min_xmer_coverage
                          );
             // statistics output
             printf( "\nFinal design includes %d %d-mers ( %.1f%% of total ).\n", array_design->size,
