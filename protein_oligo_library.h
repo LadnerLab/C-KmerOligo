@@ -114,6 +114,8 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* name,
  * @param in_xmer_table pointer to xmer table containing xmers to search
  * @param window_size integer size of each xmer
  * @param step_size integer amount to move over after each ymer capture
+ * @param permute boolean option to permute xmer functional groups
+ *
  * @returns set of strings containing the locations of in_ymer's xmers
  **/
 set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
@@ -128,13 +130,16 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
  * @param in_seq pointer to string to create a subset of 
  * @param window_size integer number of characters to capture with each iteration
  * @param step_size integer number of characters to move over after each iteration
+ * @param permute boolean option whether or not xmer permutation should be done
+ * 
  * @returns pointer to hash table containing all of the subsets of the sequence, 
  *          as key, and an array list of subset_data_t as key containing start/end
  **/
 
 hash_table_t* subset_lists( hash_table_t* in_hash,
                                       char* in_seq,
-                            int window_size, int step_size
+                            int window_size, int step_size,
+                            int permute
                           );
 
 /**
