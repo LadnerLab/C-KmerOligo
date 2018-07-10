@@ -13,7 +13,7 @@
 #include "array_list.h"
 #include "thpool.h"
 
-#define ARGS "x:y:l:r:i:q:o:t:p::c::"
+#define ARGS "x:y:r:i:q:o:t:p::c::"
 
 // program defaults
 #define DEFAULT_XMER_SIZE 100
@@ -33,6 +33,8 @@
 
 // ================== PROTOTYPES ========================== 
 void start_threads( int num_threads, int size, set_t* covered_locs, HT_Entry* total_ymers, threadpool thpool );
+
+void show_usage( char* program_name );
 
 void thread_difference( void* arg );
 
@@ -150,6 +152,10 @@ int main( int argc, char* argv[] )
                 case 't':
                     num_threads = atoi( optarg );
                     break;
+                default:
+                    show_usage( argv[ 0 ] );
+
+                    return EXIT_SUCCESS;
                 }
         }
 
@@ -559,3 +565,24 @@ void start_threads( int num_threads, int size, set_t* covered_locs, HT_Entry* to
 
 
 }
+
+void show_usage( char* program_name )
+{
+    printf( "Usage: %s [ options ]\n ", program_name );
+    puts( "-h, --help                 display this help and exit." );
+    puts( " -x                         integer xmer window size. [None, Required]" );
+    puts( " -y                         integer ymer window size. [None, Required]" );
+    puts( " -r                         default redundancy to be used.[1]" );
+    puts( " -i                         number of iterations to do. [1]" );
+    puts( " -q                         fasta query file to perform operations on [None, Required]. " );
+    puts( " -o                         name of file to output to [output.fasta]" );
+    puts( " -t                         number of threads to use [1]" );
+    puts( " -p                         include this flag in order to perform permutation of xmer functional groups" );
+    puts( " -c                         floating point minimum xmer coverage [1]" );
+
+}
+
+
+
+
+
