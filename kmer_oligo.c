@@ -289,33 +289,38 @@ int main( int argc, char* argv[] )
 
 
                     subset_lists( current_ymer_xmers, oligo_to_remove,
-                                  xmer_window_size, 1
+                                  xmer_window_size, 1,
+                                  permute
                                   );
                                             
                     xmer_items = ht_get_items( current_ymer_xmers );
 
                     for( index = 0; index < current_ymer_xmers->size; index++ )
                         {
-                            xmer_value = malloc( sizeof( int ) );
-                            *xmer_value = 1;
+                            if( ht_find( xmer_table, xmer_items[ index ].key ) )
+                                {
+                                    xmer_value = malloc( sizeof( int ) );
+                                    *xmer_value = 1;
 
-                            if( ht_find( array_xmers,
-                                         xmer_items[ index ].key
-                                         ) == NULL
-                                )
-                                {
-                                    ht_add( array_xmers,
-                                            xmer_items[ index ].key,
-                                            xmer_value
-                                            );
-                                }
-                            else
-                                {
-                                    free( xmer_value );
-                                    ( *(int*) ht_find( array_xmers,
-                                                       xmer_items[ index ].key
-                                                       )
-                                      )++;
+                                    if( ht_find( array_xmers,
+                                                 xmer_items[ index ].key
+                                               )
+                                        == NULL
+                                        )
+                                        {
+                                            ht_add( array_xmers,
+                                                    xmer_items[ index ].key,
+                                                    xmer_value
+                                                  );
+                                        }
+                                    else
+                                        {
+                                            free( xmer_value );
+                                            ( *(int*) ht_find( array_xmers,
+                                                               xmer_items[ index ].key
+                                                             )
+                                            )++;
+                                        }
                                 }
                         }
 
@@ -336,7 +341,7 @@ int main( int argc, char* argv[] )
 
                 } while( ymer_index_table->size > 0 &&
                          max_score > 0 &&
-                         current_iteration < iterations
+                         (float) array_xmers->size / xmer_table->size < 1
                          );
             // statistics output
             printf( "\nFinal design includes %d %d-mers ( %.1f%% of total ).\n", array_design->size,
@@ -363,7 +368,7 @@ int main( int argc, char* argv[] )
                         {
                             free( total_ymers_clear[ inner_index ].key );
                         }
-                    set_clear( current_data );
+                    /* set_clear( current_data ); */
                 }
 
             if( array_design->size < min_ymers )
