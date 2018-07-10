@@ -373,7 +373,6 @@ int main( int argc, char* argv[] )
                     ( (float) sum_values_of_table( array_xmers ) / xmer_table->size ) );
 
 
-            total_ymers_clear = ht_get_items( ymer_index_table );
             total_ymers = ht_get_items( ymer_index_table );
             for( index = 0; index < ymer_index_table->size; index++ )
                 {
@@ -383,8 +382,11 @@ int main( int argc, char* argv[] )
                         {
                             free( total_ymers_clear[ inner_index ].key );
                         }
-                    /* set_clear( current_data ); */
+                    free( total_ymers_clear );
+                    set_clear( current_data );
                 }
+
+            free( total_ymers );
 
             if( array_design->size < min_ymers )
                 {
@@ -440,6 +442,7 @@ int main( int argc, char* argv[] )
 
     free_data( tracked_data );
     ar_clear( tracked_data );
+
     return EXIT_SUCCESS;
 }
 
