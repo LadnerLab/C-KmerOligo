@@ -108,7 +108,6 @@ int get_a_line( FILE* stream, dynamic_string_t* to_read )
     char current_char[ 256 ] ;
 
     ds_init( to_read );
-
     if( fgets( current_char, 256, stream ) ) 
         {
             ds_add( to_read, current_char );
