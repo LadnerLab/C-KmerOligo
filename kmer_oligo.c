@@ -60,7 +60,6 @@ int main( int argc, char* argv[] )
     // option variables
     int xmer_window_size = DEFAULT_XMER_SIZE;
     int ymer_window_size = DEFAULT_YMER_SIZE;
-    int min_length = 0;
     int redundancy = DEFAULT_REDUNDANCY;
     int iterations = DEFAULT_ITERATIONS;
     float percent_valid = DEFAULT_PERCENT_VALID;
@@ -127,9 +126,6 @@ int main( int argc, char* argv[] )
                     break;
                 case 'y':
                     ymer_window_size = atoi( optarg );
-                    break;
-                case 'l':
-                    min_length = atoi( optarg );
                     break;
                 case 'p':
                     permute = 1;
@@ -225,7 +221,7 @@ int main( int argc, char* argv[] )
                         {
                             current_ymer = total_ymers[ inner_index ].key;
 
-                            if( is_valid_sequence( current_ymer, min_length, percent_valid ) &&
+                            if( is_valid_sequence( current_ymer, 0, percent_valid ) &&
                                 ht_find( ymer_index_table, current_ymer ) == NULL )
                                 {
                                     current_ymer_locs = malloc( sizeof( set_t ) );
