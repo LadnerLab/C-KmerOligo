@@ -233,7 +233,7 @@ hash_table_t* subset_lists( hash_table_t* in_hash,
 
                     for(  permute_index = 0; permute_index < current_xmer_permutations->size; permute_index++ )
                         {
-                            current_xmer = ar_get( current_xmer_permutations, inner_index );
+                            current_xmer = ar_get( current_xmer_permutations, permute_index );
                             ht_add( in_hash, current_xmer, NULL );
 
                             free( current_xmer );
@@ -389,7 +389,10 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
                 {
                     set_add_all( out_ymer, (char**) found_data->array_data, found_data->size );
 
-                    ar_clear( subset_xmer_items[ index ].value );
+                    if( subset_xmer_items[ index ].value )
+                        {
+                            ar_clear( subset_xmer_items[ index ].value );
+                        }
                 }
         }
 
