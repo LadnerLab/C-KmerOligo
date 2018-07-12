@@ -64,9 +64,20 @@ void ds_add( dynamic_string_t* input, char string[] )
     int input_length = strlen( string );
     int new_size = size + input_length;
 
-    ds_check_for_resize( input, string );
 
-    strcat( input->data, string );
+    int index = 0;
+
+    ds_check_for_resize( input, string );
+ 
+    for( index = 0; index < input_length; index++ )
+        {
+            if( string[ index ] >= SPACE )
+                {
+                    *( input->data + size + index ) = string[ index ];
+                }
+        }
+
+    input->data[ new_size ] = '\0';
     input->size = new_size;
 }
 
