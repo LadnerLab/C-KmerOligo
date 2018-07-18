@@ -166,10 +166,7 @@ int main( int argc, char* argv[] )
     tracked_data = malloc( sizeof( array_list_t ) );
     ar_init( tracked_data );
 
-    num_seqs = count_seqs_in_file( data_file );
-    seqs_from_file = malloc_track( tracked_data, sizeof( sequence_t * ) * num_seqs );
 
-    read_sequences( data_file, seqs_from_file );
 
     array_design = malloc_track( tracked_data, sizeof( hash_table_t ) );
     ht_init( array_design, YMER_TABLE_SIZE );
@@ -177,6 +174,11 @@ int main( int argc, char* argv[] )
     current_iteration = 0;
     while( current_iteration < iterations )
         {
+
+    num_seqs = count_seqs_in_file( data_file );
+    seqs_from_file = malloc( sizeof( sequence_t * ) * num_seqs );
+
+    read_sequences( data_file, seqs_from_file );
             ymer_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
             ymer_name_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
 
@@ -248,6 +250,14 @@ int main( int argc, char* argv[] )
                     ymer_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
                     ht_init( ymer_table, YMER_TABLE_SIZE );
                 }
+
+            for( index = 0; index < num_seqs; index++ )
+                {
+                    ds_clear( seqs_from_file[ index ]->sequence );
+                    free( seqs_from_file[ index ]->name );
+                    free( seqs_from_file[ index ] );
+                }
+            free( seqs_from_file );
 
             ht_clear( ymer_table );
             total_ymer_count = ymer_index_table->size;
@@ -401,7 +411,7 @@ int main( int argc, char* argv[] )
             ht_clear( best_iteration );
 
 
-            // free all of our allocated memory
+            // free our allocated memory
             xmer_items = ht_get_items( xmer_table );
             for( index = 0; index < xmer_table->size; index++ )
                 {
@@ -433,14 +443,7 @@ int main( int argc, char* argv[] )
 
 
 
-   for( index = 0; index < num_seqs; index++ )
-        {
-            ds_clear( seqs_from_file[ index ]->sequence );
-            free( seqs_from_file[ index ]->name );
-            free( seqs_from_file[ index ] );
-        }
 
-    free( seqs_from_file );
     ht_clear( array_design );
     free( array_design );
 
