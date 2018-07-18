@@ -24,6 +24,14 @@ void ar_init( array_list_t* to_init );
 void ar_clear( array_list_t* to_clear );
 
 /**
+ * Clears an array list as specified by ar_clear,
+ * but also frees each entry in its table 
+ * 
+ * @param to_clear pointer to array_list to clear
+ **/
+void ar_clear_and_free( array_list_t* to_clear );
+
+/**
  * Retrieves item from arraylist at index
  * @param to_get pointer to array_list_t to retrieve item from
  * @param index unsigned integer index at which to retrieve
@@ -57,5 +65,6 @@ void ar_set( array_list_t *to_set, unsigned int index, void* new_data );
  * @returns pointer to item removed 
  **/
 void *ar_remove( array_list_t *to_remove, unsigned int remove_index );
+
 
 #endif

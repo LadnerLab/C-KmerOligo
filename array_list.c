@@ -41,6 +41,18 @@ void ar_clear( array_list_t* to_clear )
     free( to_clear );
 }
 
+void ar_clear_and_free( array_list_t* to_clear )
+{
+    uint32_t index;
+
+    for( index = 0; index < to_clear->size; index++ )
+        {
+            free( to_clear->array_data[ index ] );
+        }
+
+    ar_clear( to_clear );
+}
+
 
 void *ar_get( array_list_t* to_get, unsigned int index )
 {
@@ -86,3 +98,4 @@ void *ar_remove( array_list_t *to_remove, unsigned int remove_index )
         }
     return NULL;
 }
+
