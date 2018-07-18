@@ -240,7 +240,7 @@ int main( int argc, char* argv[] )
                                 }
                             else
                                 {
-                                    ar_clear( total_ymers[ inner_index ].value );
+                                    ar_clear_and_free( total_ymers[ inner_index ].value );
                                 }
                         }
 
