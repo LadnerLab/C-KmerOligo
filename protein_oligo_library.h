@@ -21,7 +21,7 @@ typedef struct subset_data_t
 typedef struct blosum_data_t
 {
     char* letter_data;
-    int* distance_mx;
+    hash_table_t* blosum_table;
     
 } blosum_data_t;
 

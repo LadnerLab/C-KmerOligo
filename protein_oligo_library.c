@@ -7,14 +7,18 @@
 #include "dynamic_string.h"
 #include "array_list.h"
 
-#define LINE_SIZE 256
+#define LINE_SIZE 512
 #define DASH_CHAR '-'
+#define SPACE ' '
 
 // ============== Local Function Prototypes ==================== // 
 
 char get_first_char_in_functional_group( char in_char );
 char get_corresponding_char( char in_char );
 void xmer_first_functional_group( char* in_string, int str_len  );
+int count_letters( char* in_str );
+void get_blosum_distances( hash_table_t* blosum_distance, FILE* blosum_file, int num_rows );
+void get_alpha_chars( char* dest, char* source, int num_chars );
 
 
 
@@ -25,6 +29,12 @@ int num_digits_in_int( int input )
     char int_as_str[ LINE_SIZE ];
     return sprintf( int_as_str, "%d", input );
 }
+
+
+
+
+
+
 
 void read_sequences( FILE* file_to_read, sequence_t** in_sequence )
 {
@@ -523,3 +533,53 @@ char get_first_char_in_functional_group( char in_char )
             return '\0';
         }
 }
+
+
+blosum_data_t* parse_blosum_file( char* file_name )
+{
+    FILE* blosum = fopen( file_name, "r" );
+
+    int row_count = 0;
+    int matrix_size = 0;
+
+    char* letter_data = NULL;
+    char* current_line = malloc( LINE_SIZE );
+
+    hash_table_t* blosum_distances = NULL;
+    blosum_data_t* blosum_data = NULL;
+
+    if( blosum )
+        {
+            current_line = fgets( current_line, LINE_SIZE, blosum );
+
+            // consume any preceeding characters
+            while( current_line && current_line[ 0 ] == '#' )
+                {
+                    printf( "%s\n", current_line );
+                    current_line = fgets( current_line, LINE_SIZE, blosum );
+                }
+            if( current_line )
+                {
+                    row_count = count_letters( current_line );
+
+                    letter_data = malloc( sizeof( char ) * row_count + 1 );
+                    blosum_distances = malloc( sizeof( hash_table_t ) );
+                    ht_init( blosum_distances, row_count );
+
+                    get_alpha_chars( letter_data, current_line, row_count );
+                    get_blosum_distances( blosum_distances, blosum, row_count );
+
+                    blosum_data->letter_data = letter_data;
+                    
+                }
+
+                
+        }
+    free( current_line );
+
+
+    return blosum_data;
+}
+
+
+
