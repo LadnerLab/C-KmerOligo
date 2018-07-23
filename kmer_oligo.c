@@ -33,6 +33,7 @@
 
 // ================== PROTOTYPES ========================== 
 void start_threads( int num_threads, int size, set_t* covered_locs, HT_Entry* total_ymers, threadpool thpool );
+void clear_blosum( blosum_data_t* to_clear );
 
 void show_usage( char* program_name );
 
@@ -173,7 +174,9 @@ int main( int argc, char* argv[] )
 
     if( blosum )
         {
-            parse_blosum_file( blosum );
+           blosum_data_t* blosum_data =  parse_blosum_file( blosum );
+
+           clear_blosum( blosum_data );
         }
 
     return 0;
@@ -610,4 +613,22 @@ void show_usage( char* program_name )
 
 
 
+void clear_blosum( blosum_data_t* to_clear )
+{
+    uint32_t index;
+    HT_Entry* blosum_table_data = ht_get_items( to_clear->blosum_table );
+
+    for( index = 0; index < to_clear->blosum_table->size; index++ )
+        {
+            free( blosum_table_data[ index ].value );
+        }
+
+    ht_clear( to_clear->blosum_table );
+
+    free( to_clear->blosum_table  );
+    free( to_clear->letter_data );
+    free( to_clear );
+    free( blosum_table_data );
+    
+}
 
