@@ -19,6 +19,7 @@ void xmer_first_functional_group( char* in_string, int str_len  );
 int count_letters( char* in_str );
 void get_blosum_distances( hash_table_t* blosum_distance, FILE* blosum_file, int num_rows );
 void get_alpha_chars( char* dest, char* source, int num_chars );
+void get_ints_from_string( int* dest, char* src, int num_rows );
 
 
 
@@ -64,7 +65,47 @@ void get_alpha_chars( char* dest, char* source, int num_chars )
     dest[ index ] = '\0';
 }
 
+void get_ints_from_string( int* dest, char* src, int num_rows )
+{
+    int index = 0;
+    char* token = NULL;
 
+    // eat leading alpha character
+    token = strtok( src, " " );
+    token = strtok( NULL, " " );
+
+    while( token && index < num_rows )
+        {
+            dest[ index ] = atoi( token );
+            token = strtok( NULL, " " );
+            index++;
+        }
+}
+
+void get_blosum_distances( hash_table_t* blosum_distance, FILE* blosum_file, int num_rows )
+{
+    char* current_line = malloc( sizeof( char ) * LINE_SIZE );
+    int* current_distance_data = NULL;
+    char* key = malloc( 2 );
+
+    current_line = fgets( current_line, LINE_SIZE, blosum_file );
+
+    while( current_line )
+        {
+            current_distance_data = malloc( sizeof( int ) * num_rows );
+
+            strncpy( key, current_line, 1 );
+            key[ 1 ] = '\0';
+
+            get_ints_from_string( current_distance_data, current_line, num_rows );
+            ht_add( blosum_distance, key, current_distance_data );
+
+            current_line = fgets( current_line, LINE_SIZE, blosum_file );
+        }
+
+    free( key );
+    free( current_line );
+}
 
 void read_sequences( FILE* file_to_read, sequence_t** in_sequence )
 {
