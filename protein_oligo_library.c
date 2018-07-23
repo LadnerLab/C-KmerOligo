@@ -30,7 +30,22 @@ int num_digits_in_int( int input )
     return sprintf( int_as_str, "%d", input );
 }
 
+int count_letters( char* in_str )
+{
+    int char_count = 0;
+    int index = 0;
 
+    while( in_str[ index ] )
+        {
+            if( in_str[ index ] >= 'A' && in_str[ index ] <= 'Z' )
+                {
+                    char_count++;
+                }
+            index++;
+        }
+
+    return char_count;
+}
 
 
 
