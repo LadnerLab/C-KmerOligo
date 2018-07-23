@@ -461,42 +461,39 @@ char get_corresponding_char( char in_char )
 {
     switch( in_char )
         {
-        case 'A':
-            return 'I';
-        case 'C':
-            return 'G';
-        case 'D':
-            return 'E';
-        case 'F':
-            return 'I';
-        case 'G':
-            return 'P';
+        case 'E':
+            return 'D';
+
         case 'H':
             return 'K';
-        case 'I':
-            return 'L';
         case 'K':
             return 'R';
-        case 'L':
-            return 'M';
-        case 'M':
-            return 'V';
-        case 'N':
-            return 'Q';
-        case 'P':
-            return 'U';
-        case 'Q':
+
+        case 'C':
+            return 'T';
+        case 'T':
             return 'S';
         case 'S':
-            return 'T';
-        case 'V':
-            return 'W';
-        case 'W':
+            return 'N';
+        case 'N':
+            return 'Q';
+
+        case 'F':
             return 'Y';
+        case 'Y':
+            return 'W';
+
+        case 'A':
+            return 'V';
+        case 'V':
+            return 'M';
+        case 'M':
+            return 'L';
+        case 'L':
+            return 'I';
+            
         default:
             return '\0';
-            
-            
         }
 }
 
@@ -512,18 +509,15 @@ char get_first_char_in_functional_group( char in_char )
         case 'T': // FALLTHROUGH INTENTIONAL
         case 'S':
         case 'Q':
-            return 'N';
-        case 'U': // FALLTHROUGH INTENTIONAL
-        case 'P':
-        case 'G':
+        case 'N':
             return 'C';
         case 'Y': // FALLTHROUGH INTENTIONAL
         case 'W':
-        case 'V':
+            return 'F';
+        case 'V': // FALLTHROUGH INTENTIONAL
         case 'M':
         case 'L':
         case 'I':
-        case 'F':
             return 'A';
         default:
             return '\0';
