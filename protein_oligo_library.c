@@ -634,6 +634,8 @@ blosum_data_t* parse_blosum_file( char* file_name )
                     row_count = count_letters( current_line );
 
                     letter_data = malloc( sizeof( char ) * row_count + 1 );
+                    blosum_data = malloc( sizeof( blosum_data_t ) );
+
                     blosum_distances = malloc( sizeof( hash_table_t ) );
                     ht_init( blosum_distances, row_count );
 
