@@ -18,6 +18,13 @@ typedef struct subset_data_t
     unsigned int end;
 } subset_data_t;
 
+typedef struct blosum_data_t
+{
+    char* letter_data;
+    int* distance_mx;
+    
+} blosum_data_t;
+
 /**
  * Reads all of the fastas in given file
  * @param file_to_read string name of file to read
@@ -168,6 +175,22 @@ void *malloc_track( array_list_t* data, int num_bytes );
 int calc_num_subseqs( int length, int window_size );
 
 
+/**
+ * Creates each 1-permutation of an kmer, based on the functional groupings of 
+ * amino acids.
+ * @param str_to_change kmer to change
+ * @param permutations pointer to array_list_t in which to store a kmer's permutations
+ **/
 void permute_xmer_functional_groups( char* str_to_change, array_list_t* permutations );
+
+/**
+ * Parses a blosum file containing a blosum substitution
+ * matrix
+ * @param file_name string name of file to open and parse
+ * @returns blosum_data_t* pointer to struct containing
+ *          an array of character amino acids found in the file,
+ *          and integer array of distances between these amino acids
+ **/
+blosum_data_t* parse_blosum_file( char* file_name );
 
 #endif
