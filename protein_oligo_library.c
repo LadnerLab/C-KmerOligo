@@ -47,7 +47,22 @@ int count_letters( char* in_str )
     return char_count;
 }
 
+void get_alpha_chars( char* dest, char* source, int num_chars )
+{
+    int char_count = 0;
+    int index = 0;
 
+    while( char_count < num_chars )
+        {
+            if( source[ char_count ] >= 'A' && source[ char_count ] <= 'Z' )
+                {
+                    dest[ index ] = source[ index ];
+                    index++;
+                }
+            char_count++;
+        }
+    dest[ index ] = '\0';
+}
 
 
 
