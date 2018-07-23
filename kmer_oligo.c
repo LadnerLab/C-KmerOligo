@@ -13,7 +13,7 @@
 #include "array_list.h"
 #include "thpool.h"
 
-#define ARGS "x:y:r:i:q:o:t:p::c::"
+#define ARGS "b::x:y:r:i:q:o:t:p::c::"
 
 // program defaults
 #define DEFAULT_XMER_SIZE 100
@@ -99,6 +99,7 @@ int main( int argc, char* argv[] )
     int count_val = 0;
     int num_threads = DEFAULT_THREADS;
     int permute = 0;
+    int blosum_thresh = 0;
         
     uint32_t num_seqs;
     uint32_t ymer_index;
@@ -113,6 +114,7 @@ int main( int argc, char* argv[] )
     array_list_t* tracked_data;
 
     char* current_ymer;
+    char* blosum = NULL;
     char* oligo_to_remove;
     char index_str[ DEFAULT_YMER_SIZE ];
 
@@ -142,6 +144,12 @@ int main( int argc, char* argv[] )
                 case 'q':
                     query = optarg;
                     break;
+                case 'b':
+                    blosum = optarg;
+                    break;
+                case 'n':
+                    blosum_thresh = atoi( optarg );
+                    break;
                 case 'o':
                     output = optarg;
                     break;
@@ -162,6 +170,13 @@ int main( int argc, char* argv[] )
 
             return EXIT_FAILURE;
         }
+
+    if( blosum )
+        {
+            parse_blosum_file( blosum );
+        }
+
+    return 0;
 
     tracked_data = malloc( sizeof( array_list_t ) );
     ar_init( tracked_data );
