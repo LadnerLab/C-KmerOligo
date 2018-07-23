@@ -643,6 +643,7 @@ blosum_data_t* parse_blosum_file( char* file_name )
                     get_blosum_distances( blosum_distances, blosum, row_count );
 
                     blosum_data->letter_data = letter_data;
+                    blosum_data->blosum_table = blosum_distances;
                     
                 }
 
