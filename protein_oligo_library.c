@@ -78,11 +78,11 @@ void get_alpha_chars( char* dest, char* source, int num_chars )
     int char_count = 0;
     int index = 0;
 
-    while( char_count < num_chars )
+    while( index < num_chars )
         {
             if( source[ char_count ] >= 'A' && source[ char_count ] <= 'Z' )
                 {
-                    dest[ index ] = source[ index ];
+                    dest[ index ] = source[ char_count ];
                     index++;
                 }
             char_count++;
@@ -544,6 +544,7 @@ void permute_xmer_functional_groups( char* str_to_change,
     char copy_string[ length + 1 ];
     int index;
     char different_char;
+    int blosum_dist;
 
     copied_string = malloc( sizeof( char ) * length + 1 );
     for( index = 0; index < length; index++ )
@@ -555,7 +556,8 @@ void permute_xmer_functional_groups( char* str_to_change,
 
             while( different_char )
                 {
-                    if( get_blosum_dist( blosum_data, original_char, original_char ) >= blosum_cutoff )
+                    blosum_dist = get_blosum_dist( blosum_data, different_char, original_char );
+                    if( blosum_dist >= blosum_cutoff )
                         {
                             copy_string[ index ] = different_char;
                             copied_string = malloc( sizeof( char ) * length + 1 );
@@ -563,7 +565,7 @@ void permute_xmer_functional_groups( char* str_to_change,
                             ar_add( permutations, copied_string );
                         }
 
-                    different_char = get_corresponding_char( copy_string[ index ] );
+                    different_char = get_corresponding_char( different_char );
                 }
         }
 }
