@@ -191,10 +191,10 @@ int main( int argc, char* argv[] )
     while( current_iteration < iterations )
         {
 
-    num_seqs = count_seqs_in_file( data_file );
-    seqs_from_file = malloc( sizeof( sequence_t * ) * num_seqs );
+            num_seqs = count_seqs_in_file( data_file );
+            seqs_from_file = malloc( sizeof( sequence_t * ) * num_seqs );
 
-    read_sequences( data_file, seqs_from_file );
+            read_sequences( data_file, seqs_from_file );
             ymer_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
             ymer_name_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
 
