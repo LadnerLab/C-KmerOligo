@@ -13,7 +13,7 @@
 #include "array_list.h"
 #include "thpool.h"
 
-#define ARGS "b::x:y:r:i:q:o:t:p::c::"
+#define ARGS "b::x:y:r:i:q:o:t:p::c::n::"
 
 // program defaults
 #define DEFAULT_XMER_SIZE 100
@@ -87,6 +87,8 @@ int main( int argc, char* argv[] )
     hash_table_t* array_xmers;
     array_list_t* to_add;
 
+    blosum_data_t* blosum_data = NULL;
+
     HT_Entry* total_ymers;
     HT_Entry* xmer_items;
     HT_Entry* total_ymers_clear;
@@ -100,7 +102,7 @@ int main( int argc, char* argv[] )
     int count_val = 0;
     int num_threads = DEFAULT_THREADS;
     int permute = 0;
-    int blosum_thresh = 0;
+    int blosum_cutoff = 0;
         
     uint32_t num_seqs;
     uint32_t ymer_index;
@@ -149,7 +151,7 @@ int main( int argc, char* argv[] )
                     blosum = optarg;
                     break;
                 case 'n':
-                    blosum_thresh = atoi( optarg );
+                    blosum_cutoff = atoi( optarg );
                     break;
                 case 'o':
                     output = optarg;
@@ -174,12 +176,10 @@ int main( int argc, char* argv[] )
 
     if( blosum )
         {
-           blosum_data_t* blosum_data =  parse_blosum_file( blosum );
+           blosum_data =  parse_blosum_file( blosum );
 
            clear_blosum( blosum_data );
         }
-
-    return 0;
 
     tracked_data = malloc( sizeof( array_list_t ) );
     ar_init( tracked_data );
@@ -249,6 +249,8 @@ int main( int argc, char* argv[] )
 
                                     component_xmer_locs( current_ymer, total_ymers[ inner_index ].key,
                                                          current_ymer_locs, xmer_table, xmer_window_size, 1,
+                                                         blosum_data,
+                                                         blosum_cutoff,
                                                          permute
                                                          );
                                     ht_add( ymer_name_table, current_ymer, ht_find( ymer_table, current_ymer ) );
@@ -329,6 +331,8 @@ int main( int argc, char* argv[] )
 
                     subset_lists( current_ymer_xmers, oligo_to_remove,
                                   xmer_window_size, 1,
+                                  blosum_data,
+                                  blosum_cutoff,
                                   permute
                                   );
                                             
