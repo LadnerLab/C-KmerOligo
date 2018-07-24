@@ -607,15 +607,23 @@ void show_usage( char* program_name )
 {
     printf( "Usage: %s [ options ]\n ", program_name );
     puts( "-h, --help                 display this help and exit." );
-    puts( " -x                         integer xmer window size. [None, Required]" );
-    puts( " -y                         integer ymer window size. [None, Required]" );
-    puts( " -r                         default redundancy to be used.[1]" );
-    puts( " -i                         number of iterations to do. [1]" );
-    puts( " -q                         fasta query file to perform operations on [None, Required]. " );
-    puts( " -o                         name of file to output to [output.fasta]" );
-    puts( " -t                         number of threads to use [1]" );
-    puts( " -p                         include this flag in order to perform permutation of xmer functional groups" );
-    puts( " -c                         floating point minimum xmer coverage [1]" );
+    puts( " -x                         integer xmer window size. [None, Required]\n" );
+    puts( " -y                         integer ymer window size. [None, Required]\n" );
+    puts( " -r                         default redundancy to be used.[1]\n" );
+    puts( " -i                         number of iterations to do. [1]\n" );
+    puts( " -q                         fasta query file to perform operations on [None, Required]. \n" );
+    puts( " -o                         name of file to output to [output.fasta]\n" );
+    puts( " -t                         number of threads to use [1]\n" );
+    puts( " -p                         include this flag in order to perform permutation of xmer functional groups\n" );
+    puts( " -c                         floating point minimum xmer coverage [1]\n" );
+    puts( " -b                         blosum matrix to be used in inclusion of xmer functional groups.\n"
+          "                            Note that blosum90 and blosum62 are hard-coded into this program,\n"
+          "                            and are specified by blosum90 or blosum62. Otherwise, specify a \n"
+          "                            text file containing a blosum matrix.\n"
+        );
+    puts( " -n                         integer cutoff for whether an amino acid can be substituted \n"
+          "                            only relationships greater to or equal to this number will be added [0] \n"
+        );
 
 }
 
