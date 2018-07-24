@@ -539,12 +539,14 @@ void permute_xmer_functional_groups( char* str_to_change,
                                    )
 {
     int length = strlen( str_to_change );
+    int index;
+    size_t inner_index;
+    int blosum_dist;
+
     char *copied_string;
     char original_char;
     char copy_string[ length + 1 ];
-    int index;
     char different_char;
-    int blosum_dist;
 
     copied_string = malloc( sizeof( char ) * length + 1 );
     for( index = 0; index < length; index++ )
@@ -554,10 +556,11 @@ void permute_xmer_functional_groups( char* str_to_change,
             original_char = copy_string[ index ];
             different_char = get_first_char_in_functional_group( copy_string[ index ] );
 
-            while( different_char )
+            if( blosum_data )
                 {
-                    if( blosum_data )
+                    for( inner_index = 0; inner_index < strlen( blosum_data->letter_data ); inner_index++ )
                         {
+                            different_char = blosum_data->letter_data[ inner_index ];
                             blosum_dist = get_blosum_dist( blosum_data, original_char, different_char );
                             if( blosum_dist >= blosum_cutoff )
                                 {
@@ -567,7 +570,10 @@ void permute_xmer_functional_groups( char* str_to_change,
                                     ar_add( permutations, copied_string );
                                 }
                         }
-                    else
+                }
+            else
+                {
+                    while( different_char )
                         {
                             copy_string[ index ] = different_char;
                             copied_string = malloc( sizeof( char ) * length + 1 );
