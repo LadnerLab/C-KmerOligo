@@ -469,7 +469,11 @@ int main( int argc, char* argv[] )
 
     free_data( tracked_data );
     ar_clear( tracked_data );
-    clear_blosum( blosum_data );
+
+    if( blosum_data )
+        {
+            clear_blosum( blosum_data );
+        }
 
     return EXIT_SUCCESS;
 }
