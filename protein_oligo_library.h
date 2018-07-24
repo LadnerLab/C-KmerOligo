@@ -25,6 +25,8 @@ typedef struct blosum_data_t
     
 } blosum_data_t;
 
+
+
 /**
  * Reads all of the fastas in given file
  * @param file_to_read string name of file to read
@@ -214,6 +216,6 @@ void permute_xmer_functional_groups( char* str_to_change,
  *          an array of character amino acids found in the file,
  *          and integer array of distances between these amino acids
  **/
-blosum_data_t* parse_blosum_file( char* file_name );
+blosum_data_t* parse_blosum_file( FILE* file_name );
 
 #endif

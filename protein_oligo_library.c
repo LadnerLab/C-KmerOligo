@@ -665,9 +665,9 @@ char get_first_char_in_functional_group( char in_char )
 }
 
 
-blosum_data_t* parse_blosum_file( char* file_name )
+blosum_data_t* parse_blosum_file( FILE* file_name )
 {
-    FILE* blosum = fopen( file_name, "r" );
+    FILE* blosum = file_name;
 
     int row_count = 0;
 
@@ -707,7 +707,6 @@ blosum_data_t* parse_blosum_file( char* file_name )
                 
         }
     free( current_line );
-
 
     return blosum_data;
 }
