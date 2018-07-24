@@ -13,7 +13,7 @@
 #include "array_list.h"
 #include "thpool.h"
 
-#define ARGS "b::x:y:r:i:q:o:t:p::c::n::"
+#define ARGS "b:x:y:r:i:q:o:t:p::c:n:"
 
 // program defaults
 #define DEFAULT_XMER_SIZE 100
@@ -177,8 +177,6 @@ int main( int argc, char* argv[] )
     if( blosum )
         {
            blosum_data =  parse_blosum_file( blosum );
-
-           clear_blosum( blosum_data );
         }
 
     tracked_data = malloc( sizeof( array_list_t ) );
@@ -471,6 +469,7 @@ int main( int argc, char* argv[] )
 
     free_data( tracked_data );
     ar_clear( tracked_data );
+    clear_blosum( blosum_data );
 
     return EXIT_SUCCESS;
 }
