@@ -547,11 +547,6 @@ void permute_xmer_functional_groups( char* str_to_change,
     int blosum_dist;
 
     copied_string = malloc( sizeof( char ) * length + 1 );
-
-    strcpy( copied_string, str_to_change );
-    ar_add( permutations, copied_string );
-
-    copied_string = malloc( sizeof( char ) * length + 1 );
     for( index = 0; index < length; index++ )
         {
             strcpy( copy_string, str_to_change );
