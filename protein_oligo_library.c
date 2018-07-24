@@ -10,6 +10,7 @@
 #define LINE_SIZE 512
 #define DASH_CHAR '-'
 #define SPACE ' '
+#define DATA_NOT_FOUND -99
 
 // ============== Local Function Prototypes ==================== // 
 
@@ -20,6 +21,7 @@ int count_letters( char* in_str );
 void get_blosum_distances( hash_table_t* blosum_distance, FILE* blosum_file, int num_rows );
 void get_alpha_chars( char* dest, char* source, int num_chars );
 void get_ints_from_string( int* dest, char* src, int num_rows );
+int get_blosum_dist( blosum_data_t* in_data, char first, char second );
 
 
 
@@ -46,6 +48,29 @@ int count_letters( char* in_str )
         }
 
     return char_count;
+}
+
+int get_blosum_dist( blosum_data_t* in_data, char first, char second )
+{
+    int index = 0;
+    int return_dist = DATA_NOT_FOUND;
+    int len = strlen( in_data->letter_data );
+    int* first_distances = ht_find( in_data->blosum_table, &first );
+
+
+    if( first_distances != NULL )
+        {
+            while( in_data->letter_data[ index ] != second &&
+                   index < len
+                 )
+                {
+                    index++;
+                }
+
+            return_dist = first_distances[ index ];
+        }
+
+    return return_dist;
 }
 
 void get_alpha_chars( char* dest, char* source, int num_chars )
@@ -279,6 +304,8 @@ void append_suffix( char* result, char* in_name, int start, int end )
 hash_table_t* subset_lists( hash_table_t* in_hash,
                             char* in_seq,
                             int window_size, int step_size,
+                            blosum_data_t* blosum_data,
+                            int blosum_cutoff,
                             int permute
                           )
 {
@@ -308,7 +335,9 @@ hash_table_t* subset_lists( hash_table_t* in_hash,
                 {
                     current_xmer_permutations = malloc( sizeof( array_list_t ) );
                     ar_init( current_xmer_permutations );
-                    permute_xmer_functional_groups( current_xmer, current_xmer_permutations );
+                    permute_xmer_functional_groups( current_xmer, current_xmer_permutations,
+                                                    blosum_data, blosum_cutoff
+                                                  );
 
                     for(  permute_index = 0; permute_index < current_xmer_permutations->size; permute_index++ )
                         {
@@ -411,6 +440,8 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
                             set_t* out_ymer,
                             hash_table_t* in_xmer_table,
                             int window_size, int step_size,
+                            blosum_data_t* blosum_data,
+                            int blosum_cutoff, 
                             int permute
                           )
 {
@@ -442,7 +473,9 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
                     found_data = malloc( sizeof( array_list_t ) );
                     ar_init( found_data );
 
-                    permute_xmer_functional_groups( subset_xmer_items[ index ].key, found_data );
+                    permute_xmer_functional_groups( subset_xmer_items[ index ].key, found_data,
+                                                    blosum_data, blosum_cutoff
+                                                  );
                     for( inner_index = 0; inner_index < found_data->size; inner_index++ )
                         {
                             ht_add( subset_xmers, ar_get( found_data, inner_index ), NULL );
@@ -499,10 +532,15 @@ void free_data( array_list_t* in_data )
         }
 }
 
-void permute_xmer_functional_groups( char* str_to_change, array_list_t* permutations )
+void permute_xmer_functional_groups( char* str_to_change,
+                                     array_list_t* permutations,
+                                     blosum_data_t* blosum_data,
+                                     int blosum_cutoff
+                                   )
 {
     int length = strlen( str_to_change );
     char *copied_string;
+    char original_char;
     char copy_string[ length + 1 ];
     int index;
     char different_char;
@@ -512,14 +550,18 @@ void permute_xmer_functional_groups( char* str_to_change, array_list_t* permutat
         {
             strcpy( copy_string, str_to_change );
 
+            original_char = copy_string[ index ];
             different_char = get_first_char_in_functional_group( copy_string[ index ] );
 
             while( different_char )
                 {
-                    copy_string[ index ] = different_char;
-                    copied_string = malloc( sizeof( char ) * length + 1 );
-                    strcpy( copied_string, copy_string );
-                    ar_add( permutations, copied_string );
+                    if( get_blosum_dist( blosum_data, original_char, original_char ) >= blosum_cutoff )
+                        {
+                            copy_string[ index ] = different_char;
+                            copied_string = malloc( sizeof( char ) * length + 1 );
+                            strcpy( copied_string, copy_string );
+                            ar_add( permutations, copied_string );
+                        }
 
                     different_char = get_corresponding_char( copy_string[ index ] );
                 }
@@ -609,7 +651,6 @@ blosum_data_t* parse_blosum_file( char* file_name )
     FILE* blosum = fopen( file_name, "r" );
 
     int row_count = 0;
-    int matrix_size = 0;
 
     char* letter_data = NULL;
     char* current_line = malloc( LINE_SIZE );
@@ -624,7 +665,6 @@ blosum_data_t* parse_blosum_file( char* file_name )
             // consume any preceeding characters
             while( current_line && current_line[ 0 ] == '#' )
                 {
-                    printf( "%s\n", current_line );
                     current_line = fgets( current_line, LINE_SIZE, blosum );
                 }
             if( current_line )
