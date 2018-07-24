@@ -331,7 +331,7 @@ hash_table_t* subset_lists( hash_table_t* in_hash,
                 }
             current_xmer[ inner_index ] = '\0';
 
-            if( permute )
+            if( permute || blosum_data )
                 {
                     current_xmer_permutations = malloc( sizeof( array_list_t ) );
                     ar_init( current_xmer_permutations );
@@ -465,7 +465,7 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
 
     size = subset_xmers->size;
 
-    if( permute )
+    if( permute || blosum_data )
         {
             for( index = 0; index < size; index++ )
                 {
@@ -547,6 +547,11 @@ void permute_xmer_functional_groups( char* str_to_change,
     int blosum_dist;
 
     copied_string = malloc( sizeof( char ) * length + 1 );
+
+    strcpy( copied_string, str_to_change );
+    ar_add( permutations, copied_string );
+
+    copied_string = malloc( sizeof( char ) * length + 1 );
     for( index = 0; index < length; index++ )
         {
             strcpy( copy_string, str_to_change );
@@ -556,13 +561,24 @@ void permute_xmer_functional_groups( char* str_to_change,
 
             while( different_char )
                 {
-                    blosum_dist = get_blosum_dist( blosum_data, different_char, original_char );
-                    if( blosum_dist >= blosum_cutoff )
+                    if( blosum_data )
+                        {
+                            blosum_dist = get_blosum_dist( blosum_data, original_char, different_char );
+                            if( blosum_dist >= blosum_cutoff )
+                                {
+                                    copy_string[ index ] = different_char;
+                                    copied_string = malloc( sizeof( char ) * length + 1 );
+                                    strcpy( copied_string, copy_string );
+                                    ar_add( permutations, copied_string );
+                                }
+                        }
+                    else
                         {
                             copy_string[ index ] = different_char;
                             copied_string = malloc( sizeof( char ) * length + 1 );
                             strcpy( copied_string, copy_string );
                             ar_add( permutations, copied_string );
+
                         }
 
                     different_char = get_corresponding_char( different_char );
