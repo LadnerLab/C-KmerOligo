@@ -195,6 +195,8 @@ int main( int argc, char* argv[] )
             seqs_from_file = malloc( sizeof( sequence_t * ) * num_seqs );
 
             read_sequences( data_file, seqs_from_file );
+            fclose( data_file );
+
             ymer_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
             ymer_name_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
 
