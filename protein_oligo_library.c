@@ -70,7 +70,7 @@ void get_ints_from_string( int* dest, char* src, int num_rows )
     int index = 0;
     char* token = NULL;
 
-    // eat leading alpha character
+    // eat leading letter
     token = strtok( src, " " );
     token = strtok( NULL, " " );
 
@@ -84,13 +84,14 @@ void get_ints_from_string( int* dest, char* src, int num_rows )
 
 void get_blosum_distances( hash_table_t* blosum_distance, FILE* blosum_file, int num_rows )
 {
-    char* current_line = malloc( sizeof( char ) * LINE_SIZE );
+    char* found_line = NULL;
+    char current_line[ LINE_SIZE ] ;
     int* current_distance_data = NULL;
-    char* key = malloc( 2 );
+    char key[ 2 ];
 
-    current_line = fgets( current_line, LINE_SIZE, blosum_file );
+    found_line = fgets( current_line, LINE_SIZE, blosum_file );
 
-    while( current_line )
+    while( found_line )
         {
             current_distance_data = malloc( sizeof( int ) * num_rows );
 
@@ -100,11 +101,8 @@ void get_blosum_distances( hash_table_t* blosum_distance, FILE* blosum_file, int
             get_ints_from_string( current_distance_data, current_line, num_rows );
             ht_add( blosum_distance, key, current_distance_data );
 
-            current_line = fgets( current_line, LINE_SIZE, blosum_file );
+            found_line = fgets( current_line, LINE_SIZE, blosum_file );
         }
-
-    free( key );
-    free( current_line );
 }
 
 void read_sequences( FILE* file_to_read, sequence_t** in_sequence )
