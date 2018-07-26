@@ -610,7 +610,7 @@ void start_threads( int num_threads, int size, set_t* covered_locs, HT_Entry* to
             thread_info[ index ].total_ymers = total_ymers;
 
             thpool_add_work( thpool, thread_difference, &thread_info[ index ] );
-            start_index = end_index + 1;
+            start_index = end_index;
 
             remainder = 0;
             
