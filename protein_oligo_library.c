@@ -580,9 +580,9 @@ void permute_xmer_functional_groups( char* str_to_change,
                             strcpy( copied_string, copy_string );
                             ar_add( permutations, copied_string );
 
+                            different_char = get_corresponding_char( different_char );
                         }
 
-                    different_char = get_corresponding_char( different_char );
                 }
         }
 }
