@@ -39,7 +39,7 @@ this can be achieved with
 ```
 xcode-select --install
 ```
-from the command line, or through Xcode itself. Once you have thse installed,
+from the command line, or through Xcode itself. Once you have these installed,
 follow the instructions for Linux.
 #### Linux
 ```

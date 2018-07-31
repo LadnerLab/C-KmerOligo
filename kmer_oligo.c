@@ -429,7 +429,6 @@ int main( int argc, char* argv[] )
                             free( total_ymers_clear[ inner_index ].key );
                         }
                     free( total_ymers_clear );
-                    set_clear( current_data );
                 }
 
             free( total_ymers );
