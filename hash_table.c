@@ -59,8 +59,8 @@ void ht_clear( hash_table_t* table )
                 }
         }
 
+    table->size = 0;
     free( table->table_data );
-    table = NULL;
 }
 
 
