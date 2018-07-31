@@ -3,14 +3,21 @@ Linux/OSX program to design a library of oligos from input sequences.
 Efficient design of oligonucleotide pools that seeks to minimize the number of oligos produced
 while maximizing representation of the input sequences.
 
+**Note** that for larger datasets, it is recommended to use this on a linux-based HPC cluster
+
 
 ### Dependencies
  -  Linux/OSX Operating System, all other files/libraries are included
+ - GCC
 
 ### Input
-1. An unaligned **fasta file containing protein sequences**
-2. integer **ymer-size**, number of amino acids each output oligo will be, note that this **must** be bigger than xmer-size.
-3. integer **xmer-size** size of xmers to be represented within the ymers
+    1. An unaligned fasta file containing protein sequences
+    2. integer ymer-size, number of amino acids each output oligo will be, note that this must be bigger than xmer-size.
+    3. integer xmer-size size of xmers to be represented within the ymers
+
+### Output
+	1. Fasta file containing the designed library, each sequence name is the original name of the sequence
+       followed by its relative in the input sequence.
 
 ### Usage
 To get usage info:
@@ -26,12 +33,21 @@ Use 4 threads to speed up the design, and write the best of two designs to oligo
 ```
 
 ### Installation
+#### MacOS
+You must have make and gcc installed in order to build this program,
+this can be achieved with 
+```
+xcode-select --install
+```
+from the command line, or through Xcode itself. Once you have thse installed,
+follow the instructions for Linux.
+#### Linux
 ```
 git clone https://github.com/LadnerLab/C-KmerOligo.git
 cd C-KmerOligo
 make optimized
 ```
-This produces the kmer_oligo executable, which can be used as described above.
+This produces the kmer_oligo executable, which can be used as described above, with the options described below.
 
 ### Options
 ```
