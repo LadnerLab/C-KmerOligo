@@ -57,7 +57,6 @@ int get_blosum_dist( blosum_data_t* in_data, char first, char second )
     int len = strlen( in_data->letter_data );
     int* first_distances = ht_find( in_data->blosum_table, &first );
 
-
     if( first_distances != NULL )
         {
             while( in_data->letter_data[ index ] != second &&
@@ -543,17 +542,19 @@ void permute_xmer_functional_groups( char* str_to_change,
     size_t inner_index;
     int blosum_dist;
 
-    char *copied_string;
-    char original_char;
+    char *copied_string = NULL;
+    char original_char = '\0';
     char copy_string[ length + 1 ];
-    char different_char;
+
+    char different_char = '\0';
 
     copied_string = malloc( sizeof( char ) * length + 1 );
     for( index = 0; index < length; index++ )
         {
+            memset( copy_string, '\0', sizeof( copy_string ) );
             strcpy( copy_string, str_to_change );
-
             original_char = copy_string[ index ];
+
             different_char = get_first_char_in_functional_group( copy_string[ index ] );
 
             if( blosum_data )
