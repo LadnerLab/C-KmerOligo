@@ -22,6 +22,7 @@ void get_blosum_distances( hash_table_t* blosum_distance, FILE* blosum_file, int
 void get_alpha_chars( char* dest, char* source, int num_chars );
 void get_ints_from_string( int* dest, char* src, int num_rows );
 int get_blosum_dist( blosum_data_t* in_data, char first, char second );
+void write_xmer( char* to_write, char* in_seq, int xmer_index, int window_size, int step_size );
 
 
 
@@ -206,6 +207,18 @@ int count_seqs_in_file( FILE* data_file )
     return counter;
 }
 
+void write_xmer( char* to_write, char* in_seq, int xmer_index, int window_size, int step_size )
+{
+    int index = 0;
+
+    for( index = 0; index < window_size; index++ )
+        {
+            to_write[ index ] =
+                in_seq[ ( xmer_index * step_size ) + index ];
+        }
+
+    to_write[ index ] = '\0';
+}
 int get_a_line( FILE* stream, dynamic_string_t* to_read )
 {
     char current_char[ 256 ] ;
@@ -309,7 +322,6 @@ hash_table_t* subset_lists( hash_table_t* in_hash,
                           )
 {
     int outer_index;
-    int inner_index;
     int num_subsets = calc_num_subseqs( strlen( in_seq ), window_size );
 
     uint32_t permute_index;
@@ -323,12 +335,8 @@ hash_table_t* subset_lists( hash_table_t* in_hash,
 
             current_xmer = malloc( window_size + 1 );
 
-            for( inner_index = 0; inner_index < window_size; inner_index++ )
-                {
-                    current_xmer[ inner_index ] =
-                        in_seq[ ( outer_index * step_size ) + inner_index ];
-                }
-            current_xmer[ inner_index ] = '\0';
+
+            write_xmer( current_xmer, in_seq, outer_index, window_size, step_size );
 
             if( permute || blosum_data )
                 {
