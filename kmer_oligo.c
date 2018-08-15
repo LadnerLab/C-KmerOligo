@@ -58,6 +58,8 @@ typedef struct thread_info_t
     HT_Entry* total_ymers;
 } thread_info_t;
 
+// ==========================================================
+
 int main( int argc, char* argv[] )
 {
 
@@ -229,6 +231,11 @@ int main( int argc, char* argv[] )
             ht_init( xmer_table, YMER_TABLE_SIZE );
             ht_init( ymer_index_table, YMER_TABLE_SIZE );
             ht_init( array_xmers, YMER_TABLE_SIZE );
+
+            if( num_threads > num_seqs )
+                {
+                    num_threads = num_seqs;
+                }
 
             thpool = thpool_init( num_threads );
 
