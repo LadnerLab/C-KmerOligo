@@ -45,6 +45,7 @@ int sum_values_of_table( hash_table_t* in_table );
 FILE* blosum90();
 FILE* blosum62();
 
+void update_xmer_table_values( hash_table_t* current_ymer_xmers, hash_table_t* xmer_table, hash_table_t* array_xmers );
 void write_outputs( hash_table_t* output_oligos, hash_table_t* name_table,
                     char* outfile_name, int redundancy );
 
@@ -102,7 +103,6 @@ int main( int argc, char* argv[] )
     set_t* covered_locations;
 
     int current_iteration;
-    int *xmer_value = NULL;
     int total_ymer_count = 0;
     int count_val = 0;
     int permute = 0;
@@ -361,41 +361,10 @@ int main( int argc, char* argv[] )
                                   permute
                                   );
                                             
-                    xmer_items = ht_get_items( current_ymer_xmers );
-
-                    for( index = 0; index < current_ymer_xmers->size; index++ )
-                        {
-                            if( ht_find( xmer_table, xmer_items[ index ].key ) )
-                                {
-                                    xmer_value = malloc( sizeof( int ) );
-                                    *xmer_value = 1;
-
-                                    if( ht_find( array_xmers,
-                                                 xmer_items[ index ].key
-                                               )
-                                        == NULL
-                                        )
-                                        {
-                                            ht_add( array_xmers,
-                                                    xmer_items[ index ].key,
-                                                    xmer_value
-                                                  );
-                                        }
-                                    else
-                                        {
-                                            free( xmer_value );
-                                            ( *(int*) ht_find( array_xmers,
-                                                               xmer_items[ index ].key
-                                                             )
-                                            )++;
-                                        }
-                                }
-                        }
-
+                    update_xmer_table_values( current_ymer_xmers, xmer_table, array_xmers );
 
 
                     free( total_ymers );
-                    free( xmer_items );
 
                     total_ymers = ht_get_items( ymer_index_table );
 
@@ -748,3 +717,43 @@ void clear_blosum( blosum_data_t* to_clear )
     
 }
 
+void update_xmer_table_values( hash_table_t* current_ymer_xmers, hash_table_t* xmer_table, hash_table_t* array_xmers )
+{
+    uint32_t index = 0;
+    int *xmer_value;
+
+    HT_Entry* xmer_items = NULL;
+
+
+    xmer_items = ht_get_items( xmer_table );
+    for( index = 0; index < current_ymer_xmers->size; index++ )
+        {
+            if( ht_find( xmer_table, xmer_items[ index ].key ) )
+                {
+                    xmer_value = malloc( sizeof( int ) );
+                    *xmer_value = 1;
+
+                    if( ht_find( array_xmers,
+                                 xmer_items[ index ].key
+                                 )
+                        == NULL
+                        )
+                        {
+                            ht_add( array_xmers,
+                                    xmer_items[ index ].key,
+                                    xmer_value
+                                    );
+                        }
+                    else
+                        {
+                            free( xmer_value );
+                            ( *(int*) ht_find( array_xmers,
+                                               xmer_items[ index ].key
+                                               )
+                              )++;
+                        }
+                }
+        }
+
+    free( xmer_items );
+}
