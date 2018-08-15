@@ -105,10 +105,10 @@ int main( int argc, char* argv[] )
     int *xmer_value = NULL;
     int total_ymer_count = 0;
     int count_val = 0;
-    int num_threads = DEFAULT_THREADS;
     int permute = 0;
     int blosum_cutoff = 0;
         
+    uint32_t num_threads = DEFAULT_THREADS;
     uint32_t num_seqs;
     uint32_t ymer_index;
     uint64_t max_score;
