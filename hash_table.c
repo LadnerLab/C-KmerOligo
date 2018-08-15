@@ -135,7 +135,6 @@ int ht_add( hash_table_t* table, char* to_add, void* add_val )
     if( table->table_data[ item_index ] == NULL )
         {
             table->table_data[ item_index ] = new_entry;
-            table->size++;
         }
     else
         {
@@ -160,8 +159,8 @@ int ht_add( hash_table_t* table, char* to_add, void* add_val )
             current_node->next = new_entry;
             new_entry->prev = current_node;
 
-            table->size++;
         }
+    table->size++;
 
     return 1;
 }
