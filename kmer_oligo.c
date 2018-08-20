@@ -211,8 +211,6 @@ int main( int argc, char* argv[] )
     tracked_data = malloc( sizeof( array_list_t ) );
     ar_init( tracked_data );
 
-    array_design = malloc_track( tracked_data, sizeof( hash_table_t ) );
-    ht_init( array_design, YMER_TABLE_SIZE );
 
     num_seqs = count_seqs_in_file( data_file );
 
@@ -232,12 +230,14 @@ int main( int argc, char* argv[] )
             array_xmers = malloc_track( tracked_data, sizeof( hash_table_t ) );
             xmer_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
 
+            array_design = malloc_track( tracked_data, sizeof( hash_table_t ) );
 
             ht_init( ymer_name_table, YMER_TABLE_SIZE );
             ht_init( ymer_table, YMER_TABLE_SIZE );
             ht_init( xmer_table, YMER_TABLE_SIZE );
             ht_init( ymer_index_table, YMER_TABLE_SIZE );
             ht_init( array_xmers, YMER_TABLE_SIZE );
+            ht_init( array_design, YMER_TABLE_SIZE );
 
             if( num_threads > num_seqs )
                 {
@@ -419,20 +419,23 @@ int main( int argc, char* argv[] )
 
                     array_design = malloc_track( tracked_data, sizeof( hash_table_t ) );
                     ht_init( array_design, YMER_TABLE_SIZE );
+
+                   // write output to specified file
+                   write_outputs( best_iteration, ymer_name_table, output, redundancy );
+                   ht_clear( best_iteration );
+
                 }
             else
                 {
                     ht_clear( array_design );
-                }
-            // write output to specified file
-            write_outputs( best_iteration, ymer_name_table, output, redundancy );
-            ht_clear( best_iteration );
+                    free( array_design );
 
+                    array_design = NULL;
+                }
 
             // free our allocated memory
             xmer_items = ht_get_items( xmer_table );
-            for( index = 0; index < xmer_table->size; index++ )
-                {
+            for( index = 0; index < xmer_table->size; index++ ) {
                     ar_clear( xmer_items[ index ].value );
                 }
             HT_Entry* all_ymers = ht_get_items( ymer_name_table );
@@ -460,6 +463,8 @@ int main( int argc, char* argv[] )
         }
 
 
+
+
    for( index = 0; index < num_seqs; index++ )
        {
            ds_clear( seqs_from_file[ index ]->sequence );
@@ -469,8 +474,11 @@ int main( int argc, char* argv[] )
    free( seqs_from_file );
 
 
-    ht_clear( array_design );
-    free( array_design );
+   if( array_design )
+       {
+           ht_clear( array_design );
+           free( array_design );
+       }
 
     free_data( tracked_data );
     ar_clear( tracked_data );
