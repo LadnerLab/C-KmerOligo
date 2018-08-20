@@ -210,20 +210,19 @@ int main( int argc, char* argv[] )
     tracked_data = malloc( sizeof( array_list_t ) );
     ar_init( tracked_data );
 
-
-
     array_design = malloc_track( tracked_data, sizeof( hash_table_t ) );
     ht_init( array_design, YMER_TABLE_SIZE );
+
+    num_seqs = count_seqs_in_file( data_file );
+
+    seqs_from_file = malloc( sizeof( sequence_t * ) * num_seqs );
+    read_sequences( data_file, seqs_from_file );
 
     current_iteration = 0;
     while( current_iteration < iterations )
         {
 
-            num_seqs = count_seqs_in_file( data_file );
-            seqs_from_file = malloc( sizeof( sequence_t * ) * num_seqs );
 
-            read_sequences( data_file, seqs_from_file );
-            fclose( data_file );
 
             ymer_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
             ymer_name_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
@@ -304,13 +303,6 @@ int main( int argc, char* argv[] )
                     ht_init( ymer_table, YMER_TABLE_SIZE );
                 }
 
-            for( index = 0; index < num_seqs; index++ )
-                {
-                    ds_clear( seqs_from_file[ index ]->sequence );
-                    free( seqs_from_file[ index ]->name );
-                    free( seqs_from_file[ index ] );
-                }
-            free( seqs_from_file );
 
             ht_clear( ymer_table );
             total_ymer_count = ymer_index_table->size;
@@ -464,6 +456,13 @@ int main( int argc, char* argv[] )
         }
 
 
+   for( index = 0; index < num_seqs; index++ )
+       {
+           ds_clear( seqs_from_file[ index ]->sequence );
+           free( seqs_from_file[ index ]->name );
+           free( seqs_from_file[ index ] );
+       }
+   free( seqs_from_file );
 
 
     ht_clear( array_design );
@@ -471,6 +470,8 @@ int main( int argc, char* argv[] )
 
     free_data( tracked_data );
     ar_clear( tracked_data );
+
+    fclose( data_file );
 
     if( blosum_data )
         {
