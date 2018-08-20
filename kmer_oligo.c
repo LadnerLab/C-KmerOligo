@@ -218,6 +218,20 @@ int main( int argc, char* argv[] )
     read_sequences( data_file, seqs_from_file );
 
     current_iteration = 0;
+
+
+    xmer_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
+    ht_init( xmer_table, YMER_TABLE_SIZE );
+
+    for( index = 0; index < num_seqs; index++ )
+        {
+            sprintf( index_str, "%d", index );
+            current_seq = seqs_from_file[ index ];
+            create_xmers_with_locs( xmer_table, index_str,
+                                    current_seq->sequence->data,
+                                    xmer_window_size, 1 );
+        }
+
     while( current_iteration < iterations )
         {
             count_val = 0;
@@ -228,13 +242,11 @@ int main( int argc, char* argv[] )
             ymer_index_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
 
             array_xmers = malloc_track( tracked_data, sizeof( hash_table_t ) );
-            xmer_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
 
             array_design = malloc_track( tracked_data, sizeof( hash_table_t ) );
 
             ht_init( ymer_name_table, YMER_TABLE_SIZE );
             ht_init( ymer_table, YMER_TABLE_SIZE );
-            ht_init( xmer_table, YMER_TABLE_SIZE );
             ht_init( ymer_index_table, YMER_TABLE_SIZE );
             ht_init( array_xmers, YMER_TABLE_SIZE );
             ht_init( array_design, YMER_TABLE_SIZE );
@@ -249,14 +261,7 @@ int main( int argc, char* argv[] )
             // seed our random number
             srand( time( NULL ) );
 
-            for( index = 0; index < num_seqs; index++ )
-                {
-                    sprintf( index_str, "%d", index );
-                    current_seq = seqs_from_file[ index ];
-                    create_xmers_with_locs( xmer_table, index_str,
-                                            current_seq->sequence->data,
-                                            xmer_window_size, 1 );
-                }
+
             for( index = 0; index < num_seqs; index++ )
                 {
                     sprintf( index_str, "%d", index );
@@ -433,11 +438,6 @@ int main( int argc, char* argv[] )
                     array_design = NULL;
                 }
 
-            // free our allocated memory
-            xmer_items = ht_get_items( xmer_table );
-            for( index = 0; index < xmer_table->size; index++ ) {
-                    ar_clear( xmer_items[ index ].value );
-                }
             HT_Entry* all_ymers = ht_get_items( ymer_name_table );
             for( index = 0; index < ymer_name_table->size; index++ )
                 {
@@ -453,12 +453,9 @@ int main( int argc, char* argv[] )
             free( all_ymers );
 
             ht_clear( ymer_name_table );
-            ht_clear( xmer_table );
             ht_clear( ymer_index_table );
             ht_clear( array_xmers );
 
-            free( xmer_items );
- 
             current_iteration++;
         }
 
@@ -483,6 +480,15 @@ int main( int argc, char* argv[] )
     free_data( tracked_data );
     ar_clear( tracked_data );
 
+    // free our allocated memory
+    xmer_items = ht_get_items( xmer_table );
+    for( index = 0; index < xmer_table->size; index++ ) {
+            ar_clear( xmer_items[ index ].value );
+        }
+    free( xmer_items );
+
+
+    ht_clear( xmer_table );
     fclose( data_file );
 
     if( blosum_data )
