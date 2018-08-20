@@ -194,6 +194,9 @@ int count_seqs_in_file( FILE* data_file )
         {
             return -1; 
         }
+
+    rewind( data_file );
+
     current_char = fgetc( data_file );
     while( current_char != EOF )
         {
@@ -203,7 +206,7 @@ int count_seqs_in_file( FILE* data_file )
                 }
             current_char =  fgetc( data_file );
         }
-    fseek( data_file, 0, SEEK_SET );
+    rewind( data_file );
     return counter;
 }
 
