@@ -432,35 +432,12 @@ int main( int argc, char* argv[] )
             current_iteration++;
         }
 
-
-
-
-   for( index = 0; index < num_seqs; index++ )
-       {
-           ds_clear( seqs_from_file[ index ]->sequence );
-           free( seqs_from_file[ index ]->name );
-           free( seqs_from_file[ index ] );
-       }
-
-   free( seqs_from_file );
-
-   if( array_design )
-       {
-           ht_clear( array_design );
-           free( array_design );
-       }
-
-    free_data( tracked_data );
-    ar_clear( tracked_data );
-
-
     fclose( data_file );
 
     if( blosum_data )
         {
             clear_blosum( blosum_data );
         }
-
     return EXIT_SUCCESS;
 }
 
