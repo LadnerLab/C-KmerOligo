@@ -236,12 +236,12 @@ int main( int argc, char* argv[] )
             create_xmers_with_locs( xmer_table, index_str,
                                     current_seq->sequence->data,
                                     xmer_window_size, 1 );
+            
             create_xmers_with_locs( ymer_table, current_seq->name,
                                     current_seq->sequence->data,
                                     ymer_window_size, 1
                                   );
         }
-
 
 
 
@@ -270,7 +270,6 @@ int main( int argc, char* argv[] )
             // seed our random number
             srand( time( NULL ) );
 
-
             total_ymers = ht_get_items( ymer_table );
             for( inner_index = 0; inner_index < ymer_table->size; inner_index++ )
                 {
@@ -296,10 +295,10 @@ int main( int argc, char* argv[] )
                     else
                         {
                             ar_clear_and_free( total_ymers[ inner_index ].value );
+                            free( ht_delete( ymer_table, total_ymers[ index ].key ) );
                         }
                 }
 
-            free( total_ymers );
  
             total_ymer_count = ymer_index_table->size;
 
@@ -444,8 +443,8 @@ int main( int argc, char* argv[] )
            free( seqs_from_file[ index ]->name );
            free( seqs_from_file[ index ] );
        }
-   free( seqs_from_file );
 
+   free( seqs_from_file );
 
    if( array_design )
        {
@@ -456,33 +455,7 @@ int main( int argc, char* argv[] )
     free_data( tracked_data );
     ar_clear( tracked_data );
 
-    ht_clear( ymer_table );
-    free( ymer_table );
 
-    // free our allocated memory
-    xmer_items = ht_get_items( xmer_table );
-    for( index = 0; index < xmer_table->size; index++ ) {
-            ar_clear( xmer_items[ index ].value );
-        }
-    free( xmer_items );
-
-    HT_Entry* all_ymers = ht_get_items( ymer_name_table );
-    for( index = 0; index < ymer_name_table->size; index++ )
-        {
-            for( inner_index = 0; inner_index <
-                     ((array_list_t*) all_ymers[ index ].value )->size; inner_index++
-                 )
-                {
-                    free( ((array_list_t*) (all_ymers[ index ].value))->array_data[ inner_index ] );
-                }
-            ar_clear( all_ymers[ index ].value );
-        }
-
-    free( all_ymers );
-
-    ht_clear( ymer_name_table );
-
-    ht_clear( xmer_table );
     fclose( data_file );
 
     if( blosum_data )
