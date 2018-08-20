@@ -725,7 +725,7 @@ void update_xmer_table_values( hash_table_t* current_ymer_xmers, hash_table_t* x
     HT_Entry* xmer_items = NULL;
 
 
-    xmer_items = ht_get_items( xmer_table );
+    xmer_items = ht_get_items( current_ymer_xmers );
     for( index = 0; index < current_ymer_xmers->size; index++ )
         {
             if( ht_find( xmer_table, xmer_items[ index ].key ) )
