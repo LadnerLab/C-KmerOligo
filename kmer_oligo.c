@@ -28,6 +28,7 @@
 #define DEFAULT_XMER_COVERAGE 1.0
 #define BLOSUM_90 "blosum90"
 #define BLOSUM_62 "blosum62"
+#define DEFAULT_MIN_YMERS 0 
 
 #define YMER_TABLE_SIZE 100000
 
@@ -122,7 +123,7 @@ int main( int argc, char* argv[] )
     uint64_t max_score;
     uint32_t index;
     uint32_t inner_index;
-    uint32_t min_ymers;
+    uint32_t min_ymers = DEFAULT_MIN_YMERS;
 
     set_t *current_data;
 
@@ -221,8 +222,7 @@ int main( int argc, char* argv[] )
     current_iteration = 0;
     while( current_iteration < iterations )
         {
-
-
+            count_val = 0;
 
             ymer_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
             ymer_name_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
@@ -306,7 +306,11 @@ int main( int argc, char* argv[] )
 
             ht_clear( ymer_table );
             total_ymer_count = ymer_index_table->size;
-            min_ymers = ymer_index_table->size;
+
+            if( min_ymers == DEFAULT_MIN_YMERS )
+                {
+                    min_ymers = ymer_index_table->size;
+                }
  
             do
                 {
