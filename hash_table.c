@@ -93,16 +93,16 @@ uint32_t generate_hash( const void *key,  int len, uint32_t seed )
   switch(len)
   {
   case 3:
-    h += data[2] << 16; 
-	break;
+    h += data[2] << 16;
+    break;
   case 2:
     h += data[1] << 8;
-	break;
+    break;
   case 1:
     h += data[0];
     h *= m;
     h ^= h >> r;
-	break;
+    break;
   };
  
   //----------
@@ -113,6 +113,7 @@ uint32_t generate_hash( const void *key,  int len, uint32_t seed )
   h ^= h >> 17;
 
   return h;
+
 }
 
 int ht_add( hash_table_t* table, char* to_add, void* add_val )
