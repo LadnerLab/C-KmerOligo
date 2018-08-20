@@ -105,7 +105,6 @@ int main( int argc, char* argv[] )
     blosum_data_t* blosum_data = NULL;
 
     HT_Entry* total_ymers;
-    HT_Entry* xmer_items;
     HT_Entry* total_ymers_clear;
 
     set_t* current_ymer_locs;
@@ -244,6 +243,12 @@ int main( int argc, char* argv[] )
         }
 
 
+    if( num_threads > num_seqs )
+                {
+                    num_threads = num_seqs;
+                }
+
+    thpool = thpool_init( num_threads );
 
     while( current_iteration < iterations )
         {
@@ -259,14 +264,7 @@ int main( int argc, char* argv[] )
             ht_init( ymer_index_table, YMER_TABLE_SIZE );
             ht_init( array_xmers, YMER_TABLE_SIZE );
             ht_init( array_design, YMER_TABLE_SIZE );
-
-            if( num_threads > num_seqs )
-                {
-                    num_threads = num_seqs;
-                }
-
-            thpool = thpool_init( num_threads );
-
+            
             // seed our random number
             srand( time( NULL ) );
 
