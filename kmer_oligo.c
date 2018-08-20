@@ -34,7 +34,10 @@
 
 
 // ================== PROTOTYPES ========================== 
-void start_threads( int num_threads, int size, set_t* covered_locs, HT_Entry* total_ymers, threadpool thpool );
+void start_threads( int num_threads, int size,
+                    set_t* covered_locs, HT_Entry* total_ymers,
+                    threadpool thpool
+                  );
 void clear_blosum( blosum_data_t* to_clear );
 
 void show_usage( char* program_name );
@@ -45,9 +48,14 @@ int sum_values_of_table( hash_table_t* in_table );
 FILE* blosum90();
 FILE* blosum62();
 
-void update_xmer_table_values( hash_table_t* current_ymer_xmers, hash_table_t* xmer_table, hash_table_t* array_xmers );
+void update_xmer_table_values( hash_table_t* current_ymer_xmers,
+                               hash_table_t* xmer_table,
+                               hash_table_t* array_xmers
+                             );
+
 void write_outputs( hash_table_t* output_oligos, hash_table_t* name_table,
-                    char* outfile_name, int redundancy );
+                    char* outfile_name, int redundancy
+                  );
 
 typedef struct thread_info_t
 {
@@ -362,7 +370,6 @@ int main( int argc, char* argv[] )
                                   );
                                             
                     update_xmer_table_values( current_ymer_xmers, xmer_table, array_xmers );
-
 
                     free( total_ymers );
 
