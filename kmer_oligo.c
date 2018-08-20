@@ -223,6 +223,12 @@ int main( int argc, char* argv[] )
     xmer_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
     ht_init( xmer_table, YMER_TABLE_SIZE );
 
+    ymer_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
+    ymer_name_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
+
+    ht_init( ymer_table, YMER_TABLE_SIZE );
+    ht_init( ymer_name_table, YMER_TABLE_SIZE );
+
     for( index = 0; index < num_seqs; index++ )
         {
             sprintf( index_str, "%d", index );
@@ -230,14 +236,19 @@ int main( int argc, char* argv[] )
             create_xmers_with_locs( xmer_table, index_str,
                                     current_seq->sequence->data,
                                     xmer_window_size, 1 );
+            create_xmers_with_locs( ymer_table, current_seq->name,
+                                    current_seq->sequence->data,
+                                    ymer_window_size, 1
+                                  );
         }
+
+
+
 
     while( current_iteration < iterations )
         {
             count_val = 0;
 
-            ymer_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
-            ymer_name_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
 
             ymer_index_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
 
@@ -245,8 +256,6 @@ int main( int argc, char* argv[] )
 
             array_design = malloc_track( tracked_data, sizeof( hash_table_t ) );
 
-            ht_init( ymer_name_table, YMER_TABLE_SIZE );
-            ht_init( ymer_table, YMER_TABLE_SIZE );
             ht_init( ymer_index_table, YMER_TABLE_SIZE );
             ht_init( array_xmers, YMER_TABLE_SIZE );
             ht_init( array_design, YMER_TABLE_SIZE );
@@ -262,54 +271,36 @@ int main( int argc, char* argv[] )
             srand( time( NULL ) );
 
 
-            for( index = 0; index < num_seqs; index++ )
+            total_ymers = ht_get_items( ymer_table );
+            for( inner_index = 0; inner_index < ymer_table->size; inner_index++ )
                 {
-                    sprintf( index_str, "%d", index );
+                    current_ymer = total_ymers[ inner_index ].key;
 
-                    current_seq = seqs_from_file[ index ];
-                    create_xmers_with_locs( ymer_table, current_seq->name,
-                                            current_seq->sequence->data,
-                                            ymer_window_size, 1
-                                            );
-
-
-                    total_ymers = ht_get_items( ymer_table );
-                    for( inner_index = 0; inner_index < ymer_table->size; inner_index++ )
+                    if( is_valid_sequence( current_ymer, 0, percent_valid ) &&
+                        ht_find( ymer_index_table, current_ymer ) == NULL )
                         {
-                            current_ymer = total_ymers[ inner_index ].key;
+                            current_ymer_locs = malloc( sizeof( set_t ) );
+                            set_init( current_ymer_locs );
 
-                            if( is_valid_sequence( current_ymer, 0, percent_valid ) &&
-                                ht_find( ymer_index_table, current_ymer ) == NULL )
-                                {
-                                    current_ymer_locs = malloc( sizeof( set_t ) );
-                                    set_init( current_ymer_locs );
+                            component_xmer_locs( current_ymer, total_ymers[ inner_index ].key,
+                                                 current_ymer_locs, xmer_table, xmer_window_size, 1,
+                                                 blosum_data,
+                                                 blosum_cutoff,
+                                                 permute
+                                               );
 
-                                    component_xmer_locs( current_ymer, total_ymers[ inner_index ].key,
-                                                         current_ymer_locs, xmer_table, xmer_window_size, 1,
-                                                         blosum_data,
-                                                         blosum_cutoff,
-                                                         permute
-                                                         );
-                                    ht_add( ymer_name_table, current_ymer, ht_find( ymer_table, current_ymer ) );
+                            ht_add( ymer_name_table, current_ymer, ht_find( ymer_table, current_ymer ) );
+                            ht_add( ymer_index_table, current_ymer, current_ymer_locs );
 
-                                    ht_add( ymer_index_table, current_ymer, current_ymer_locs );
-
-                                }
-                            else
-                                {
-                                    ar_clear_and_free( total_ymers[ inner_index ].value );
-                                }
                         }
-
-                    ht_clear( ymer_table );
-                    free( total_ymers );
- 
-                    ymer_table = malloc_track( tracked_data, sizeof( hash_table_t ) );
-                    ht_init( ymer_table, YMER_TABLE_SIZE );
+                    else
+                        {
+                            ar_clear_and_free( total_ymers[ inner_index ].value );
+                        }
                 }
 
-
-            ht_clear( ymer_table );
+            free( total_ymers );
+ 
             total_ymer_count = ymer_index_table->size;
 
             if( min_ymers == DEFAULT_MIN_YMERS )
@@ -438,21 +429,6 @@ int main( int argc, char* argv[] )
                     array_design = NULL;
                 }
 
-            HT_Entry* all_ymers = ht_get_items( ymer_name_table );
-            for( index = 0; index < ymer_name_table->size; index++ )
-                {
-                    for( inner_index = 0; inner_index <
-                             ((array_list_t*) all_ymers[ index ].value )->size; inner_index++
-                       )
-                        {
-                            free( ((array_list_t*) (all_ymers[ index ].value))->array_data[ inner_index ] );
-                        }
-                    ar_clear( all_ymers[ index ].value );
-                }
-
-            free( all_ymers );
-
-            ht_clear( ymer_name_table );
             ht_clear( ymer_index_table );
             ht_clear( array_xmers );
 
@@ -480,6 +456,9 @@ int main( int argc, char* argv[] )
     free_data( tracked_data );
     ar_clear( tracked_data );
 
+    ht_clear( ymer_table );
+    free( ymer_table );
+
     // free our allocated memory
     xmer_items = ht_get_items( xmer_table );
     for( index = 0; index < xmer_table->size; index++ ) {
@@ -487,6 +466,21 @@ int main( int argc, char* argv[] )
         }
     free( xmer_items );
 
+    HT_Entry* all_ymers = ht_get_items( ymer_name_table );
+    for( index = 0; index < ymer_name_table->size; index++ )
+        {
+            for( inner_index = 0; inner_index <
+                     ((array_list_t*) all_ymers[ index ].value )->size; inner_index++
+                 )
+                {
+                    free( ((array_list_t*) (all_ymers[ index ].value))->array_data[ inner_index ] );
+                }
+            ar_clear( all_ymers[ index ].value );
+        }
+
+    free( all_ymers );
+
+    ht_clear( ymer_name_table );
 
     ht_clear( xmer_table );
     fclose( data_file );
