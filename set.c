@@ -17,7 +17,6 @@ void set_init( set_t* to_init )
 
 void set_add( set_t* set_to_add, char* add_data )
 {
-
    ht_add( set_to_add->data, add_data, 0 );
 }
 
@@ -40,10 +39,7 @@ void set_clear( set_t* set_to_clear )
 void set_difference( set_t* first, set_t* second )
 {
     uint32_t index;
-    uint32_t max = ( first->data->size < first->data->capacity ||
-                    first->data->size > first->data->capacity ?
-                    first->data->size : first->data->capacity ); 
-        
+    uint32_t max = first->data->size;
     HT_Entry *found_data = ht_get_items( first->data );
 
     for( index = 0; index < ( max ); index++ )
