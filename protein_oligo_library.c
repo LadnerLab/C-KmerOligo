@@ -370,7 +370,6 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
                                       int window_size, int step_size )
 {
     int outer_index;
-    int inner_index;
     int num_subsets = calc_num_subseqs( strlen( in_seq ), window_size );
 
     subset_data_t* current_xmer_data;
@@ -386,14 +385,7 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
             current_xmer_data = malloc( sizeof( subset_data_t ) );
             current_xmer_data->start = ( outer_index * step_size );
 
-
-            for( inner_index = 0; inner_index < window_size; inner_index++ )
-                {
-                    current_xmer[ inner_index ] =
-                        in_seq[ ( outer_index * step_size ) + inner_index ];
-                }
-            current_xmer[ inner_index ] = '\0';
-
+            write_xmer( current_xmer, in_seq, outer_index, window_size, step_size );
 
             current_xmer_data->end = ( outer_index * step_size ) + window_size;
 
@@ -406,35 +398,31 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
 
             append_suffix( name_with_bounds, in_name, current_xmer_data->start, current_xmer_data->end );
 
-            if( in_hash != NULL )
-                {
-                    xmer_locations = ( array_list_t* ) ht_find( in_hash, current_xmer );
-                }
-
-                if( in_hash != NULL &&
-			        !char_in_string( current_xmer, 'X' )
-                  ) 
-                {
-                    if( xmer_locations != NULL )
-                        {
-                            // update the entry at this location
-                            ar_add( xmer_locations, name_with_bounds );
-                        }
-                    else
-                        {
-                            // create the entry at this location
-                            xmer_locations = malloc( sizeof( array_list_t ) );
-
-                            ar_init( xmer_locations );
-                            ar_add( xmer_locations, name_with_bounds );
- 
-                            ht_add( in_hash, current_xmer, xmer_locations );
-                        }
-                }
+            if( in_hash != NULL &&
+			    !char_in_string( current_xmer, 'X' )
+              ) 
+            {
+                xmer_locations = ( array_list_t* ) ht_find( in_hash, current_xmer );
+                if( xmer_locations != NULL )
+                    {
+                        // update the entry at this location
+                        ar_add( xmer_locations, name_with_bounds );
+                    }
                 else
                     {
-                        free( current_xmer );
+                        // create the entry at this location
+                        xmer_locations = malloc( sizeof( array_list_t ) );
+
+                        ar_init( xmer_locations );
+                        ar_add( xmer_locations, name_with_bounds );
+ 
+                        ht_add( in_hash, current_xmer, xmer_locations );
                     }
+            }
+            else
+                {
+                    free( current_xmer );
+                }
             free( current_xmer_data );
         }
     return in_hash;
