@@ -46,6 +46,8 @@ void show_usage( char* program_name );
 
 void thread_difference( void* arg );
 
+void display_current_info( int interval, int count_val, uint64_t max_score );
+
 int sum_values_of_table( hash_table_t* in_table );
 FILE* blosum90();
 FILE* blosum62();
@@ -348,11 +350,7 @@ int main( int argc, char* argv[] )
                     ht_delete( ymer_index_table, oligo_to_remove );
 
                     count_val++;
-                    if( !( count_val % DISPLAY_INTERVAL ) )
-                        {
-                            printf( "Current iteration: %d.\n", count_val );
-                            printf( "Current max score: %lu.\n", max_score );
-                        }
+                    display_current_info( DISPLAY_INTERVAL, count_val, max_score );
 
                                                                      
                     current_ymer_xmers = malloc( sizeof( hash_table_t ) );
@@ -729,4 +727,13 @@ void update_xmer_table_values( hash_table_t* current_ymer_xmers, hash_table_t* x
         }
 
     free( xmer_items );
+}
+
+void display_current_info( int interval, int count_val, uint64_t max_score )
+{
+    if( !( count_val % interval ) )
+        {
+            printf( "Current iteration: %d.\n", count_val );
+            printf( "Current max score: %lu.\n", max_score );
+        }
 }
