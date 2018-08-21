@@ -120,7 +120,7 @@ int main( int argc, char* argv[] )
     uint32_t num_threads = DEFAULT_THREADS;
     uint32_t num_seqs;
     uint32_t ymer_index;
-    uint64_t max_score;
+    uint64_t max_score = DEFAULT_MAX_SCORE;
     uint32_t index;
     uint32_t inner_index;
     uint32_t min_ymers = DEFAULT_MIN_YMERS;
