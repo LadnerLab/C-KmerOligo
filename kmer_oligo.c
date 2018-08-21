@@ -29,6 +29,7 @@
 #define BLOSUM_90 "blosum90"
 #define BLOSUM_62 "blosum62"
 #define DEFAULT_MIN_YMERS 0 
+#define DEFAULT_MAX_SCORE 0
 
 #define YMER_TABLE_SIZE 100000
 
@@ -305,7 +306,10 @@ int main( int argc, char* argv[] )
                     min_ymers = ymer_index_table->size;
                 }
  
-            do
+            while( ymer_index_table->size > 0 &&
+                   max_score != DEFAULT_MAX_SCORE &&
+                   (float) array_xmers->size / xmer_table->size < min_xmer_coverage
+                   )
                 {
                     to_add = malloc( sizeof( array_list_t ) );
                     ar_init( to_add );
@@ -372,10 +376,7 @@ int main( int argc, char* argv[] )
                     ar_clear( to_add );
                     free( current_ymer_xmers );
 
-                } while( ymer_index_table->size > 0 &&
-                         max_score > 0 &&
-                         (float) array_xmers->size / xmer_table->size < min_xmer_coverage
-                         );
+                }
             // statistics output
             printf( "\nFinal design includes %d %d-mers ( %.1f%% of total ).\n", array_design->size,
                     ymer_window_size, ( array_design->size / (float) total_ymer_count ) * 100
