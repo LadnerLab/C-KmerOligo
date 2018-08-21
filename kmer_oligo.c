@@ -233,14 +233,18 @@ int main( int argc, char* argv[] )
         {
             sprintf( index_str, "%d", index );
             current_seq = seqs_from_file[ index ];
-            create_xmers_with_locs( xmer_table, index_str,
-                                    current_seq->sequence->data,
-                                    xmer_window_size, 1 );
+
+            if( current_seq )
+                {
+                    create_xmers_with_locs( xmer_table, index_str,
+                                            current_seq->sequence->data,
+                                            xmer_window_size, 1 );
             
-            create_xmers_with_locs( ymer_table, current_seq->name,
-                                    current_seq->sequence->data,
-                                    ymer_window_size, 1
-                                  );
+                    create_xmers_with_locs( ymer_table, current_seq->name,
+                                            current_seq->sequence->data,
+                                            ymer_window_size, 1
+                                            );
+                }
         }
 
 
