@@ -308,7 +308,13 @@ int is_valid_sequence( char* sequence, int min_length, float percent_valid )
 
 int calc_num_subseqs( int length, int window_size )
 {
-    return length - window_size + 1;
+    int return_val = 0;
+    if( length >= window_size )
+        {
+            return_val = length - window_size + 1;
+        }
+
+    return return_val;
 }
 
 void append_suffix( char* result, char* in_name, int start, int end )
