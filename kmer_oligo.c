@@ -29,7 +29,7 @@
 #define BLOSUM_90 "blosum90"
 #define BLOSUM_62 "blosum62"
 #define DEFAULT_MIN_YMERS 0 
-#define DEFAULT_MAX_SCORE 0
+#define DEFAULT_MAX_SCORE -1
 
 #define YMER_TABLE_SIZE 100000
 
@@ -313,7 +313,7 @@ int main( int argc, char* argv[] )
                 }
  
             while( ymer_index_table->size > 0 &&
-                   max_score != DEFAULT_MAX_SCORE &&
+                   max_score != 0 &&
                    (float) array_xmers->size / xmer_table->size < min_xmer_coverage
                    )
                 {
