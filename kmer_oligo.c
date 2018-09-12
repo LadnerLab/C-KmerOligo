@@ -312,6 +312,8 @@ int main( int argc, char* argv[] )
                     min_ymers = ymer_index_table->size;
                 }
  
+            max_score = DEFAULT_MAX_SCORE;
+
             while( ymer_index_table->size > 0 &&
                    max_score != 0 &&
                    (float) array_xmers->size / xmer_table->size < min_xmer_coverage
