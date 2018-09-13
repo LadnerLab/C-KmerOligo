@@ -6,6 +6,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <time.h>
+#include <sys/sysinfo.h>
 
 
 #include "protein_oligo_library.h"
@@ -119,7 +120,7 @@ int main( int argc, char* argv[] )
     int permute = 0;
     int blosum_cutoff = 0;
         
-    uint32_t num_threads = DEFAULT_THREADS;
+    uint32_t num_threads = get_nprocs();
     uint32_t num_seqs;
     uint32_t ymer_index;
     uint64_t max_score = DEFAULT_MAX_SCORE;
