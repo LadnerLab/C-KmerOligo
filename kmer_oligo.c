@@ -250,12 +250,6 @@ int main( int argc, char* argv[] )
                 }
         }
 
-
-    if( num_threads > num_seqs )
-                {
-                    num_threads = num_seqs;
-                }
-
     thpool = thpool_init( num_threads );
 
     while( current_iteration < iterations )
@@ -561,7 +555,6 @@ void start_threads( int num_threads, int size, set_t* covered_locs, HT_Entry* to
             thpool_add_work( thpool, thread_difference, &thread_info[ index ] );
             start_index = end_index;
 
-            remainder = 0;
             
         }
 
