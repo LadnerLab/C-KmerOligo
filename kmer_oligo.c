@@ -58,7 +58,7 @@ void update_xmer_table_values( hash_table_t* current_ymer_xmers,
                                hash_table_t* array_xmers
                              );
 
-void write_outputs( hash_table_t* output_oligos, hash_table_t* name_table,
+void write_outputs( array_list_t* output_oligos, hash_table_t* name_table,
                     char* outfile_name, int redundancy
                   );
 
@@ -99,9 +99,9 @@ int main( int argc, char* argv[] )
     hash_table_t* ymer_table;
     hash_table_t* ymer_index_table;
     hash_table_t* xmer_table;
-    hash_table_t* best_iteration = NULL;
+    array_list_t* best_iteration = NULL;
 
-    hash_table_t* array_design = NULL ;
+    array_list_t* array_design = NULL ;
     hash_table_t* current_ymer_xmers;
     hash_table_t* array_xmers;
     array_list_t* to_add;
@@ -261,12 +261,12 @@ int main( int argc, char* argv[] )
 
             array_xmers = malloc_track( tracked_data, sizeof( hash_table_t ) );
 
-            array_design = malloc_track( tracked_data, sizeof( hash_table_t ) );
+            array_design = malloc( sizeof( array_list_t ) );
 
             ht_init( ymer_index_table, YMER_TABLE_SIZE );
             ht_init( array_xmers, YMER_TABLE_SIZE );
-            ht_init( array_design, YMER_TABLE_SIZE );
             
+            ar_init( array_design );
             // seed our random number
             srand( time( NULL ) );
 
@@ -343,7 +343,7 @@ int main( int argc, char* argv[] )
                     oligo_to_remove = to_add->array_data[ rand() % to_add->size ];
                     covered_locations = ht_find( ymer_index_table, oligo_to_remove );
 
-                    ht_add( array_design, oligo_to_remove, NULL );
+                    ar_add( array_design, oligo_to_remove );
                     ht_delete( ymer_index_table, oligo_to_remove );
 
                     count_val++;
@@ -410,17 +410,17 @@ int main( int argc, char* argv[] )
                     min_ymers = array_design->size;
                     best_iteration = array_design;
 
-                    array_design = malloc_track( tracked_data, sizeof( hash_table_t ) );
-                    ht_init( array_design, YMER_TABLE_SIZE );
+                    array_design = malloc( sizeof( array_list_t ) );
+                    ar_init( array_design );
 
                    // write output to specified file
                    write_outputs( best_iteration, ymer_name_table, output, redundancy );
-                   ht_clear( best_iteration );
+                   ar_clear( best_iteration );
 
                 }
             else
                 {
-                    ht_clear( array_design );
+                    ar_clear( array_design );
                     free( array_design );
 
                     array_design = NULL;
@@ -458,55 +458,47 @@ int sum_values_of_table( hash_table_t* in_table )
     return total;
 }
 
-void write_outputs( hash_table_t* output_oligos, hash_table_t* name_table,
+void write_outputs( array_list_t* output_oligos, hash_table_t* name_table,
                     char* outfile_name, int redundancy
                   )
 {
     uint32_t index;
     uint32_t num_ymers = output_oligos->size;
+
+    const int MAX_YMER_SIZE = 60;
     
-    HT_Entry* array_design_items = ht_get_items( output_oligos );
     HT_Entry* current_item = NULL;
 
     sequence_t* output_seqs[ num_ymers ];
-    sequence_t* to_write;
-
-    dynamic_string_t *ymer;
+    sequence_t to_write[ num_ymers ];
 
     int outfile_len = strlen( outfile_name );
     // padding for characters added to string
     int extra_chars = 12;
 
+    dynamic_string_t ymer_list[ num_ymers ];
+
     char* ymer_name = NULL;
+    char ymer_str_list[ num_ymers ][ MAX_YMER_SIZE ];
     char outfile_name_with_redundancy[ outfile_len + extra_chars ];
-    
+
     for( index = 0; index < num_ymers; index++ )
         {
-            to_write = malloc( sizeof( sequence_t ) );
-            ymer = malloc( sizeof( dynamic_string_t ) );
-
-            current_item = find_item( name_table, array_design_items[ index ].key );
+            current_item = find_item( name_table, (char*) ar_get( output_oligos, index ) );
 
             ymer_name = (char*) ( ( *(array_list_t*)current_item->value ).array_data[ 0 ] );
 
-            ymer->data = current_item->key;
+            strcpy( ymer_str_list[ index ], current_item->key );
+            ymer_list[ index ].data = ymer_str_list[ index ];
 
-            to_write->name = ymer_name;
-            to_write->sequence = ymer;
+            to_write[ index ].name = ymer_name;
+            to_write[ index ].sequence = &ymer_list[ index ];
             
-            output_seqs[ index ] = to_write;
+            output_seqs[ index ] = &to_write[ index ];
         }
 
     sprintf( outfile_name_with_redundancy, "%s_R_%d", outfile_name, redundancy ); 
     write_fastas( output_seqs, num_ymers, outfile_name_with_redundancy );
-
-    for( index = 0; index < num_ymers; index++ )
-        {
-            free( output_seqs[ index ]->sequence );
-            free( output_seqs[ index ] );
-        }
-
-    free( array_design_items );
 }
 
 void thread_difference( void* arg )
