@@ -381,7 +381,9 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
     int outer_index;
     int num_subsets = calc_num_subseqs( strlen( in_seq ), window_size );
 
-    subset_data_t* current_xmer_data;
+    subset_data_t xmer_bounds[ num_subsets ];
+    subset_data_t current_xmer_data;
+
     array_list_t* xmer_locations;
 
     char *current_xmer;
@@ -390,22 +392,23 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
     for( outer_index = 0; outer_index < num_subsets; outer_index++ )
         {
 
+            current_xmer_data = xmer_bounds[ outer_index ];
+
             current_xmer = malloc( window_size + 1 );
-            current_xmer_data = malloc( sizeof( subset_data_t ) );
-            current_xmer_data->start = ( outer_index * step_size );
+            current_xmer_data.start = ( outer_index * step_size );
 
             write_xmer( current_xmer, in_seq, outer_index, window_size, step_size );
 
-            current_xmer_data->end = ( outer_index * step_size ) + window_size;
+            current_xmer_data.end = ( outer_index * step_size ) + window_size;
 
             name_with_bounds = malloc( strlen( in_name ) +
-                                       num_digits_in_int( current_xmer_data->start ) +
-                                       num_digits_in_int( current_xmer_data->end ) +
+                                       num_digits_in_int( current_xmer_data.start ) +
+                                       num_digits_in_int( current_xmer_data.end ) +
                                        2+ 1
                                       );
 
 
-            append_suffix( name_with_bounds, in_name, current_xmer_data->start, current_xmer_data->end );
+            append_suffix( name_with_bounds, in_name, current_xmer_data.start, current_xmer_data.end );
 
             if( in_hash != NULL &&
 			    !char_in_string( current_xmer, 'X' )
@@ -432,7 +435,6 @@ hash_table_t* create_xmers_with_locs( hash_table_t* in_hash, char* in_name,
                 {
                     free( current_xmer );
                 }
-            free( current_xmer_data );
         }
     return in_hash;
 }
