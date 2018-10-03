@@ -90,5 +90,6 @@ void* ht_delete( hash_table_t* table, char* in_key );
  * @returns pointer to array of pointers to HT_Entry items
  **/ 
 HT_Entry *ht_get_items( hash_table_t* input );
+HT_Entry *ht_get_items_no_malloc( hash_table_t* input, HT_Entry *data );
 #endif
 

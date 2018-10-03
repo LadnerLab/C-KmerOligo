@@ -278,3 +278,39 @@ HT_Entry *ht_get_items( hash_table_t* input )
         }
     return output;
 }
+
+HT_Entry *ht_get_items_no_malloc( hash_table_t* input, HT_Entry *data )
+{
+    HT_Entry *output = NULL;
+    HT_Entry* next_node;
+
+    uint32_t input_index;
+    uint32_t output_index;
+
+    uint32_t capacity = input->capacity;
+
+    if( input->size > 0 )
+        {
+            output_index = 0;
+
+            for( input_index = 0; input_index < capacity; input_index++ )
+                {
+                    if( input->table_data[ input_index ] )
+                        {
+                            data[ output_index ] = *(input->table_data[ input_index ]);
+                            next_node = input->table_data[ input_index ]->next;
+
+                            output_index++;
+
+                            while( next_node )
+                                {
+                                    data[ output_index ] = *(next_node);
+                                    next_node = next_node->next;
+
+                                    output_index++;
+                                }
+                        }
+                }
+        }
+    return output;
+}
