@@ -1,10 +1,8 @@
 CFLAGS= -O0 -Wall -Wextra -std=c99 -mtune=native 
 
-kmer_oligo: kmer_oligo.o protein_oligo_library.o dynamic_string.o hash_table.o array_list.o set.o thpool.o
-	gcc $(CFLAGS) kmer_oligo.o protein_oligo_library.o dynamic_string.o hash_table.o array_list.o set.o thpool.o -lm -lpthread -o kmer_oligo 
+kmer_oligo: kmer_oligo.o protein_oligo_library.o dynamic_string.o hash_table.o array_list.o set.o 
+	gcc $(CFLAGS) kmer_oligo.o protein_oligo_library.o dynamic_string.o hash_table.o array_list.o set.o -lm -fopenmp -o kmer_oligo 
 kmer_oligo.o: kmer_oligo.c protein_oligo_library.h hash_table.h array_list.h set.h
-
-thpool.o: thpool.c thpool.h
 
 protein_oligo_library.o: protein_oligo_library.c protein_oligo_library.h hash_table.h array_list.h set.h
 
