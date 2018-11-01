@@ -4,8 +4,6 @@
 #include <getopt.h>
 #include <stdint.h>
 #include <string.h>
-#include <pthread.h>
-#include <time.h>
 #include <sys/sysinfo.h>
 #include <omp.h>
 
@@ -55,17 +53,6 @@ void update_xmer_table_values( hash_table_t* current_ymer_xmers,
 void write_outputs( array_list_t* output_oligos, hash_table_t* name_table,
                     char* outfile_name, int redundancy
                   );
-
-typedef struct thread_info_t
-{
-    uint32_t start_index;
-    uint32_t end_index;
-
-    void (*difference_func)( set_t*, set_t* ); 
-    set_t* covered_locations;
-    HT_Entry* total_ymers;
-} thread_info_t;
-
 // ==========================================================
 
 int main( int argc, char* argv[] )
