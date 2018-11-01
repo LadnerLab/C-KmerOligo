@@ -41,9 +41,9 @@ void set_difference( set_t* first, set_t* second )
     uint32_t index;
     uint32_t max = first->data->size;
 
-    HT_Entry found_data[ max ];
+    HT_Entry *found_data;
 
-    ht_get_items_no_malloc( first->data, found_data );
+    found_data = ht_get_items( first->data );
 
     for( index = 0; index < ( max ); index++ )
         {
@@ -55,6 +55,7 @@ void set_difference( set_t* first, set_t* second )
                 }
 
         }
+    free( found_data );
 }
 
 void set_add_all( set_t* dest, char** in_array, int num_elements )
