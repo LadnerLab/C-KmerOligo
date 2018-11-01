@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <stdint.h>
+#include <time.h>
 #include <string.h>
 #include <sys/sysinfo.h>
 #include <omp.h>
@@ -433,6 +434,7 @@ int sum_values_of_table( hash_table_t* in_table )
     
     HT_Entry* table_values = ht_get_items( in_table );
 
+    #pragma omp parallel for private( index ) shared( table_values )reduction( +:total )
     for( index = 0; index < in_table->size; index++ )
         {
             total += *( (int*) table_values[ index ].value );
