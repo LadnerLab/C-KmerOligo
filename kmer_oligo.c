@@ -7,6 +7,7 @@
 #include <pthread.h>
 #include <time.h>
 #include <sys/sysinfo.h>
+#include <omp.h>
 
 
 #include "protein_oligo_library.h"
@@ -357,7 +358,9 @@ int main( int argc, char* argv[] )
 
                     total_ymers = ht_get_items( ymer_index_table );
 
-                    #pragma omp parallel for private( index ) shared( total_ymers, covered_locs ) schedule( dynamic )
+                    omp_set_num_threads( num_threads );
+
+                    #pragma omp parallel for private( index ) shared( total_ymers, covered_locations ) schedule( dynamic )
                     for( index = 0; index < ymer_index_table->size; index++ )
                         {
                             set_difference( total_ymers[ index ].value, covered_locations );
