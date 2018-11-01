@@ -12,7 +12,6 @@
 #include "protein_oligo_library.h"
 #include "hash_table.h"
 #include "array_list.h"
-#include "thpool.h"
 
 #define ARGS "b:x:y:r:i:q:o:t:p::c:n:"
 
@@ -37,15 +36,9 @@
 
 
 // ================== PROTOTYPES ========================== 
-void start_threads( int num_threads, int size,
-                    set_t* covered_locs, HT_Entry* total_ymers,
-                    threadpool thpool
-                  );
 void clear_blosum( blosum_data_t* to_clear );
 
 void show_usage( char* program_name );
-
-void thread_difference( void* arg );
 
 void display_current_info( int interval, int count_val, uint64_t max_score );
 
@@ -89,7 +82,6 @@ int main( int argc, char* argv[] )
     char* output = DEFAULT_OUTPUT;
 
     int option;
-    threadpool thpool;
 
     // program variables
     FILE* data_file;
@@ -250,8 +242,6 @@ int main( int argc, char* argv[] )
                 }
         }
 
-    thpool = thpool_init( num_threads );
-
     while( current_iteration < iterations )
         {
             count_val = 0;
@@ -367,7 +357,11 @@ int main( int argc, char* argv[] )
 
                     total_ymers = ht_get_items( ymer_index_table );
 
-                    start_threads( num_threads, ymer_index_table->size, covered_locations, total_ymers, thpool );
+                    #pragma omp parallel for private( index ) shared( total_ymers, covered_locs ) schedule( dynamic )
+                    for( index = 0; index < ymer_index_table->size; index++ )
+                        {
+                            set_difference( total_ymers[ index ].value, covered_locations );
+                        }
 
                     set_clear( covered_locations );
                     free( total_ymers );
@@ -499,60 +493,6 @@ void write_outputs( array_list_t* output_oligos, hash_table_t* name_table,
 
     sprintf( outfile_name_with_redundancy, "%s_R_%d", outfile_name, redundancy ); 
     write_fastas( output_seqs, num_ymers, outfile_name_with_redundancy );
-}
-
-void thread_difference( void* arg )
-{
-    thread_info_t* info = arg;
-
-    uint32_t index;
-    uint32_t start_index = info->start_index;
-
-    set_t* current_data;
-    set_t* covered_locs = info->covered_locations;
-
-
-    for( index = start_index; index < info->end_index; index++ )
-        {
-            current_data = info->total_ymers[ index ].value;
-
-            info->difference_func( current_data, covered_locs );
-        }
-}
-
-
-void start_threads( int num_threads, int size, set_t* covered_locs, HT_Entry* total_ymers, threadpool thpool )
-{
-    int seqs_per_thread = size / num_threads;
-    int index;
-
-    uint32_t start_index;
-    uint32_t end_index;
-    int remainder = size % num_threads;
-
-    thread_info_t thread_info[ num_threads ];
-
-    start_index = 0;
-
-    for( index = 0; index < num_threads; index++ )
-        {
-            end_index = seqs_per_thread * ( index + 1 ) + remainder;
-
-            thread_info[ index ].start_index = start_index;
-            thread_info[ index ].end_index = end_index;
-            thread_info[ index ].difference_func = &set_difference;
-            thread_info[ index ].covered_locations = covered_locs;
-            thread_info[ index ].total_ymers = total_ymers;
-
-            thpool_add_work( thpool, thread_difference, &thread_info[ index ] );
-            start_index = end_index;
-
-            
-        }
-
-    thpool_wait( thpool );
-
-
 }
 
 void show_usage( char* program_name )
