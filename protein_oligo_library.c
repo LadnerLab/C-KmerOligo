@@ -12,6 +12,8 @@
 #define SPACE ' '
 #define DATA_NOT_FOUND -99
 
+const int MAX_LINE_SIZE = 2048;
+
 // ============== Local Function Prototypes ==================== // 
 
 char get_first_char_in_functional_group( char in_char );
@@ -224,10 +226,10 @@ void write_xmer( char* to_write, char* in_seq, int xmer_index, int window_size, 
 }
 int get_a_line( FILE* stream, dynamic_string_t* to_read )
 {
-    char current_char[ 256 ] ;
+    char current_char[ MAX_LINE_SIZE ] ;
 
     ds_init( to_read );
-    if( fgets( current_char, 256, stream ) ) 
+    if( fgets( current_char, MAX_LINE_SIZE, stream ) ) 
         {
             ds_add( to_read, current_char );
             return true;

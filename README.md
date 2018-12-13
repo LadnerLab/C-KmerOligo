@@ -64,7 +64,7 @@ Usage: ./kmer_oligo [ options ]
  -i                         number of times to do the design, 
  	                        the best one is picked and written to the output files. [1]
 
- -q                         fasta query file to perform operations on [None, Required]. 
+ -q                         fasta query file to perform operations on. Note that the max length for a sequence name is 2048 characters. [None, Required]. 
 
  -o                         name of file to output to [output.fasta]
 

@@ -495,7 +495,7 @@ void show_usage( char* program_name )
     puts( " -y                         integer ymer window size. [None, Required]\n" );
     puts( " -r                         default redundancy to be used.[1]\n" );
     puts( " -i                         number of iterations to do. [1]\n" );
-    puts( " -q                         fasta query file to perform operations on [None, Required]. \n" );
+    puts( " -q                         fasta query file to perform operations on. Note the maximum allowed sequence length is 2048 characters. [None, Required]. \n" );
     puts( " -o                         name of file to output to [output.fasta]\n" );
     puts( " -t                         number of threads to use [1]\n" );
     puts( " -p                         include this flag in order to perform permutation of xmer functional groups\n" );
