@@ -457,7 +457,7 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
     uint32_t inner_index;
     uint32_t index;
     hash_table_t* subset_xmers = NULL;
-    HT_Entry* subset_xmer_items = NULL;
+    HT_Entry** subset_xmer_items = NULL;
     array_list_t* found_data = NULL;
 
     uint32_t size;
@@ -481,7 +481,7 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
                     found_data = malloc( sizeof( array_list_t ) );
                     ar_init( found_data );
 
-                    permute_xmer_functional_groups( subset_xmer_items[ index ].key, found_data,
+                    permute_xmer_functional_groups( subset_xmer_items[ index ]->key, found_data,
                                                     blosum_data, blosum_cutoff
                                                   );
                     for( inner_index = 0; inner_index < found_data->size; inner_index++ )
@@ -504,14 +504,14 @@ set_t* component_xmer_locs( char* in_ymer_name, char* in_ymer,
 
     for( index = 0; index < subset_xmers->size; index++ )
         {
-            found_data = (array_list_t*) ht_find( in_xmer_table, subset_xmer_items[ index ].key );
+            found_data = (array_list_t*) ht_find( in_xmer_table, subset_xmer_items[ index ]->key );
             if( found_data != NULL )
                 {
                     set_add_all( out_ymer, (char**) found_data->array_data, found_data->size );
 
-                    if( subset_xmer_items[ index ].value )
+                    if( subset_xmer_items[ index ]->value )
                         {
-                            ar_clear( subset_xmer_items[ index ].value );
+                            ar_clear( subset_xmer_items[ index ]->value );
                         }
                 }
         }

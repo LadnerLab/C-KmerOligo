@@ -41,17 +41,16 @@ void set_difference( set_t* first, set_t* second )
     uint32_t index;
     uint32_t max = first->data->size;
 
-    HT_Entry *found_data;
+    HT_Entry **found_data;
 
     found_data = ht_get_items( first->data );
 
     for( index = 0; index < ( max ); index++ )
         {
                    
-            if( find_item( second->data, found_data[ index ].key ) )
+            if( find_item( second->data, found_data[ index ]->key ) )
                 {
-                    free( ht_delete( first->data, found_data[ index ].key ) );
-                    free( found_data[ index ].key );
+                    free( ht_delete( first->data, found_data[ index ]->key ) );
                 }
 
         }
