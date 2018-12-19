@@ -21,17 +21,9 @@ int int_to_pow( int base, int exponent )
 
 void ht_init( hash_table_t* table, int size )
 {
-    int index;
-
-    table->table_data = malloc( sizeof( HT_Entry* ) * ( size + ADDITIONAL_SPACE ) ); 
+    table->table_data = calloc( size + ADDITIONAL_SPACE, sizeof( HT_Entry* ) ); 
     table->capacity = size;
     table->size = 0;
-
-    for( index = 0; index < size; index++ )
-        {
-            table->table_data[ index ] = NULL;
-        }
-
 }
 
 void ht_clear( hash_table_t* table )
@@ -119,18 +111,19 @@ uint32_t generate_hash( const void *key,  int len, uint32_t seed )
 int ht_add( hash_table_t* table, char* to_add, void* add_val )
 {
     uint32_t item_index;
+    int add_len = strlen( to_add );
 
     HT_Entry *new_entry = malloc( sizeof( HT_Entry ) );
     HT_Entry *current_node;
 
-    new_entry->key = malloc( strlen( to_add ) + 1 );
+    new_entry->key = malloc( add_len + 1 );
     strcpy( new_entry->key, to_add );
     new_entry->value = add_val;
 
     new_entry->next = NULL;
     new_entry->prev = NULL;
 
-    item_index = generate_hash( to_add, strlen( to_add ), HASH_NUMBER ) % table->capacity;
+    item_index = generate_hash( to_add, add_len, HASH_NUMBER ) % table->capacity;
 
     // item not already in table
     if( table->table_data[ item_index ] == NULL )
@@ -242,35 +235,32 @@ void* ht_delete( hash_table_t* table, char* in_key )
 }
 
 
-HT_Entry *ht_get_items( hash_table_t* input )
+HT_Entry **ht_get_items( hash_table_t* input )
 {
-    HT_Entry *output = NULL;
-    HT_Entry* next_node;
+    HT_Entry **output   = NULL;
+    HT_Entry* next_node = NULL;
 
-    uint32_t input_index;
-    uint32_t output_index;
+    uint32_t input_index  = 0;
+    uint32_t output_index = 0;
 
     uint32_t capacity = input->capacity;
 
     if( input->size > 0 )
         {
-            output = malloc( sizeof( HT_Entry ) * input->size );
-            output_index = 0;
+            output = malloc( sizeof( HT_Entry * ) * input->size );
 
             for( input_index = 0; input_index < capacity; input_index++ )
                 {
                     if( input->table_data[ input_index ] )
                         {
-                            output[ output_index ] = *(input->table_data[ input_index ]);
+                            output[ output_index ] = input->table_data[ input_index ];
                             next_node = input->table_data[ input_index ]->next;
-
                             output_index++;
 
                             while( next_node )
                                 {
-                                    output[ output_index ] = *(next_node);
+                                    output[ output_index ] = next_node;
                                     next_node = next_node->next;
-
                                     output_index++;
                                 }
                         }
