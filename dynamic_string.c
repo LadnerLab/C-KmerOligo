@@ -15,10 +15,10 @@
  * 
  * @param input dynamic_string_t input to be tested 
  **/
-void ds_check_for_resize( dynamic_string_t* input, char string_to_add[] )
+void ds_check_for_resize( dynamic_string_t* input, unsigned int input_len )
 {
     int new_capacity;
-    int add_length = strlen( string_to_add );
+    int add_length = input_len;
     char* new_data;
 
     if( input->capacity <= input->size + add_length + 10 )
@@ -53,7 +53,7 @@ int string_length( char* input )
 void ds_init( dynamic_string_t* input )
 {
     input->capacity = DEFAULT_LENGTH;
-    input->data = calloc( sizeof( char ), DEFAULT_LENGTH );
+    input->data = calloc( DEFAULT_LENGTH, sizeof( char ) );
     input->size = 0;
 }
 
@@ -67,7 +67,7 @@ void ds_add( dynamic_string_t* input, char string[] )
 
     int index = 0;
 
-    ds_check_for_resize( input, string );
+    ds_check_for_resize( input, input_length );
  
     for( index = 0; index < input_length; index++ )
         {
