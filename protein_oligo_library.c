@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,12 +8,11 @@
 #include "dynamic_string.h"
 #include "array_list.h"
 
+
 #define LINE_SIZE 512
 #define DASH_CHAR '-'
 #define SPACE ' '
 #define DATA_NOT_FOUND -99
-
-const int MAX_LINE_SIZE = 2048;
 
 // ============== Local Function Prototypes ==================== // 
 
@@ -226,15 +226,19 @@ void write_xmer( char* to_write, char* in_seq, int xmer_index, int window_size, 
 }
 int get_a_line( FILE* stream, dynamic_string_t* to_read )
 {
-    char current_char[ MAX_LINE_SIZE ] ;
+    char *current_char = NULL;
+    size_t size = 0;
+    bool return_val = false;
 
-    ds_init( to_read );
-    if( fgets( current_char, MAX_LINE_SIZE, stream ) ) 
+    if( getline( &current_char, &size, stream ) != EOF ) 
         {
             ds_add( to_read, current_char );
-            return true;
+
+            return_val = true;
         }
-    return false;
+
+    free( current_char );
+    return return_val;
 
 }
 
