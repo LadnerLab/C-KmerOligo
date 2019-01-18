@@ -146,8 +146,11 @@ void read_sequences( FILE* file_to_read, sequence_t** in_sequence )
     while( has_line )
         {
 
-            // remove newline-character
-            line->data[ --line->size ] = '\0';
+            // remove newline-character if the line is not empty
+            if( line->size )
+                {
+                    line->data[ --line->size ] = '\0';
+                }
 
             if( line->data[ 0 ] == '>' )
                 {
@@ -168,7 +171,10 @@ void read_sequences( FILE* file_to_read, sequence_t** in_sequence )
 
             // remove newline-character, update size to reflect the removal of
             // char
-            line->data[ --line->size ] = '\0';
+            if( line->size )
+                {
+                    line->data[ --line->size ] = '\0';
+                }
         }
 
     ds_clear( line );
