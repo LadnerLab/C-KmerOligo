@@ -41,13 +41,7 @@ void ds_check_for_resize( dynamic_string_t* input, unsigned int input_len )
 
 int string_length( char* input )
 {
-    int length = 0;
-
-    while( *( input + length ) )
-        {
-            length++;
-        }
-    return length;
+    return strlen( input );
 }
 
 void ds_init( dynamic_string_t* input )
