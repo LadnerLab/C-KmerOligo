@@ -47,7 +47,7 @@ int string_length( char* input )
 void ds_init( dynamic_string_t* input )
 {
     input->capacity = DEFAULT_LENGTH;
-    input->data = calloc( DEFAULT_LENGTH, sizeof( char ) );
+    input->data = calloc( DEFAULT_LENGTH + 1, sizeof( char ) );
     input->size = 0;
 }
 
