@@ -138,11 +138,16 @@ void read_sequences( FILE* file_to_read, sequence_t** in_sequence )
     int index = 0;
 
     dynamic_string_t* line = (dynamic_string_t*) malloc( sizeof( dynamic_string_t ) );
-    dynamic_string_t* sequence = malloc( sizeof( dynamic_string_t ) );
+    dynamic_string_t* sequence = NULL;
 
+    ds_init( line );
     has_line = get_a_line( file_to_read, line );
+
     while( has_line )
         {
+
+            // remove newline-character
+            line->data[ --line->size ] = '\0';
 
             if( line->data[ 0 ] == '>' )
                 {
@@ -160,6 +165,10 @@ void read_sequences( FILE* file_to_read, sequence_t** in_sequence )
                 }
             ds_init( line );
             has_line = get_a_line( file_to_read, line );
+
+            // remove newline-character, update size to reflect the removal of
+            // char
+            line->data[ --line->size ] = '\0';
         }
 
     ds_clear( line );
