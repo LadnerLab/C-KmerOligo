@@ -147,7 +147,8 @@ void read_sequences( FILE* file_to_read, sequence_t** in_sequence )
         {
 
             // remove newline-character if the line is not empty
-            if( line->size )
+            if( strchr( line->data, '\n' ) != NULL
+                && line->size )
                 {
                     line->data[ --line->size ] = '\0';
                 }
