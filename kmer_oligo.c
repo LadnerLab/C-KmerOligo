@@ -50,7 +50,9 @@ void update_xmer_table_values( hash_table_t* current_ymer_xmers,
                                hash_table_t* xmer_table,
                                hash_table_t* array_xmers
                              );
-
+void write_outputs_if_smaller( array_list_t *output_oligos, hash_table_t *name_table,
+								char *outfile_name, int redundancy
+							 );
 void write_outputs( array_list_t* output_oligos, hash_table_t* name_table,
                     char* outfile_name, int redundancy
                   );
@@ -231,6 +233,10 @@ int main( int argc, char* argv[] )
                 }
         }
 
+    #ifdef TIME_TRIAL
+    double time_trial_start = omp_get_wtime();
+    #endif
+
     while( current_iteration < iterations )
         {
             count_val = 0;
@@ -326,7 +332,9 @@ int main( int argc, char* argv[] )
                     ht_delete( ymer_index_table, oligo_to_remove );
 
                     count_val++;
+                    #ifndef TIME_TRIAL
                     display_current_info( DISPLAY_INTERVAL, count_val, max_score );
+                    #endif // TIME_TRIAL
 
                                                                      
                     current_ymer_xmers = malloc( sizeof( hash_table_t ) );
@@ -362,6 +370,7 @@ int main( int argc, char* argv[] )
 
                 }
             // statistics output
+            #ifndef TIME_TRIAL
             printf( "\nFinal design includes %d %d-mers ( %.1f%% of total ).\n", array_design->size,
                     ymer_window_size, ( array_design->size / (float) total_ymer_count ) * 100
                     );
@@ -375,6 +384,7 @@ int main( int argc, char* argv[] )
                     xmer_window_size, ymer_window_size,
                     ( (float) sum_values_of_table( array_xmers ) / xmer_table->size ) );
 
+            #endif // ifndefTIME_TRIAL
 
             total_ymers = ht_get_items( ymer_index_table );
             for( index = 0; index < ymer_index_table->size; index++ )
@@ -399,8 +409,8 @@ int main( int argc, char* argv[] )
                     ar_init( array_design );
 
                    // write output to specified file
-                   write_outputs( best_iteration, ymer_name_table, output, redundancy );
-                   ar_clear( best_iteration );
+                   write_outputs_if_smaller( best_iteration, ymer_name_table, output, redundancy );
+                   // ar_clear( best_iteration );
 
                 }
             else
@@ -411,11 +421,18 @@ int main( int argc, char* argv[] )
                     array_design = NULL;
                 }
 
-            ht_clear( ymer_index_table );
-            ht_clear( array_xmers );
+            // ht_clear( ymer_index_table );
+            // ht_clear( array_xmers );
 
             current_iteration++;
         }
+    #ifdef TIME_TRIAL
+    double time_trial_end = omp_get_wtime();
+
+    double elapsed = time_trial_end - time_trial_start;
+    printf( "ELAPSED_TIME:%f\n", elapsed );
+    #endif
+
 
     fclose( data_file );
 
@@ -444,6 +461,31 @@ int sum_values_of_table( hash_table_t* in_table )
     return total;
 }
 
+void write_outputs_if_smaller( array_list_t *output_oligos, hash_table_t *name_table,
+								char *outfile_name, int redundancy
+							 )
+{
+    int extra_chars = 12;
+    int outfile_len = strlen( outfile_name );
+
+    char outfile_name_with_redundancy[ outfile_len + extra_chars ];
+
+    sprintf( outfile_name_with_redundancy, "%s_R_%d", outfile_name, redundancy ); 
+
+	FILE *out_file = fopen( outfile_name_with_redundancy, "r" );
+
+	int num_seqs = count_seqs_in_file( out_file );
+
+	if( out_file )
+	{
+			fclose( out_file );
+	}
+
+	if( num_seqs < 0 || (unsigned int) num_seqs > output_oligos->size )
+	{
+		write_outputs( output_oligos, name_table, outfile_name, redundancy );
+	}
+}
 void write_outputs( array_list_t* output_oligos, hash_table_t* name_table,
                     char* outfile_name, int redundancy
                   )
