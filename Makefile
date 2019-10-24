@@ -14,9 +14,6 @@ protein_oligo_library.o: protein_oligo_library.c protein_oligo_library.h hash_ta
 dynamic_string.o: dynamic_string.c dynamic_string.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-array_list.o: array_list.c array_list.h 
-	$(CC) $(CFLAGS) -c -o $@ $<
-
 hash_table.o: hash_table.c hash_table.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
