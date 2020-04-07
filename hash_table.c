@@ -8,6 +8,11 @@
 #define HASH_NUMBER 3187
 #define ADDITIONAL_SPACE 256
 
+void *malloc_t( int size )
+{
+	return malloc( size );
+}
+
 // local method for calculating exponents
 int int_to_pow( int base, int exponent )
 {
@@ -247,7 +252,7 @@ HT_Entry **ht_get_items( hash_table_t* input )
 
     if( input->size > 0 )
         {
-            output = malloc( sizeof( HT_Entry * ) * input->size );
+            output = malloc_t( sizeof( HT_Entry * ) * input->size );
 
             for( input_index = 0; input_index < capacity; input_index++ )
                 {
