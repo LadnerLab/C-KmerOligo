@@ -1,4 +1,4 @@
-CFLAGS= -O0 -Wall -Wextra -std=c99 -mtune=native -fopenmp
+CFLAGS= -O0 -Wall -Wextra -std=c99 -mtune=native 
 CC=gcc
 
 MODE?=NONE

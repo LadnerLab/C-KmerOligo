@@ -5,8 +5,6 @@
 #include <stdint.h>
 #include <time.h>
 #include <string.h>
-#include <sys/sysinfo.h>
-#include <omp.h>
 
 
 #include "protein_oligo_library.h"
@@ -233,10 +231,6 @@ int main( int argc, char* argv[] )
                 }
         }
 
-    #ifdef TIME_TRIAL
-    double time_trial_start = omp_get_wtime();
-    #endif
-
     while( current_iteration < iterations )
         {
             count_val = 0;
@@ -354,9 +348,6 @@ int main( int argc, char* argv[] )
 
                     total_ymers = ht_get_items( ymer_index_table );
 
-                    omp_set_num_threads( num_threads );
-
-                    #pragma omp parallel for private( index ) shared( total_ymers, covered_locations ) schedule( dynamic )
                     for( index = 0; index < ymer_index_table->size; index++ )
                         {
                             set_difference( total_ymers[ index ]->value, covered_locations );
@@ -426,13 +417,6 @@ int main( int argc, char* argv[] )
 
             current_iteration++;
         }
-    #ifdef TIME_TRIAL
-    double time_trial_end = omp_get_wtime();
-
-    double elapsed = time_trial_end - time_trial_start;
-    printf( "ELAPSED_TIME:%f\n", elapsed );
-    #endif
-
 
     fclose( data_file );
 
@@ -451,7 +435,6 @@ int sum_values_of_table( hash_table_t* in_table )
     
     HT_Entry **table_values = ht_get_items( in_table );
 
-    #pragma omp parallel for private( index ) shared( table_values )reduction( +:total )
     for( index = 0; index < in_table->size; index++ )
         {
             total += *( (int*) table_values[ index ]->value );
