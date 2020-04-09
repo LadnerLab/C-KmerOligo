@@ -30,6 +30,7 @@
 #define BLOSUM_62 "blosum62"
 #define DEFAULT_MIN_YMERS 0 
 #define DEFAULT_MAX_SCORE -1
+#define DEFAULT_MAX_YMER_SIZE 256
 
 #define YMER_TABLE_SIZE 100000
 
@@ -171,6 +172,12 @@ int main( int argc, char* argv[] )
         {
             printf( "Fasta query file either not found or not provided, exiting.\n" );
 
+            return EXIT_FAILURE;
+        }
+
+    if( ymer_window_size >= DEFAULT_MAX_YMER_SIZE )
+        {
+            printf( "ERROR: Maximum ymer is: %d\n", DEFAULT_MAX_YMER_SIZE );
             return EXIT_FAILURE;
         }
 
@@ -493,7 +500,7 @@ void write_outputs( array_list_t* output_oligos, hash_table_t* name_table,
     uint32_t index;
     uint32_t num_ymers = output_oligos->size;
 
-    const int MAX_YMER_SIZE = 60;
+    const int MAX_YMER_SIZE = 256;
     
     HT_Entry *current_item = NULL;
 
