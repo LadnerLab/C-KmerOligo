@@ -13,7 +13,7 @@
 #include "hash_table.h"
 #include "array_list.h"
 
-#define ARGS "b:x:y:r:i:q:o:t:p::c:n:"
+#define ARGS "b:e:x:y:r:i:q:o:t:p::c:n:"
 
 // program defaults
 #define DEFAULT_XMER_SIZE 100
@@ -78,16 +78,17 @@ int main( int argc, char* argv[] )
     // program variables
     FILE* data_file;
     sequence_t **seqs_from_file;
+    sequence_t **predef_seqs_from_file;
 
     hash_table_t *ymer_name_table;
     hash_table_t *ymer_table;
-    hash_table_t *ymer_index_table;
+    hash_table_t *ymer_index_table = NULL;
     hash_table_t *xmer_table;
     array_list_t *best_iteration = NULL;
 
     array_list_t *array_design = NULL ;
     hash_table_t *current_ymer_xmers;
-    hash_table_t *array_xmers;
+    hash_table_t *array_xmers = NULL;
     array_list_t *to_add;
 
     blosum_data_t* blosum_data = NULL;
@@ -103,7 +104,7 @@ int main( int argc, char* argv[] )
     int count_val = 0;
     int permute = 0;
     int blosum_cutoff = 0;
-        
+    
     uint32_t num_threads = get_nprocs();
     uint32_t num_seqs;
     uint32_t ymer_index;
@@ -111,12 +112,17 @@ int main( int argc, char* argv[] )
     uint32_t index;
     uint32_t inner_index;
     uint32_t min_ymers = DEFAULT_MIN_YMERS;
+    uint32_t curr_xmer;
+    uint32_t seq_idx;
+    uint32_t total_x = 0;
 
     set_t *current_data;
 
     sequence_t* current_seq;
     array_list_t* tracked_data;
-
+    array_list_t* predef_tracked_data;
+    
+    char* predef_file = NULL;
     char* current_ymer;
     char* blosum = NULL;
     char* oligo_to_remove;
@@ -135,6 +141,9 @@ int main( int argc, char* argv[] )
                     break;
                 case 'p':
                     permute = 1;
+                    break;
+                case 'e':
+                    predef_file = optarg;
                     break;
                 case 'r':
                     redundancy = atoi( optarg );
@@ -200,7 +209,7 @@ int main( int argc, char* argv[] )
 
            fclose( blosum_file );
         }
-
+    // Initialization
     tracked_data = malloc( sizeof( array_list_t ) );
     ar_init( tracked_data );
 
@@ -221,7 +230,7 @@ int main( int argc, char* argv[] )
 
     ht_init( ymer_table, YMER_TABLE_SIZE );
     ht_init( ymer_name_table, YMER_TABLE_SIZE );
-
+    // Build xmer and ymer tables
     for( index = 0; index < num_seqs; index++ )
         {
             sprintf( index_str, "%d", index );
@@ -239,7 +248,34 @@ int main( int argc, char* argv[] )
                                             );
                 }
         }
-
+    total_x = xmer_table->size;
+    // If pre-designed peptides are provided, remove any contained xmers from the xmer_table
+    hash_table_t *predef_xmer_table;
+    if( predef_file )
+        {
+            predef_tracked_data = malloc( sizeof( array_list_t ) );
+            ar_init(predef_tracked_data);
+            predef_xmer_table = malloc_track( predef_tracked_data, sizeof( hash_table_t ) );
+            ht_init( predef_xmer_table, YMER_TABLE_SIZE );
+            FILE *open_file = fopen( predef_file, "r" );
+            num_seqs = count_seqs_in_file( open_file );
+            predef_seqs_from_file = malloc( sizeof( sequence_t * ) * num_seqs );
+            read_sequences( open_file, predef_seqs_from_file );
+            // create xmer table
+            for( seq_idx = 0; seq_idx < num_seqs; seq_idx++ )
+                {
+                    sprintf( index_str, "%d", seq_idx );
+                    current_seq = predef_seqs_from_file[ seq_idx ];
+                    if( current_seq )
+                        {
+                            create_xmers_with_locs( predef_xmer_table, index_str,
+                                                    current_seq->sequence->data,
+                                                    xmer_window_size, 1 );
+                        }
+                }
+            fclose( open_file );
+        }
+    
     #ifdef TIME_TRIAL
     double time_trial_start = omp_get_wtime();
     #endif
@@ -261,6 +297,27 @@ int main( int argc, char* argv[] )
             ar_init( array_design );
             // seed our random number
             srand( time( NULL ) );
+            if(predef_file)
+                {
+                    HT_Entry **total_xmers = ht_get_items( predef_xmer_table );
+                    for( curr_xmer = 0; curr_xmer < predef_xmer_table->size; curr_xmer++ )
+                        {
+                            // if curr xmer found in target xmer table, then add to coverage
+                            if( ht_find( xmer_table, total_xmers[curr_xmer]->key ) )
+                                {
+                                    int* xmer_val = malloc(sizeof(int));
+                                    *xmer_val = 1;
+                                    ht_add( array_xmers, total_xmers[curr_xmer]->key, xmer_val );
+                                    // Set added xmer to 0 to prevent overcounting in ymer scores
+                                    ( *(int*) ht_find( xmer_table,
+                                               total_xmers[ curr_xmer ]->key
+                                               ) = 0
+                              );
+                                }
+                        }
+                    free( total_xmers );
+                    ht_clear( predef_xmer_table );
+                }
 
             total_ymers = ht_get_items( ymer_table );
             for( inner_index = 0; inner_index < ymer_table->size; inner_index++ )
@@ -300,10 +357,9 @@ int main( int argc, char* argv[] )
                 }
  
             max_score = DEFAULT_MAX_SCORE;
-
             while( ymer_index_table->size > 0 &&
                    max_score != 0 &&
-                   (float) array_xmers->size / xmer_table->size < min_xmer_coverage
+                   (float) array_xmers->size / total_x < min_xmer_coverage
                    )
                 {
                     to_add = malloc( sizeof( array_list_t ) );
@@ -331,7 +387,7 @@ int main( int argc, char* argv[] )
                                     ar_add( to_add, total_ymers[ ymer_index ]->key );
                                 }
                         }
-
+                    
                     oligo_to_remove = to_add->array_data[ rand() % to_add->size ];
                     covered_locations = ht_find( ymer_index_table, oligo_to_remove );
 
@@ -373,7 +429,6 @@ int main( int argc, char* argv[] )
                     free( total_ymers );
                     ht_clear( current_ymer_xmers );
                     ar_clear( to_add );
-                    free( current_ymer_xmers );
 
                 }
             // statistics output
@@ -384,12 +439,12 @@ int main( int argc, char* argv[] )
 
             printf( "%d unique %d-mers in final %d-mers ( %.2f%% of total ).\n",
                     array_xmers->size, xmer_window_size, ymer_window_size,
-                    ( (float) array_xmers->size / xmer_table->size ) * 100 
+                    ( (float) array_xmers->size / total_x ) * 100 
                     );
 
             printf( "Average redundancy of %d-mers in %d-mers: %.2f\n",
                     xmer_window_size, ymer_window_size,
-                    ( (float) sum_values_of_table( array_xmers ) / xmer_table->size ) );
+                    ( (float) sum_values_of_table( array_xmers ) / array_xmers->size ) );
 
             #endif // ifndefTIME_TRIAL
 
@@ -428,9 +483,6 @@ int main( int argc, char* argv[] )
                     array_design = NULL;
                 }
 
-            // ht_clear( ymer_index_table );
-            // ht_clear( array_xmers );
-
             current_iteration++;
         }
     #ifdef TIME_TRIAL
@@ -439,8 +491,11 @@ int main( int argc, char* argv[] )
     double elapsed = time_trial_end - time_trial_start;
     printf( "ELAPSED_TIME:%f\n", elapsed );
     #endif
-
-
+    ht_clear( array_xmers );
+    ht_clear( ymer_table );
+    ht_clear( ymer_index_table );
+    ht_clear( ymer_name_table );
+    ht_clear( xmer_table );
     fclose( data_file );
 
     if( blosum_data )
@@ -542,6 +597,9 @@ void show_usage( char* program_name )
     puts( "-h, --help                 display this help and exit." );
     puts( " -x                         integer xmer window size. [None, Required]\n" );
     puts( " -y                         integer ymer window size. [None, Required]\n" );
+    puts( " -e                         A fasta file containing previously\n"
+          "                            designed peptides. Xmers contained in these sequences\n"
+          "                            will not contribute to Ymer scoring in design.\n");
     puts( " -r                         default redundancy to be used.[1]\n" );
     puts( " -i                         number of iterations to do. [1]\n" );
     puts( " -q                         fasta query file to perform operations on. [None, Required]. \n" );
